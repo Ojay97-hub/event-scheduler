@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get("g*z-_8_r*)8786g4+q&-e)sfuknzi8!3e+ybqn8picez5@-%(2"
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '8000-ojay97hub-eventschedule-xsfo1a8oqzj.ws.codeinstitute-ide.net',

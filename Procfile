@@ -1,1 +1,1 @@
-web: gunicorn event-scheduler.wsgi
+web: gunicorn event_scheduler.wsgi

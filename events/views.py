@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.views import generic
+from .models import Event
 
 # Create your views here.
-def my_events(request):
-    return HttpResponse("Hello, Events!")
+class EventsList(generic.ListView):
+    queryset = Event.objects.all()
+    template_name = "event_list.html"

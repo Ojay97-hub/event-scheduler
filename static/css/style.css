@@ -1,0 +1,131 @@
+/* styles.css */
+
+/* Body styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #eaf4ff; /* Light blue background for a fresh look */
+    color: #333; /* Dark text for contrast */
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #ffffff; /* Clean white background */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.8rem;
+    color: #ff5722; /* Fun accent color */
+    text-transform: uppercase; /* Make brand text all uppercase */
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: #555; /* Darker text color */
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #fff; /* White text on hover */
+    background-color: #ff5722; /* Fun color on hover */
+}
+
+.nav-link.active {
+    background-color: #ff5722; /* Active background color */
+    color: #fff; /* White text */
+}
+
+/* Card styles */
+.card {
+    border: none; /* Remove default border */
+    border-radius: 15px; /* More rounded corners for a fun feel */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px); /* Lift effect on hover */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    font-weight: bold;
+    font-size: 1.6rem; /* Larger title size */
+    color: #ff5722; /* Fun title color */
+}
+
+.card-text {
+    font-size: 1rem; /* Standard text size */
+    margin-bottom: 15px; /* Add space between paragraphs */
+}
+
+/* Pagination styles */
+.pagination {
+    margin-top: 20px;
+    justify-content: center; /* Center pagination */
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #ff5722; /* Active page color */
+    border-color: #ff5722; /* Border color */
+}
+
+.pagination .page-link {
+    color: #ff5722; /* Page link color */
+    border-radius: 50%; /* Round pagination */
+    padding: 10px 15px; /* Increased padding */
+    transition: background-color 0.3s;
+}
+
+.pagination .page-link:hover {
+    background-color: #ffe0b2; /* Light hover color */
+    color: #ff5722; /* Text color on hover */
+}
+
+/* Footer styles */
+.footer {
+    background-color: #333; /* Dark footer background */
+    padding: 30px 0;
+    color: white;
+    text-align: center; /* Centered text */
+}
+
+.footer p {
+    margin: 0;
+    font-size: 0.9rem; /* Smaller footer text */
+}
+
+.footer i {
+    color: #ff5722; /* Fun icon color */
+    transition: color 0.3s;
+}
+
+.footer i:hover {
+    color: white; /* Change icon color on hover */
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #ff5722; /* Primary button color */
+    border-radius: 20px; /* Rounded button */
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #e64a19; /* Darker button on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.4rem; /* Smaller title on mobile */
+    }
+
+    .navbar-nav .nav-link {
+        padding: 8px 15px; /* Smaller padding on mobile */
+    }
+}

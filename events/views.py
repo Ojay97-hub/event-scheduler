@@ -4,5 +4,5 @@ from .models import Event
 
 # Create your views here.
 class EventsList(generic.ListView):
-    queryset = Event.objects.all()
+    queryset = Event.objects.all() # can add filter queryset to status 1 to show only published events 
     template_name = "event_list.html"

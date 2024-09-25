@@ -29,7 +29,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="static/images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="static/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="static/images/favicon-16x16.png">
-    <link rel="manifest" href="static/images/site.webmanifest">
+
 </head>
 
 <body class="d-flex flex-column h-100 bg-light">
@@ -45,10 +45,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == home_url %}active{% endif %}" href="{% url 'Event_Page' %}">Home</a>
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Event_Page' %}">Events</a> <!-- Adjust URL as needed -->
+                        <a class="nav-link {% if request.path == '/events/' %}{% endif %}" href="{% url 'Event_Page' %}">Events</a> 
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="x">Create Event</a> <!-- Adjust URL as needed -->

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero-section text-center bg-light py-5">
+        <div class="container">
+            <h1 class="display-4">Welcome to Eventory</h1>
+            <p class="lead">Discover, Create, and Sign-up for Events around you!</p>
+            <a href="{% url 'Event_Page' %}" class="btn btn-primary btn-lg mt-3">Browse Events</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section py-5 bg-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
+                    <h3>Find Events</h3>
+                    <p>Browse through a wide range of events and choose the one that fits you best.</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <i class="fas fa-pencil-alt fa-3x text-primary mb-3"></i>
+                    <h3>Create Events</h3>
+                    <p>Create and promote your own events in just a few clicks.</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                    <h3>Join the Community</h3>
+                    <p>Connect with people who share the same interests as you by attending events.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">What People Are Saying</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <p class="card-text">"Eventory helped me find the perfect events in my area!"</p>
+                            <footer class="blockquote-footer">Jane Doe</footer>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <p class="card-text">"Creating events has never been easier!"</p>
+                            <footer class="blockquote-footer">John Smith</footer>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <p class="card-text">"Great platform to stay connected with local happenings."</p>
+                            <footer class="blockquote-footer">Alice Brown</footer>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section text-center bg-primary text-white py-5">
+        <div class="container">
+            <h2>Start Exploring Events Today!</h2>
+            <a href="{% url 'Event_Page' %}" class="btn btn-light btn-lg mt-3">View Events</a>
+        </div>
+    </section>
+{% endblock %}

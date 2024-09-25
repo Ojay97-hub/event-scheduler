@@ -1,6 +1,6 @@
 {% load static %}
 
-{% url 'Event_Page' as home_url %}
+{% url 'home' as home_url %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -51,7 +51,7 @@
                         <a class="nav-link {% if request.path == '/events/' %}{% endif %}" href="{% url 'Event_Page' %}">Events</a> 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="x">Create Event</a> <!-- Adjust URL as needed -->
+                        <a class="nav-link" href="{% url 'create_event' %}">Create Event</a>
                     </li>
                 </ul>
             </div>

@@ -26,6 +26,7 @@ body {
     transition: color 0.3s ease, background-color 0.3s ease;
     border-radius: 20px;
     padding: 10px 20px;
+    margin: 10px; /* adding spacing between nav buttons */ 
 }
 
 .navbar-nav .nav-link:hover {

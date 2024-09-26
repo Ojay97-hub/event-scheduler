@@ -114,11 +114,12 @@ body {
     background-color: #ff5722; /* Primary button color */
     border-radius: 20px; /* Rounded button */
     transition: background-color 0.3s, transform 0.3s;
+    margin: 10px; 
 }
 
 .btn-primary:hover {
     background-color: #e64a19; /* Darker button on hover */
-    transform: scale(1.05); /* Slightly enlarge button on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */ 
 }
 
 /* Responsive styles */

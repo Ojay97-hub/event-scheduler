@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'django_summernote', 
     'events',
+    'widget_tweaks',
 ]
 
 SITE_ID = 1

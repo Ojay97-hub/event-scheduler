@@ -122,6 +122,9 @@ body {
     transform: scale(1.05); /* Slightly enlarge button on hover */ 
 }
 
+.custom-margin {
+    margin: 10px;
+}
 /* Responsive styles */
 @media (max-width: 768px) {
     .card-title {

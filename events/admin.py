@@ -1,6 +1,10 @@
 from django.contrib import admin
-from .models import Event
+from .models import Event, Registration
 from django_summernote.admin import SummernoteModelAdmin
+
+class RegistrationInline(admin.TabularInline):
+    model = Registration
+    extra = 1 
 
 class EventsAdmin(SummernoteModelAdmin):
 
@@ -11,3 +15,4 @@ class EventsAdmin(SummernoteModelAdmin):
 
 # Register your models here.
 admin.site.register(Event, EventsAdmin)
+admin.site.register(Registration)

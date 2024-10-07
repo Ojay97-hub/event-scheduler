@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.views.generic import TemplateView
-from .models import Event
+from .models import Event, Registration  # Make sure to import the Registration model
 from .forms import EventForm, CustomUserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.models import Group
+from django.contrib import messages
 
 # Create your views here. 
 class EventsList(generic.ListView):
@@ -46,3 +47,22 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'account/signup.html', {'form': form})
+
+# registration view
+def register_for_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            if Registration.objects.filter(user=request.user, event=event).exists():
+                messages.warning(request, 'You are already registered for this event.')
+            elif event.capacity <= event.registrations.count():
+                messages.warning(request, 'This event has reached its capacity.')
+            else:
+                Registration.objects.create(user=request.user, event=event)
+                messages.success(request, 'You have successfully registered for the event!')
+                return redirect('Event_Page')
+        else:
+            messages.warning(request, 'You need to be logged in to register for an event.')
+
+    return render(request, 'events/event_detail.html', {'event': event})

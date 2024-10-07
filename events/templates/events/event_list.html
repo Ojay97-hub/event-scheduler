@@ -17,6 +17,9 @@
                     <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
                     <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
                     <p class="card-text"><strong>Capacity:</strong> {{ event.capacity }} attendees</p>
+                    
+                    <!-- Registration Button -->
+                    <a href="{% url 'event_register' event.id %}" class="btn btn-primary">Register</a>
                 </div>
             </div>
         </div>

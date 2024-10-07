@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>{{ event.title }}</h1>
+    <p><strong>Date:</strong> {{ event.date }}</p>
+    <p><strong>Time:</strong> {{ event.time }}</p>
+    <p><strong>Location:</strong> {{ event.location }}</p>
+    <p><strong>Description:</strong> {{ event.description }}</p>
+    <p><strong>Capacity:</strong> {{ event.capacity }} attendees</p>
+    
+    <!-- Registration Form -->
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+
+    <a href="{% url 'Event_Page' %}" class="btn btn-secondary mt-3">Back to Events</a>
+</div>
+{% endblock %}

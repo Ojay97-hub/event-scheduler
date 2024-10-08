@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 from .models import Event, Registration
 from .forms import EventForm, CustomUserCreationForm
 from django.contrib.auth import login
@@ -22,6 +22,15 @@ class HomeView(TemplateView):
         # Check if the user is in the 'Event Organiser' group
         context['is_event_organiser'] = self.request.user.groups.filter(name='Event Organiser').exists() if self.request.user.is_authenticated else False
         return context
+
+class EventDetailView(DetailView):
+    model = Event
+    template_name = 'events/event_detail.html'
+    context_object_name = 'event'  
+    
+    def get_object(self, queryset=None):
+        # Get the 'id' from the URL and use it to retrieve the object
+        return get_object_or_404(Event, id=self.kwargs['id'])
 
 @login_required
 def create_event(request):

@@ -125,6 +125,42 @@ body {
 .custom-margin {
     margin: 10px;
 }
+
+.btn-warning {
+    color: #000;
+    background-color: #ffc107;
+    border-color: #ffc107;
+    margin: 16px 0;
+}
+
+/* event detail page */
+.card {
+    border-radius: 10px;
+}
+
+.card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 300px;
+    object-fit: cover; 
+}
+
+.btn {
+    border-radius: 5px; 
+}
+
+.card-title {
+    font-size: 2rem; 
+}
+
+.card-text {
+    font-size: 1.2rem;
+}
+
+.text-danger {
+    font-weight: bold;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
     .card-title {

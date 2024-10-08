@@ -1,20 +1,31 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="container mt-5">
-    <h1>{{ event.title }}</h1>
-    <p><strong>Date:</strong> {{ event.date }}</p>
-    <p><strong>Time:</strong> {{ event.time }}</p>
-    <p><strong>Location:</strong> {{ event.location }}</p>
-    <p><strong>Description:</strong> {{ event.description }}</p>
-    <p><strong>Capacity:</strong> {{ event.capacity }} attendees</p>
-    
-    <!-- Registration Form -->
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
+    <div class="card mb-4 shadow-sm">
+        <img src="{% static 'images/generic-event-img.jpg' %}" class="card-img-top" alt="{{ event.title }}">
+        <div class="card-body">
+            <h1 class="card-title">{{ event.title }}</h1>
+            <p class="card-text"><strong>Date:</strong> {{ event.date }}</p>
+            <p class="card-text"><strong>Time:</strong> {{ event.time }}</p>
+            <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
+            <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
+            <p class="card-text"><strong>Capacity:</strong> {{ event.capacity }} attendees</p>
+            
+            <!-- Registration Form -->
+            {% if user.is_authenticated %}
+            <form method="post" class="mb-3">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-lg">Register</button>
+            </form>
+            {% else %}
+            <p class="text-danger">Please log in to register for this event.</p>
+            <a href="{% url 'account_login' %}" class="btn btn-warning btn-lg mb-3">Log In</a>
+            {% endif %}
 
-    <a href="{% url 'Event_Page' %}" class="btn btn-secondary mt-3">Back to Events</a>
+            <a href="{% url 'Event_Page' %}" class="btn btn-secondary btn-lg">Back to Events</a>
+        </div>
+    </div>
 </div>
 {% endblock %}

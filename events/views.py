@@ -58,7 +58,7 @@ def create_event(request):
         else:
             form = EventForm()
 
-        return render(request, 'create_event.html', {'form': form})
+        return render(request, 'events/create_event.html', {'form': form})
 
     # If user is not an event organiser, redirect them or show an error
     else:

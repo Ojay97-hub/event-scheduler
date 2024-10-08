@@ -49,6 +49,13 @@
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
+            <div class="mb-3">
+                <label for="id_category">Category:</label>
+                {{ form.category|add_class:"form-control" }}
+                {% for error in form.category.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
             <button type="submit" class="btn btn-primary">Create Event</button>
         </form>
     </div>

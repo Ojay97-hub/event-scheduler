@@ -5,19 +5,25 @@ from django.contrib.auth.models import User
 class Event(models.Model):
     """
     An event with details such as its title, date, time, location, description, capacity,
-    and associated event types (tags).
-
-    Attributes:
-        id (AutoField): An auto-incremented primary key for identifying the event.
-        title (CharField): The event's title, up to 200 characters long.
-        date (DateField): The date the event is planned for.
-        time (TimeField): The time the event starts.
-        location (CharField): The venue or location of the event, up to 300 characters long.
-        description (TextField): A detailed description of what the event is about.
-        capacity (PositiveIntegerField): The maximum number of attendees allowed.
-        tags (ManyToManyField): A many-to-many relationship with the EventType model, categorizing the event.
+    and associated category.
     """
     
+    CATEGORY_CHOICES = [
+        ('workshop', 'Workshop'),
+        ('conference', 'Conference'),
+        ('webinar', 'Webinar'),
+        ('meetup', 'Meetup'),
+        ('networking', 'Networking'),
+        ('seminar', 'Seminar'),
+        ('concert', 'Concert'),
+        ('festival', 'Festival'),
+        ('sports', 'Sports Event'),
+        ('fundraiser', 'Fundraiser'),
+        ('exhibition', 'Exhibition'),
+        ('class', 'Class'),
+        ('party', 'Party'),
+    ]
+
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
     date = models.DateField()
@@ -25,6 +31,7 @@ class Event(models.Model):
     location = models.CharField(max_length=300)
     description = models.TextField()
     capacity = models.PositiveIntegerField()
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='eventtype')
 
     def __str__(self):
         return self.title

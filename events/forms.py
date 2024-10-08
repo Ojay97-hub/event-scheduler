@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['title', 'date', 'time', 'location', 'description', 'capacity']
+        fields = ['title', 'date', 'time', 'location', 'description', 'capacity', 'category']
 
 # register as event user or event organiser
 class CustomUserCreationForm(UserCreationForm):

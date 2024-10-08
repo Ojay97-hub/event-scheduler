@@ -10,9 +10,20 @@ from django.contrib import messages
 
 # Create your views here. 
 class EventsList(generic.ListView):
-    queryset = Event.objects.all()  # Can add filter queryset to show only published events 
-    # template_name = "events/event_list.html"
-    paginate_by = 6
+    model = Event 
+    template_name = 'events/event_list.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category = self.request.GET.get('category', '')
+        if category:
+            queryset = queryset.filter(category=category)  # Filter by category if provided
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category_choices'] = Event.CATEGORY_CHOICES
+        return context
 
 class HomeView(TemplateView):
     template_name = 'home.html' 
@@ -39,7 +50,10 @@ def create_event(request):
         if request.method == 'POST':
             form = EventForm(request.POST)
             if form.is_valid():
-                form.save()
+                event = form.save(commit=False)
+                event.organiser = request.user
+                event.save()
+                messages.success(request, 'Event created successfully!')
                 return redirect('Event_Page')
         else:
             form = EventForm()
@@ -48,6 +62,7 @@ def create_event(request):
 
     # If user is not an event organiser, redirect them or show an error
     else:
+        messages.error(request, 'You do not have permission to create an event.')
         return redirect('home') 
   
 # Register as event user or event organiser following stackoverflow guidance
@@ -66,12 +81,13 @@ def register(request):
 
             user.groups.add(group)  # Add the user to the selected group
             login(request, user)  # Log in the user
+            messages.success(request, 'Registration successful! You are now logged in.')
             return redirect('home')  # Redirect to home after successful registration
     else:
         form = CustomUserCreationForm()
     return render(request, 'account/signup.html', {'form': form})
 
-# registration view
+# Registration view
 def register_for_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
 
@@ -89,4 +105,3 @@ def register_for_event(request, event_id):
             messages.warning(request, 'You need to be logged in to register for an event.')
 
     return render(request, 'events/event_detail.html', {'event': event})
-

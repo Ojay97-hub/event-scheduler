@@ -2,14 +2,31 @@
 {% load static %}
 
 {% block content %}
-    <!-- Hero Section -->
-    <section class="hero-section text-center bg-light py-5">
-        <div class="container">
-            <h1 class="display-4">Welcome to Eventory</h1>
-            <p class="lead">To access features like browsing events and creating your own, please log in or register as either an Event User or an Event Organiser.</p>
-            <img src="{% static 'images/hero_image.jpg' %}" alt="Eventory Hero" class="img-fluid mt-3">
+<!-- Hero Section -->
+<section class="hero-section text-center bg-light py-5">
+    <div class="container">
+        <h1 class="display-4">Welcome to Eventory</h1>
+        <p class="lead">To access features like browsing events and creating your own, please log in or register as either an Event User or an Event Organiser.</p>
+                <!-- Sign Up and Log In Buttons -->
+        <div class="mt-4">
+         <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg mr-2">Sign Up</a>
+         <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg">Log In</a>
         </div>
-    </section>
+        
+        <img src="{% static 'images/hero_image.jpg' %}" alt="Eventory Hero" class="img-fluid mt-3 mb-4">
+
+        <div class="bg-white rounded shadow-sm p-4">
+            <h2>What We Do</h2>
+            <p>Eventory is your go-to platform for discovering exciting events and creating unforgettable experiences. Whether you're an event enthusiast or an organiser, we aim to connect you with the right opportunities. Explore a wide variety of events, from workshops to concerts, and easily promote your own events to a diverse audience.</p>
+            
+            <h3 class="mt-4">Motto</h3>
+            <p class="font-italic text-primary">"Connecting People, Creating Memories!"</p>
+            
+            <h3 class="mt-4">Mission Statement</h3>
+            <p>At Eventory, our mission is to provide a user-friendly platform that enhances community engagement through events. We strive to foster connections among people by making it easy to discover and create events that resonate with their interests.</p>
+        </div>
+    </div>
+</section>
 
     <!-- Features Section -->
     <section class="features-section py-5 bg-white">

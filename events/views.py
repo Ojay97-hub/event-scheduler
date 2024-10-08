@@ -40,7 +40,7 @@ def create_event(request):
     # If user is not an event organiser, redirect them or show an error
     else:
         return redirect('home') 
-
+  
 # Register as event user or event organiser following stackoverflow guidance
 def register(request):
     if request.method == 'POST':

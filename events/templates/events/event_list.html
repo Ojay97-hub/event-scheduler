@@ -19,7 +19,11 @@
                     <p class="card-text"><strong>Capacity:</strong> {{ event.capacity }} attendees</p>
                     
                     <!-- Registration Button -->
+                    {% if user.is_authenticated %}
                     <a href="{% url 'event_register' event.id %}" class="btn btn-primary">Register</a>
+                    {% else %}
+                    <p class="text-danger">Please log in to register for this event.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

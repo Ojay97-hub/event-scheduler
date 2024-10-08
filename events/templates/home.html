@@ -1,13 +1,13 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
     <!-- Hero Section -->
     <section class="hero-section text-center bg-light py-5">
         <div class="container">
             <h1 class="display-4">Welcome to Eventory</h1>
-            <p class="lead">Discover, Create, and Sign-up for Events around you!</p>
-            <a href="{% url 'Event_Page' %}" class="btn btn-primary btn-lg mt-3">Browse Events</a>
-            <a href="{% url 'create_event' %}" class="btn btn-secondary btn-lg mt-3 custom-margin">Create Event</a>
+            <p class="lead">To access features like browsing events and creating your own, please log in or register as either an Event User or an Event Organiser.</p>
+            <img src="{% static 'images/hero_image.jpg' %}" alt="Eventory Hero" class="img-fluid mt-3">
         </div>
     </section>
 

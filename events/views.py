@@ -1,31 +1,45 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.views.generic import TemplateView
-from .models import Event, Registration  # Make sure to import the Registration model
+from .models import Event, Registration
 from .forms import EventForm, CustomUserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.contrib import messages
 
 # Create your views here. 
 class EventsList(generic.ListView):
     queryset = Event.objects.all()  # Can add filter queryset to show only published events 
-    template_name = "events/event_list.html"
+    # template_name = "events/event_list.html"
     paginate_by = 6
 
 class HomeView(TemplateView):
     template_name = 'home.html' 
 
-def create_event(request):
-    if request.method == 'POST':
-        form = EventForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('Event_Page')
-    else:
-        form = EventForm()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Check if the user is in the 'Event Organiser' group
+        context['is_event_organiser'] = self.request.user.groups.filter(name='Event Organiser').exists() if self.request.user.is_authenticated else False
+        return context
 
-    return render(request, 'create_event.html', {'form': form})
+@login_required
+def create_event(request):
+    # Check if the user is in the 'Event Organiser' group
+    if request.user.groups.filter(name='Event Organiser').exists():
+        if request.method == 'POST':
+            form = EventForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('Event_Page')
+        else:
+            form = EventForm()
+
+        return render(request, 'create_event.html', {'form': form})
+
+    # If user is not an event organiser, redirect them or show an error
+    else:
+        return redirect('home') 
 
 # Register as event user or event organiser following stackoverflow guidance
 def register(request):
@@ -66,3 +80,4 @@ def register_for_event(request, event_id):
             messages.warning(request, 'You need to be logged in to register for an event.')
 
     return render(request, 'events/event_detail.html', {'event': event})
+

@@ -32,7 +32,15 @@ class Event(models.Model):
     description = models.TextField()
     capacity = models.PositiveIntegerField()
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='eventtype')
+    price = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True) 
+    free = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        # Free events == no price
+        if self.free:
+            self.price = None
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return self.title
 

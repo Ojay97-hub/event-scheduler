@@ -30,7 +30,13 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Check if the user is in the 'Event Organiser' group
+        if self.request.user.is_authenticated:
+        # Check if the user is an Event Organiser
+            context['is_event_organiser'] = self.request.user.groups.filter(name='Event Organiser').exists()
+        else:
+            context['is_event_organiser'] = False  # Default to False if not authenticated
+        return context
+        
         context['is_event_organiser'] = self.request.user.groups.filter(name='Event Organiser').exists() if self.request.user.is_authenticated else False
         return context
 

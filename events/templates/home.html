@@ -6,21 +6,39 @@
 <section class="hero-section text-center bg-light py-5">
     <div class="container">
         <h1 class="display-4">Welcome to Eventory</h1>
-        <p class="lead">To access features like browsing events and creating your own, please log in or register as either an Event User or an Event Organiser.</p>
-                <!-- Sign Up and Log In Buttons -->
+
+        {% if user.is_authenticated %}
+        <!-- Check if user is an Event Organiser -->
+        {% if is_event_organiser %}
+            <p class="lead">You are now logged in as an Event Organiser.</p>
+            <!-- Create events CTA -->
+            <a href="{% url 'create_event' %}" class="btn btn-primary btn-lg mr-2">Create Event</a>
+        {% else %}
+            <!-- Else is Event User -->
+            <p class="lead">You are now logged in as an Event User.</p>
+            <!-- Browse Events CTA -->
+            <a href="{% url 'Event_Page' %}" class="btn btn-primary btn-lg mr-2">Browse Events</a>
+        {% endif %}
+                
+        <!-- Sign Up and Log In Buttons -->
         <div class="mt-4">
-         <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg mr-2">Sign Up</a>
-         <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg">Log In</a>
+                <a href="{% url 'account_logout' %}" class="btn btn-secondary btn-lg">Logout</a>
+            {% else %}
+            <!-- Message for unauthenticated users -->
+            <p class="lead">In order to use our features, please either sign up or log in!</p>
+                <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg mr-2">Sign Up</a>
+                <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg">Log In</a>
+            {% endif %}
         </div>
         
-        <img src="{% static 'images/hero_image.jpg' %}" alt="Eventory Hero" class="img-fluid mt-3 mb-4">
+        <img src="{% static 'images/hero_image.jpg' %}" alt="Eventory Hero" class="img-fluid mt-3 mb-4 rounded">
 
         <div class="bg-white rounded shadow-sm p-4">
             <h2>What We Do</h2>
             <p>Eventory is your go-to platform for discovering exciting events and creating unforgettable experiences. Whether you're an event enthusiast or an organiser, we aim to connect you with the right opportunities. Explore a wide variety of events, from workshops to concerts, and easily promote your own events to a diverse audience.</p>
             
-            <h3 class="mt-4">Motto</h3>
-            <p class="font-italic text-primary">"Connecting People, Creating Memories!"</p>
+            <h3 class="mt-4">Our Ethos</h3>
+            <p class="font-italic text-primary">"Connect People, Create Memories!"</p>
             
             <h3 class="mt-4">Mission Statement</h3>
             <p>At Eventory, our mission is to provide a user-friendly platform that enhances community engagement through events. We strive to foster connections among people by making it easy to discover and create events that resonate with their interests.</p>

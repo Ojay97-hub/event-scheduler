@@ -8,16 +8,40 @@
     <h1 class="text-center mb-4">Sign-up for Events Below!</h1>
 
     <div class="mb-4">
-        <form method="GET" action="">
-            <label for="category-filter">Filter by Category:</label>
-            <select id="category-filter" name="category" class="form-select mb-3">
-                <option value="">All Categories</option>
-                {% for category in category_choices %}
-                <option value="{{ category.0 }}" {% if request.GET.category == category.0 %}selected{% endif %}>{{ category.1 }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-primary">Filter</button>
-        </form>
+        <button class="btn btn-secondary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel" aria-expanded="false" aria-controls="filterPanel">
+            Toggle Filters
+        </button>
+        <div class="collapse" id="filterPanel">
+            <form method="GET" action="" class="border p-3 bg-light">
+                <div class="mb-3">
+                    <label for="category-filter">Filter by Category:</label>
+                    <select id="category-filter" name="category" class="form-select mb-3">
+                        <option value="">All Categories</option>
+                        {% for category in category_choices %}
+                        <option value="{{ category.0 }}" {% if request.GET.category == category.0 %}selected{% endif %}>{{ category.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price-min">Price Range:</label>
+                    <div class="d-flex">
+                        <input type="number" id="price-min" name="price_min" class="form-control me-2" placeholder="Min" value="{{ request.GET.price_min }}">
+                        <input type="number" id="price-max" name="price_max" class="form-control" placeholder="Max" value="{{ request.GET.price_max }}">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="date-start">Date Range:</label>
+                    <div class="d-flex">
+                        <input type="date" id="date-start" name="date_start" class="form-control me-2" value="{{ request.GET.date_start }}">
+                        <input type="date" id="date-end" name="date_end" class="form-control" value="{{ request.GET.date_end }}">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+        </div>
     </div>
 
     <div class="row">

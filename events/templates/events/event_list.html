@@ -32,6 +32,7 @@
                     <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
                     <p class="card-text"><strong>Category:</strong> {{ event.category }}</p>
                     <p class="card-text"><strong>Capacity:</strong> {{ event.capacity }} attendees</p>
+                    <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
                     
                     <!-- Registration Button -->
                     {% if user.is_authenticated %}

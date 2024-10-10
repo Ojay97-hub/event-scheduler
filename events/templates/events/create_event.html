@@ -56,6 +56,16 @@
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
+            <div class="mb-3">
+                <label for="id_price">Price:</label>
+                {{ form.price|add_class:"form-control" }}
+                {% for error in form.price.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3 form-check">
+                {{ form.free }} <label class="form-check-label" for="id_free">Is this event free?</label>
+            </div>
             <button type="submit" class="btn btn-primary">Create Event</button>
         </form>
     </div>

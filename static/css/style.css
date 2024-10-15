@@ -1,10 +1,11 @@
-/* styles.css */
+/* google fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* Body styles */
 body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #eaf4ff; /* Light blue background for a fresh look */
-    color: #333; /* Dark text for contrast */
+    font-family: 'Inter', sans-serif;
+    background-color: #eaf4ff; 
+    color: #333; 
 }
 
 /* Navbar styles */
@@ -39,6 +40,15 @@ body {
     color: #fff; /* White text */
 }
 
+/* important overrides */
+.bg-primary {
+    background-color: #4c5665 !important;
+}
+
+.text-primary {
+    color: #055160 !important; 
+}
+
 /* Card styles */
 .card {
     border: none; /* Remove default border */
@@ -66,24 +76,24 @@ body {
 /* Pagination styles */
 .pagination {
     margin-top: 20px;
-    justify-content: center; /* Center pagination */
+    justify-content: center; 
 }
 
 .pagination .page-item.active .page-link {
-    background-color: #ff5722; /* Active page color */
-    border-color: #ff5722; /* Border color */
+    background-color: #ff5722;
+    border-color: #ff5722; 
 }
 
 .pagination .page-link {
-    color: #ff5722; /* Page link color */
-    border-radius: 30%; /* Round pagination */
-    padding: 10px 15px; /* Increased padding */
+    color: #ff5722;
+    border-radius: 30%; 
+    padding: 10px 15px; 
     transition: background-color 0.3s;
-    margin: 10px /* add spacing between buttons */
+    margin: 10px 
 }
 
 .pagination .page-link:hover {
-    background-color: #ffe0b2; /* Light hover color */
+    background-color: #ffe0b2;
     color: #ff5722; /* Text color on hover */
 }
 
@@ -112,14 +122,16 @@ body {
 /* Button styles */
 .btn-primary {
     background-color: #ff5722; /* Primary button color */
+    border-color: #ff5722;
     border-radius: 20px; /* Rounded button */
     transition: background-color 0.3s, transform 0.3s;
     margin: 10px; 
 }
 
 .btn-primary:hover {
-    background-color: #e64a19; /* Darker button on hover */
-    transform: scale(1.05); /* Slightly enlarge button on hover */ 
+    background-color: #e64a19;
+    border-color: #e64a19;
+    transform: scale(1.05);
 }
 
 .custom-margin {
@@ -131,6 +143,12 @@ body {
     background-color: #ffc107;
     border-color: #ffc107;
     margin: 16px 0;
+}
+
+.btn-info {
+    color: #fff;
+    background-color: #4c5665;
+    border-color: #4c5665;
 }
 
 /* event detail page */

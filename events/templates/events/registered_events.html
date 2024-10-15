@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>My Registered Events</h2>
+    <ul class="list-group">
+        {% for registration in registered_events %}
+        <li class="list-group-item">
+            <h4>{{ registration.event.title }}</h4>
+            <p><strong>Date:</strong> {{ registration.event.date }}</p>
+            <p><strong>Location:</strong> {{ registration.event.location }}</p>
+            <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-info">View Event</a>
+        </li>
+        {% empty %}
+        <p>You have not registered for any events yet.</p>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

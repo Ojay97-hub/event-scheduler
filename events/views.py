@@ -26,18 +26,17 @@ class EventsList(generic.ListView):
         return context
 
 class HomeView(TemplateView):
-    template_name = 'home.html' 
+    template_name = 'home.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
-        # Check if the user is an Event Organiser
+            # Check if the user is an Event Organiser or Event User
             context['is_event_organiser'] = self.request.user.groups.filter(name='Event Organiser').exists()
+            context['is_event_user'] = self.request.user.groups.filter(name='Event User').exists()
         else:
-            context['is_event_organiser'] = False  # Default to False if not authenticated
-        return context
-        
-        context['is_event_organiser'] = self.request.user.groups.filter(name='Event Organiser').exists() if self.request.user.is_authenticated else False
+            context['is_event_organiser'] = False
+            context['is_event_user'] = False
         return context
 
 class EventDetailView(DetailView):
@@ -111,3 +110,10 @@ def register_for_event(request, event_id):
             messages.warning(request, 'You need to be logged in to register for an event.')
 
     return render(request, 'events/event_detail.html', {'event': event})
+
+@login_required
+def registered_events(request):
+    # Get all events the user is registered for
+    registered_events = Registration.objects.filter(user=request.user)
+    
+    return render(request, 'events/registered_events.html', {'registered_events': registered_events})

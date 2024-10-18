@@ -3,110 +3,110 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-section text-center bg-light py-5">
-    <div class="container">
-        <h1 class="display-4">Welcome to <strong>Eventory</strong></h1>
+    <section class="hero-section text-center bg-light py-5">
+        <div class="container">
+            <h1 class="display-4">Welcome to <strong>Eventory</strong></h1>
 
-        {% if user.is_authenticated %}
-        <!-- Check if user is an Event Organiser -->
-        {% if is_event_organiser %}
-            <p class="lead">You are now logged in as an Event Organiser.</p>
-            <!-- Create events CTA -->
-            <a href="{% url 'create_event' %}" class="btn btn-primary btn-lg mr-2">Create Event</a>
-        {% else %}
-            <!-- Else is Event User -->
-            <p class="lead">You are now logged in as an Event User.</p>
-            <!-- Browse Events CTA -->
-            <a href="{% url 'Event_Page' %}" class="btn btn-primary btn-lg mr-2">Browse Events</a>
-        {% endif %}
-                
-        <!-- Sign Up and Log In Buttons -->
-        <div class="mt-4">
-                <a href="{% url 'account_logout' %}" class="btn btn-secondary btn-lg">Logout</a>
+            {% if user.is_authenticated %}
+            <!-- Check if user is an Event Organiser -->
+            {% if is_event_organiser %}
+                <p class="lead">You are now logged in as an Event Organiser.</p>
+                <!-- Create events CTA -->
+                <a href="{% url 'create_event' %}" class="btn btn-primary btn-lg mr-2">Create Event</a>
             {% else %}
-            <!-- Message for unauthenticated users -->
-            <p class="lead">In order to use our features, please either sign up or log in!</p>
-                <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg mr-2">Sign Up</a>
-                <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg">Log In</a>
+                <!-- Else is Event User -->
+                <p class="lead">You are now logged in as an Event User.</p>
+                <!-- Browse Events CTA -->
+                <a href="{% url 'Event_Page' %}" class="btn btn-primary btn-lg mr-2">Browse Events</a>
             {% endif %}
-        </div>
-        
-        <img src="{% static 'images/hero_image.jpg' %}" alt="Eventory Hero" class="img-fluid mt-3 mb-4 rounded">
-
-        <div class="bg-white rounded shadow-sm p-4">
-            <h2>What We Do</h2>
-            <p>Eventory is your go-to platform for discovering exciting events and creating unforgettable experiences. Whether you're an event enthusiast or an organiser, we aim to connect you with the right opportunities. Explore a wide variety of events, from workshops to concerts, and easily promote your own events to a diverse audience.</p>
+                    
+            <!-- Sign Up and Log In Buttons -->
+            <div class="mt-4">
+                    <a href="{% url 'account_logout' %}" class="btn btn-secondary btn-lg">Logout</a>
+                {% else %}
+                <!-- Message for unauthenticated users -->
+                <p class="lead">In order to use our features, please either sign up or log in!</p>
+                    <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg mr-2">Sign Up</a>
+                    <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg">Log In</a>
+                {% endif %}
+            </div>
             
-            <h3 class="mt-4">Our Ethos</h3>
-            <p class="font-italic text-primary">"Connect People, Create Memories!"</p>
-            
-            <h3 class="mt-4">Mission Statement</h3>
-            <p>At Eventory, our mission is to provide a user-friendly platform that enhances community engagement through events. We strive to foster connections among people by making it easy to discover and create events that resonate with their interests.</p>
-        </div>
-    </div>
-</section>
+            <img src="{% static 'images/hero_image.jpg' %}" alt="Eventory Hero" class="img-fluid mt-3 mb-4 rounded">
 
-    <!-- Features Section -->
-    <section class="features-section py-5 bg-white">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 text-center mb-4">
-                    <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
-                    <h3>Find Events</h3>
-                    <p>Browse through a wide range of events and choose the one that fits you best.</p>
-                </div>
-                <div class="col-md-4 text-center mb-4">
-                    <i class="fas fa-pencil-alt fa-3x text-primary mb-3"></i>
-                    <h3>Create Events</h3>
-                    <p>Create and promote your own events in just a few clicks.</p>
-                </div>
-                <div class="col-md-4 text-center mb-4">
-                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                    <h3>Join the Community</h3>
-                    <p>Connect with people who share the same interests as you by attending events.</p>
-                </div>
+            <div class="bg-white rounded shadow-sm p-4">
+                <h2>What We Do</h2>
+                <p>Eventory is your go-to platform for discovering exciting events and creating unforgettable experiences. Whether you're an event enthusiast or an organiser, we aim to connect you with the right opportunities. Explore a wide variety of events, from workshops to concerts, and easily promote your own events to a diverse audience.</p>
+                
+                <h3 class="mt-4">Our Ethos</h3>
+                <p class="font-italic text-primary">"Connect People, Create Memories!"</p>
+                
+                <h3 class="mt-4">Mission Statement</h3>
+                <p>At Eventory, our mission is to provide a user-friendly platform that enhances community engagement through events. We strive to foster connections among people by making it easy to discover and create events that resonate with their interests.</p>
             </div>
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="testimonials-section py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center mb-5">What People Are Saying</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <p class="card-text">"Eventory helped me find the perfect events in my area!"</p>
-                            <footer class="blockquote-footer">Jane Doe</footer>
-                        </div>
+        <!-- Features Section -->
+        <section class="features-section py-5 bg-white">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-4">
+                        <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
+                        <h3>Find Events</h3>
+                        <p>Browse through a wide range of events and choose the one that fits you best.</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-4">
+                        <i class="fas fa-pencil-alt fa-3x text-primary mb-3"></i>
+                        <h3>Create Events</h3>
+                        <p>Create and promote your own events in just a few clicks.</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-4">
+                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <h3>Join the Community</h3>
+                        <p>Connect with people who share the same interests as you by attending events.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <p class="card-text">"Creating events has never been easier!"</p>
-                            <footer class="blockquote-footer">John Smith</footer>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials-section py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center mb-5">What People Are Saying</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <p class="card-text">"Eventory helped me find the perfect events in my area!"</p>
+                                <footer class="blockquote-footer">Jane Doe</footer>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <p class="card-text">"Great platform to stay connected with local happenings."</p>
-                            <footer class="blockquote-footer">Alice Brown</footer>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <p class="card-text">"Creating events has never been easier!"</p>
+                                <footer class="blockquote-footer">John Smith</footer>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <p class="card-text">"Great platform to stay connected with local happenings."</p>
+                                <footer class="blockquote-footer">Alice Brown</footer>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Call to Action Section -->
-    <section class="cta-section text-center bg-primary text-white py-5">
-        <div class="container">
-            <h2>Start Exploring Events Today!</h2>
-            <a href="{% url 'Event_Page' %}" class="btn btn-light btn-lg mt-3">View Events</a>
-        </div>
-    </section>
+        <!-- Call to Action Section -->
+        <section class="cta-section text-center bg-primary text-white py-5 container">
+            <div>
+                <h2>Start Exploring Events Today!</h2>
+                <a href="{% url 'Event_Page' %}" class="btn btn-light btn-lg mt-3">View Events</a>
+            </div>
+        </section>
 {% endblock %}

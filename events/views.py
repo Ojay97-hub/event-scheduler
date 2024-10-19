@@ -107,3 +107,17 @@ def registered_events(request):
     registered_events = Registration.objects.filter(user=request.user)
     
     return render(request, 'events/registered_events.html', {'registered_events': registered_events})
+
+# Unregister from an event
+@login_required
+def unregister_from_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    registration = Registration.objects.filter(user=request.user, event=event)
+
+    if registration.exists():
+        registration.delete()
+        messages.success(request, 'You have successfully unregistered from the event.')
+    else:
+        messages.warning(request, 'You are not registered for this event.')
+
+    return redirect('registered_events')

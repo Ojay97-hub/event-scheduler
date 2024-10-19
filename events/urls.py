@@ -10,4 +10,5 @@ urlpatterns = [
     path('register/', register, name='register'),  # Register
     path('event/register/<int:event_id>/', register_for_event, name='event_register'),  # Event registration
     path('my-events/', registered_events, name='registered_events'),  # View for registered events
+    path('unregister/<int:event_id>/', views.unregister_from_event, name='unregister_from_event'), # Unregister an event
 ]

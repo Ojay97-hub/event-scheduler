@@ -2,33 +2,37 @@
 {% load static %}
 
 {% block content %}
+
 <!-- Hero Section -->
     <section class="hero-section text-center bg-light py-5">
         <div class="container">
             <h1 class="display-4">Welcome to <strong>Eventory</strong></h1>
 
-            <!-- Check if user is an Event Organiser -->
-            {% if is_event_organiser %}
-                <p class="lead">You are now logged in as an Event Organiser.</p>
-                <!-- Create events CTA -->
-                <a href="{% url 'create_event' %}" class="btn btn-primary btn-lg mr-2">Create Event</a>
-            {% else %}
-                <!-- Else is Event User -->
-                <p class="lead">You are now logged in as an Event User.</p>
-                <!-- Browse Events CTA -->
-                <a href="{% url 'Event_Page' %}" class="btn btn-primary btn-lg mr-2">Browse Events</a>
-            {% endif %}
-                    
-            <!-- Sign Up and Log In Buttons -->
-            <div class="mt-4">
+            <div id="authentication">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'account_logout' %}" class="btn btn-secondary btn-lg">Logout</a>
+                <!-- Check if user is an Event Organiser -->
+                {% if is_event_organiser %}
+                    <p class="lead">You are now logged in as an Event Organiser.</p>
+                    <!-- Create events CTA -->
+                    <a href="{% url 'create_event' %}" class="btn btn-primary btn-lg mr-2">Create Event</a>
                 {% else %}
-                <!-- Message for unauthenticated users -->
-                <p class="lead">In order to use our features, please either sign up or log in!</p>
-                    <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg mr-2">Sign Up</a>
-                    <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg">Log In</a>
+                    <!-- Else is Event User -->
+                    <p class="lead">You are now logged in as an Event User.</p>
+                    <!-- Browse Events CTA -->
+                    <a href="{% url 'Event_Page' %}" class="btn btn-primary btn-lg mr-2">Browse Events</a>
                 {% endif %}
+                        
+                <!-- Sign Up and Log In Buttons -->
+                <div class="mt-4">
+                        <a href="{% url 'account_logout' %}" class="btn btn-secondary btn-lg">Logout</a>
+                    {% else %}
+                    <!-- Message for unauthenticated users -->
+                    <p class="lead">In order to use our features, please either sign up or log in!</p>
+                        <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg mr-2">Sign Up</a>
+                        <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg">Log In</a>
+                    {% endif %}
+                </div>
+                
             </div>
             
             <img src="{% static 'images/hero_image.jpg' %}" alt="Eventory Hero" class="img-fluid mt-3 mb-4 rounded">
@@ -47,7 +51,7 @@
     </section>
 
         <!-- Features Section -->
-        <section class="features-section py-5 bg-white">
+        <section class="features-section py-5 bg-white container rounded">
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 text-center mb-4">
@@ -103,7 +107,7 @@
         </section>
 
         <!-- Call to Action Section -->
-        <section class="cta-section text-center bg-primary text-white py-5 container">
+        <section class="cta-section text-center bg-primary text-white py-5 container rounded mb-3">
             <div>
                 <h2>Start Exploring Events Today!</h2>
                 <a href="{% url 'Event_Page' %}" class="btn btn-light btn-lg mt-3">View Events</a>

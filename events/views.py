@@ -30,13 +30,6 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.user.is_authenticated:
-            # Check if the user is an Event Organiser or Event User
-            context['is_event_organiser'] = self.request.user.groups.filter(name='Event Organiser').exists()
-            context['is_event_user'] = self.request.user.groups.filter(name='Event User').exists()
-        else:
-            context['is_event_organiser'] = False
-            context['is_event_user'] = False
         return context
 
 class EventDetailView(DetailView):
@@ -50,7 +43,7 @@ class EventDetailView(DetailView):
 
 @login_required
 def create_event(request):
-    # Check if the user is in the 'Event Organiser' group
+    # This check is still required to enforce permission for Event Organisers
     if request.user.groups.filter(name='Event Organiser').exists():
         if request.method == 'POST':
             form = EventForm(request.POST)
@@ -65,12 +58,11 @@ def create_event(request):
 
         return render(request, 'events/create_event.html', {'form': form})
 
-    # If user is not an event organiser, redirect them or show an error
     else:
         messages.error(request, 'You do not have permission to create an event.')
         return redirect('home') 
-  
-# Register as event user or event organiser following stackoverflow guidance
+
+# Register as event user or event organiser
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -92,22 +84,20 @@ def register(request):
         form = CustomUserCreationForm()
     return render(request, 'account/signup.html', {'form': form})
 
-# Registration view
+# Registration view for events
+@login_required
 def register_for_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
 
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            if Registration.objects.filter(user=request.user, event=event).exists():
-                messages.warning(request, 'You are already registered for this event.')
-            elif event.capacity <= event.registrations.count():
-                messages.warning(request, 'This event has reached its capacity.')
-            else:
-                Registration.objects.create(user=request.user, event=event)
-                messages.success(request, 'You have successfully registered for the event!')
-                return redirect('Event_Page')
+        if Registration.objects.filter(user=request.user, event=event).exists():
+            messages.warning(request, 'You are already registered for this event.')
+        elif event.capacity <= event.registrations.count():
+            messages.warning(request, 'This event has reached its capacity.')
         else:
-            messages.warning(request, 'You need to be logged in to register for an event.')
+            Registration.objects.create(user=request.user, event=event)
+            messages.success(request, 'You have successfully registered for the event!')
+            return redirect('Event_Page')
 
     return render(request, 'events/event_detail.html', {'event': event})
 

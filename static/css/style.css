@@ -8,6 +8,15 @@ body {
     color: #333; 
 }
 
+/* important overrides */
+.bg-primary {
+    background-color: #4c5665 !important;
+}
+
+.text-primary {
+    color: #055160 !important; 
+}
+
 /* Navbar styles */
 .navbar {
     background-color: #ffffff; /* Clean white background */
@@ -40,15 +49,6 @@ body {
     color: #fff; /* White text */
 }
 
-/* important overrides */
-.bg-primary {
-    background-color: #4c5665 !important;
-}
-
-.text-primary {
-    color: #055160 !important; 
-}
-
 /* Card styles */
 .card {
     border: none; /* Remove default border */
@@ -71,30 +71,6 @@ body {
 .card-text {
     font-size: 1rem; /* Standard text size */
     margin-bottom: 15px; /* Add space between paragraphs */
-}
-
-/* Pagination styles */
-.pagination {
-    margin-top: 20px;
-    justify-content: center; 
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #ff5722;
-    border-color: #ff5722; 
-}
-
-.pagination .page-link {
-    color: #ff5722;
-    border-radius: 30%; 
-    padding: 10px 15px; 
-    transition: background-color 0.3s;
-    margin: 10px 
-}
-
-.pagination .page-link:hover {
-    background-color: #ffe0b2;
-    color: #ff5722; /* Text color on hover */
 }
 
 /* Footer styles */

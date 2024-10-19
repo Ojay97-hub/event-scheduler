@@ -7,7 +7,6 @@
         <div class="container">
             <h1 class="display-4">Welcome to <strong>Eventory</strong></h1>
 
-            {% if user.is_authenticated %}
             <!-- Check if user is an Event Organiser -->
             {% if is_event_organiser %}
                 <p class="lead">You are now logged in as an Event Organiser.</p>
@@ -22,6 +21,7 @@
                     
             <!-- Sign Up and Log In Buttons -->
             <div class="mt-4">
+                {% if user.is_authenticated %}
                     <a href="{% url 'account_logout' %}" class="btn btn-secondary btn-lg">Logout</a>
                 {% else %}
                 <!-- Message for unauthenticated users -->

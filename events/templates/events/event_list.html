@@ -22,7 +22,7 @@
                         {% endfor %}
                     </select>
                 </div>
-
+            
                 <div class="mb-3">
                     <label for="price-min">Price Range:</label>
                     <div class="d-flex">
@@ -30,7 +30,7 @@
                         <input type="number" id="price-max" name="price_max" class="form-control" placeholder="Max" value="{{ request.GET.price_max }}">
                     </div>
                 </div>
-
+            
                 <div class="mb-3">
                     <label for="date-start">Date Range:</label>
                     <div class="d-flex">
@@ -38,7 +38,7 @@
                         <input type="date" id="date-end" name="date_end" class="form-control" value="{{ request.GET.date_end }}">
                     </div>
                 </div>
-
+            
                 <button type="submit" class="btn btn-primary">Filter</button>
             </form>
         </div>

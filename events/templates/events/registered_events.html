@@ -6,7 +6,7 @@
     {% if registered_events %}
     <div class="row">
         {% for registration in registered_events %}
-        <div class="col-lg-3 col-md-6 mb-4">
+        <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
                 <div class="card-body">
                     <h5 class="card-title">{{ registration.event.title }}</h5>
@@ -17,7 +17,7 @@
                     <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-info">View Event</a>
                     <form method="POST" action="{% url 'unregister_from_event' registration.event.id %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Unregister</button>
+                        <button type="submit" class="btn btn-danger">Cancel</button>
                     </form>
                 </div>
             </div>

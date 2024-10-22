@@ -16,9 +16,34 @@ class EventsList(generic.ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         category = self.request.GET.get('category', '')
+        date_start = self.request.GET.get('date_start', '')
+        date_end = self.request.GET.get('date_end', '')
+        price_min = self.request.GET.get('price_min', '')
+        price_max = self.request.GET.get('price_max', '')
+       
+        # filter by category
         if category:
             queryset = queryset.filter(category=category)  # Filter by category if provided
-        return queryset
+        # filter by price
+        if price_min:
+            try:
+                queryset = queryset.filter(price__gte=float(price_min))
+            except ValueError:
+                pass
+        if price_max:
+            try:
+                queryset = queryset.filter(price__lte=float(price_max))
+            except ValueError:
+                pass 
+        # filter by dates
+        if date_start:
+            queryset = queryset.filter(date__gte=date_start)  # Filter for events on or after the start date
+        if date_end:
+            queryset = queryset.filter(date__lte=date_end)  # Filter for events on or before the end date
+        
+        return queryset.distinct()
+
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

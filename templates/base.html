@@ -51,7 +51,7 @@
                     <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'Event_Page' %}active{% endif %}" href="{% url 'Event_Page' %}">Events</a> 
+                    <a class="nav-link {% if request.resolver_match.url_name == 'Event_List' %}active{% endif %}" href="{% url 'Event_List' %}">Events</a> 
                 </li>
                 {% if is_event_organiser %}
                 <li class="nav-item">

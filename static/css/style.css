@@ -166,3 +166,10 @@ body {
         padding: 8px 15px; /* Smaller padding on mobile */
     }
 }
+
+/* authentication login message */
+@media (max-width: 1165px) {
+    .authentication {
+        display: none; 
+    }
+}

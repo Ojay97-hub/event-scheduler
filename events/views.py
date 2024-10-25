@@ -21,6 +21,8 @@ class EventsList(generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        today = timezone.now().date()  # Current date
+        queryset = queryset.filter(date__gte=today) # Filter out past events
         category = self.request.GET.get('category', '')
         date_start = self.request.GET.get('date_start', '')
         date_end = self.request.GET.get('date_end', '')

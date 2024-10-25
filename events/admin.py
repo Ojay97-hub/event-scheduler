@@ -8,7 +8,7 @@ class RegistrationInline(admin.TabularInline):
 
 class EventsAdmin(SummernoteModelAdmin):
 
-    list_display = ('title', 'description','date', 'time', 'location', 'capacity', 'category', 'price', 'free')
+    list_display = ('title', 'description','date', 'time', 'start_date', 'location', 'capacity', 'category', 'price', 'free')
     search_fields = ['title', 'location', 'description']
     list_filter = ('date', 'location')
     summernote_fields = ('description',)

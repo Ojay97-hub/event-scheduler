@@ -9,6 +9,10 @@ from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+# ordering by date
+from django.utils import timezone
+from datetime import datetime
+
 
 # Create your views here. 
 class EventsList(generic.ListView):
@@ -46,8 +50,12 @@ class EventsList(generic.ListView):
             queryset = queryset.filter(date__gte=date_start)  # Filter for events on or after the start date
         if date_end:
             queryset = queryset.filter(date__lte=date_end)  # Filter for events on or before the end date
+
+        # Combining date and time for ordering
+        for event in queryset:
+            event.start_date = datetime.combine(event.date, event.time)
         
-        return queryset.distinct()
+        return queryset.order_by('start_date').distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,9 +86,10 @@ def create_event(request):
             if form.is_valid():
                 event = form.save(commit=False)
                 event.organiser = request.user
+                event.start_date = datetime.combine(event.date, event.time)
                 event.save()
                 messages.success(request, 'Event created successfully!')
-                return redirect('Event_Page')
+                return redirect('Event_List')
         else:
             form = EventForm()
 
@@ -165,4 +174,16 @@ def registered_events(request):
     # Get all events the user is registered for
     registered_events = Registration.objects.filter(user=request.user)
     
-    return render(request, 'events/registered_events.html', {'registered_events': registered_events})
+    # Get current date and time
+    now = timezone.now()
+
+    # Separate into upcoming and past events
+    upcoming_events = [registration for registration in registered_events if registration.event.date >= now.date()]
+    past_events = [registration for registration in registered_events if registration.event.date < now.date()]
+
+    context = {
+        'upcoming_events': upcoming_events,
+        'past_events': past_events,
+    }
+    
+    return render(request, 'events/registered_events.html', context)

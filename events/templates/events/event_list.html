@@ -55,8 +55,7 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h2 class="card-title">{{ event.title }}</h2>
-                    <p class="card-text"><strong>Date:</strong> {{ event.date }}</p>
-                    <p class="card-text"><strong>Time:</strong> {{ event.time }}</p>
+                    <p class="card-text"><strong>Start Date:</strong> {{ event.start_date|date:"F j, Y, g:i a" }}</p>
                     <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
                     <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
                     <p class="card-text"><strong>Category:</strong> {{ event.category }}</p>

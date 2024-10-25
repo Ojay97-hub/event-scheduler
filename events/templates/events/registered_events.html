@@ -3,9 +3,11 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">My Registered Events</h2>
-    {% if registered_events %}
+
+    <h3>Upcoming Events</h3>
+    {% if upcoming_events %}
     <div class="row">
-        {% for registration in registered_events %}
+        {% for registration in upcoming_events %}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
                 <div class="card-body">
@@ -25,7 +27,29 @@
         {% endfor %}
     </div>
     {% else %}
-    <p>You have not registered for any events yet.</p>
+    <p>You have no upcoming events.</p>
+    {% endif %}
+
+    <h3 class="mt-5">Past Events</h3>
+    {% if past_events %}
+    <div class="row">
+        {% for registration in past_events %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ registration.event.title }}</h5>
+                    <p class="card-text"><strong>Date:</strong> {{ registration.event.date }}</p>
+                    <p class="card-text"><strong>Location:</strong> {{ registration.event.location }}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-info">View Event</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>You have no past events.</p>
     {% endif %}
 </div>
 {% endblock %}

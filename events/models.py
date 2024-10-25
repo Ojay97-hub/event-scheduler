@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User 
+from django.utils import timezone
+from datetime import datetime
 
 # Create your models here.
 class Event(models.Model):
@@ -28,6 +30,7 @@ class Event(models.Model):
     title = models.CharField(max_length=200)
     date = models.DateField()
     time = models.TimeField()
+    start_date = models.DateTimeField(default=timezone.now, editable=False) 
     location = models.CharField(max_length=300)
     description = models.TextField()
     capacity = models.PositiveIntegerField()
@@ -36,6 +39,8 @@ class Event(models.Model):
     free = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
+        # combining time and date for start 
+        self.start_date = timezone.make_aware(datetime.combine(self.date, self.time))
         # Free events == no price
         if self.free:
             self.price = None

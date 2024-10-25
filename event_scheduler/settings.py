@@ -37,6 +37,8 @@ ALLOWED_HOSTS = [
     '.herokuapp.com',
 ]
 
+# email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Application definition
 

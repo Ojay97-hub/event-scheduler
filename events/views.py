@@ -20,6 +20,7 @@ class EventsList(generic.ListView):
         date_end = self.request.GET.get('date_end', '')
         price_min = self.request.GET.get('price_min', '')
         price_max = self.request.GET.get('price_max', '')
+        free_only = self.request.GET.get('free', '')
        
         # filter by category
         if category:
@@ -35,6 +36,9 @@ class EventsList(generic.ListView):
                 queryset = queryset.filter(price__lte=float(price_max))
             except ValueError:
                 pass 
+        # filter by free
+        if free_only:
+            queryset = queryset.filter(price__isnull=True)
         # filter by dates
         if date_start:
             queryset = queryset.filter(date__gte=date_start)  # Filter for events on or after the start date
@@ -122,7 +126,7 @@ def register_for_event(request, event_id):
         else:
             Registration.objects.create(user=request.user, event=event)
             messages.success(request, 'You have successfully registered for the event!')
-            return redirect('Event_Page')
+            return redirect('Event_List')
 
     return render(request, 'events/event_detail.html', {'event': event})
 

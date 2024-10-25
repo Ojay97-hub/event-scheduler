@@ -30,6 +30,11 @@
                         <input type="number" id="price-max" name="price_max" class="form-control" placeholder="Max" value="{{ request.GET.price_max }}">
                     </div>
                 </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="free-events" name="free" {% if request.GET.free %}checked{% endif %}>
+                    <label class="form-check-label" for="free-events">Free Events</label>
+                </div>
             
                 <div class="mb-3">
                     <label for="date-start">Date Range:</label>

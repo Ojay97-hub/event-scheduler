@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Event(models.Model):
     """
-    An event with details such as its title, date, time, location, description, capacity,
+    An event with details such as its title, date, time, location, description, capacity, price/free,
     and associated category.
     """
     

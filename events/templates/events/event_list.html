@@ -2,8 +2,6 @@
 {% load static %}
 
 {% block content %}
-
-<!-- Event List content starts here -->
 <div class="container mt-5">
     <h1 class="text-center mb-4">Sign-up for Events Below!</h1>
 
@@ -22,7 +20,7 @@
                         {% endfor %}
                     </select>
                 </div>
-            
+                
                 <div class="mb-3">
                     <label for="price-min">Price Range:</label>
                     <div class="d-flex">
@@ -35,7 +33,7 @@
                     <input type="checkbox" class="form-check-input" id="free-events" name="free" {% if request.GET.free %}checked{% endif %}>
                     <label class="form-check-label" for="free-events">Free Events</label>
                 </div>
-            
+
                 <div class="mb-3">
                     <label for="date-start">Date Range:</label>
                     <div class="d-flex">
@@ -43,7 +41,7 @@
                         <input type="date" id="date-end" name="date_end" class="form-control" value="{{ request.GET.date_end }}">
                     </div>
                 </div>
-            
+
                 <button type="submit" class="btn btn-primary">Filter</button>
             </form>
         </div>
@@ -59,16 +57,24 @@
                     <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
                     <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
                     <p class="card-text"><strong>Category:</strong> {{ event.category }}</p>
-                    <p class="card-text"><strong>Capacity:</strong> {{ event.capacity }} attendees</p>
+                    <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
                     <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
                     
                     <!-- Registration Button -->
                     {% if user.is_authenticated %}
-                    <a href="{% url 'event_register' event.id %}" class="btn btn-primary">Register</a>
+                        {% if event.start_date > today %}
+                            {% if event.id in registered_events %}
+                                <button class="btn btn-success" disabled>Registered</button>
+                            {% else %}
+                                <a href="{% url 'event_register' event.id %}" class="btn btn-primary">Register</a>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-warning">This event has come and gone! We hope to see you at the next one!</p>
+                        {% endif %}
                     {% else %}
-                    <p class="text-danger">Please log in to register for this event.</p>
+                        <p class="text-danger">Please log in to register for this event.</p>
                     {% endif %}
-
+    
                     <a href="{% url 'event_detail' event.id %}" class="btn btn-info">View Event</a>
                 </div>
             </div>
@@ -77,6 +83,5 @@
     </div>
     
 </div>
-<!-- Event List content ends here -->
 {% endblock %}
 

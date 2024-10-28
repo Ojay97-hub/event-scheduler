@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User 
 from django.utils import timezone
 from datetime import datetime
+from django.db.models import Count 
 
 # Create your models here.
 class Event(models.Model):
@@ -45,6 +46,12 @@ class Event(models.Model):
         if self.free:
             self.price = None
         super().save(*args, **kwargs)
+
+    def capacity_status(self):
+        remaining_spots = self.capacity - self.registrations.count()
+        if remaining_spots <= 0:
+            return "Event Full"
+        return f"{remaining_spots} spots remaining"
     
     def __str__(self):
         return self.title

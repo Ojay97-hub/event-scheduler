@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4">My Registered Events</h2>
+    <h1 class="mb-4 text-center"><em>My Registered Events</em></h1>
 
-    <h3>Upcoming Events</h3>
+    <h2>Upcoming Events</h2>
     {% if upcoming_events %}
     <div class="row">
         {% for registration in upcoming_events %}
@@ -12,7 +13,7 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h5 class="card-title">{{ registration.event.title }}</h5>
-                    <p class="card-text"><strong>Date:</strong> {{ registration.event.date }}</p>
+                    <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>
                     <p class="card-text"><strong>Location:</strong> {{ registration.event.location }}</p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
@@ -30,7 +31,7 @@
     <p>You have no upcoming events.</p>
     {% endif %}
 
-    <h3 class="mt-5">Past Events</h3>
+    <h2 class="mt-5">Past Events</h2>
     {% if past_events %}
     <div class="row">
         {% for registration in past_events %}
@@ -38,7 +39,7 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h5 class="card-title">{{ registration.event.title }}</h5>
-                    <p class="card-text"><strong>Date:</strong> {{ registration.event.date }}</p>
+                    <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>
                     <p class="card-text"><strong>Location:</strong> {{ registration.event.location }}</p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">

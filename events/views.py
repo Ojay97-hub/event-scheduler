@@ -62,6 +62,14 @@ class EventsList(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category_choices'] = Event.CATEGORY_CHOICES
+
+        # Get registered events for the logged-in user
+        if self.request.user.is_authenticated:
+            registered_event_ids = Registration.objects.filter(user=self.request.user).values_list('event__id', flat=True)
+            context['registered_events'] = list(registered_event_ids)
+            
+        context['today'] = timezone.now() 
+
         return context
 
 class HomeView(TemplateView):
@@ -79,6 +87,12 @@ class EventDetailView(DetailView):
     def get_object(self, queryset=None):
         event_id = self.kwargs.get('pk') 
         return get_object_or_404(Event, id=event_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = EventRegistrationForm()  # Registration form for the event
+        context['is_registered'] = Registration.objects.filter(user=self.request.user, event=self.object).exists() if self.request.user.is_authenticated else False
+        return context
 
 @login_required
 def create_event(request):
@@ -141,20 +155,24 @@ def register_for_event(request, event_id):
                 # Save registration and send email
                 Registration.objects.create(user=request.user, event=event)
                 
-                # Send confirmation email
-                send_mail(
-                    subject=f"Registration Confirmation for {event.title}",
-                    message=f"Thank you for registering for {event.title} on {event.date} at {event.time}.",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email],
-                )
+                try:
+                    send_mail(
+                        subject=f"Registration Confirmation for {event.title}",
+                        message=f"Thank you for registering for {event.title} on {event.date} at {event.time}.",
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[email],
+                    )
+                    messages.success(request, 'You have successfully registered for the event! A confirmation email has been sent.')
+                except Exception as e:
+                    messages.error(request, 'Registration successful, but failed to send confirmation email.')
 
-                messages.success(request, 'You have successfully registered for the event! A confirmation email has been sent.')
                 return redirect('Event_List')
     else:
         form = EventRegistrationForm()
 
-    return render(request, 'events/event_detail.html', {'event': event, 'form': form})
+    is_registered = Registration.objects.filter(user=request.user, event=event).exists()
+    return render(request, 'events/event_detail.html', {'event': event, 'form': form, 'is_registered': is_registered})
+    
 
 # Unregister from an event
 @login_required

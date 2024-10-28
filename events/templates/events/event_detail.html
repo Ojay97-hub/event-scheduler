@@ -8,11 +8,11 @@
         <img src="{% static 'images/generic-event-img.jpg' %}" class="card-img-top" alt="{{ event.title }}">
         <div class="card-body">
             <h1 class="card-title">{{ event.title }}</h1>
-            <p class="card-text"><strong>Date:</strong> {{ event.date }}</p>
+            <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
             <p class="card-text"><strong>Time:</strong> {{ event.time }}</p>
             <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
             <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
-            <p class="card-text"><strong>Capacity:</strong> {{ event.capacity }} attendees</p>
+            <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
             <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
             
             <!-- Registration Form -->
@@ -21,23 +21,20 @@
                     <p class="text-success">You are already registered for this event!</p>
                 {% else %}
                     <p>In order to successfully register for this event, please enter your email below:</p>
-                    <form method="post" action="{% url 'event_register' event.id %}" class="mb-3">
+                    <form method="POST" action="{% url 'event_register' event.id %}">
                         {% csrf_token %}
                         <div class="mb-3">
-                            {{ form.email.label_tag }}
-                            {{ form.email|add_class:"form-control" }} 
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary btn-lg mt-2 flex-fill me-2 shadow">Register</button>
-                            <a href="{% url 'Event_List' %}" class="btn btn-primary btn-lg mt-2 flex-fill me-2 shadow" style="margin: 10px; background-color:#6c757d; border-color: #6c757d;">Back to Events</a>
-                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
                     </form>
                 {% endif %}
             {% else %}
                 <p class="text-danger">Please log in to register for this event.</p>
-                <a href="{% url 'account_login' %}" class="btn btn-warning btn-lg mb-3">Log In</a>
             {% endif %}
         </div>
     </div>
+    <a href="{% url 'Event_List' %}" class="btn btn-secondary">Back to Events List</a>
 </div>
 {% endblock %}

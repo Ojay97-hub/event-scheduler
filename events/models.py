@@ -47,6 +47,13 @@ class Event(models.Model):
             self.price = None
         super().save(*args, **kwargs)
 
+    def get_status(self):
+        if self.start_date < timezone.now():
+            return 'Past'
+        return 'Upcoming'
+
+    get_status.short_description = 'Status'
+    
     def capacity_status(self):
         remaining_spots = self.capacity - self.registrations.count()
         if remaining_spots <= 0:
@@ -55,6 +62,7 @@ class Event(models.Model):
     
     def __str__(self):
         return self.title
+
 
 class Registration(models.Model):
     """

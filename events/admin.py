@@ -27,7 +27,7 @@ class StatusFilter(admin.SimpleListFilter):
 class EventsAdmin(SummernoteModelAdmin):
 
     list_display = ('title', 'description', 'date', 'time', 'start_date', 'location', 
-                    'capacity', 'category', 'price', 'free', 'get_status')
+                    'capacity', 'category', 'price', 'free', 'get_status', 'organiser')
     search_fields = ['title', 'location', 'description']
     list_filter = ('date','category', 'location', StatusFilter)
     summernote_fields = ('description',)

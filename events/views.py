@@ -101,7 +101,7 @@ def create_event(request):
             form = EventForm(request.POST)
             if form.is_valid():
                 event = form.save(commit=False)
-                event.organiser = request.user
+                event.organiser = request.user 
                 event.start_date = datetime.combine(event.date, event.time)
                 event.save()
                 messages.success(request, 'Event created successfully!')

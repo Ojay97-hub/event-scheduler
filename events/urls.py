@@ -5,6 +5,7 @@ from .views import HomeView, EventsList, create_event, register, register_for_ev
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),  # Homepage
     path('create/', create_event, name='create_event'),  # Create event
+    path('created-events/', views.created_events_view, name='created_events'), # Created events 
     path('events/', EventsList.as_view(), name='Event_List'),  # Events List
     path('events/<int:pk>/', EventDetailView.as_view(), name='event_detail'),  # Event detail
     path('register/', register, name='register'),  # Register

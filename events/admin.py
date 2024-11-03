@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils import timezone
-from .models import Event, Registration
+from .models import Event, Registration, Location
 from django_summernote.admin import SummernoteModelAdmin
 
 class RegistrationInline(admin.TabularInline):
@@ -26,12 +26,17 @@ class StatusFilter(admin.SimpleListFilter):
 
 class EventsAdmin(SummernoteModelAdmin):
 
-    list_display = ('title', 'description', 'date', 'time', 'start_date', 'location', 
-                    'capacity', 'category', 'price', 'free', 'get_status', 'organiser')
+    list_display = ('title', 'description', 'start_date', 'start_time', 'end_date', 
+        'end_time', 'location', 'capacity', 'category', 'price', 
+        'free', 'get_status', 'organiser')
     search_fields = ['title', 'location', 'description']
-    list_filter = ('date','category', 'location', StatusFilter)
+    list_filter = ('start_date', 'end_date', 'category', 'location', 'free', StatusFilter)
     summernote_fields = ('description',)
+
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('venue_name', 'town_city', 'postcode', 'current_event_title')
 
 # Register your models here.
 admin.site.register(Event, EventsAdmin)
 admin.site.register(Registration)
+admin.site.register(Location, LocationAdmin)

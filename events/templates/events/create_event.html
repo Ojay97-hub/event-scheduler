@@ -1,74 +1,223 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
+{% load static %}
 
 {% block content %}
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Create a New Event</h1>
-        <form method="POST" class="bg-light p-4 rounded shadow">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
-            <div class="mb-3">
-                {{ form.title.label_tag }}
-                {{ form.title|add_class:"form-control" }}
-                {% for error in form.title.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Create a New Event</h1>
+    <form method="POST" class="bg-light p-4 rounded shadow">
+        {% csrf_token %}
+        {{ combined_form.non_field_errors }}
+
+        <!-- Event Details Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Event Title</h5>
             </div>
-            <div class="mb-3">
-                {{ form.date.label_tag }}
-                {{ form.date|add_class:"form-control" }}
-                {% for error in form.date.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        {{ combined_form.title.label_tag }}<span class="text-danger">*</span>
+                        {{ combined_form.title|add_class:"form-control" }}
+                        {% for error in combined_form.title.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                {{ form.time.label_tag }}
-                {{ form.time|add_class:"form-control" }}
-                {% for error in form.time.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
+        </div>
+
+        <!-- Category Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Category</h5>
             </div>
-            <div class="mb-3">
-                {{ form.location.label_tag }}
-                {{ form.location|add_class:"form-control" }}
-                {% for error in form.location.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        {{ combined_form.category.label_tag }}<span class="text-danger">*</span>
+                        {{ combined_form.category|add_class:"form-control" }}
+                        {% for error in combined_form.category.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                {{ form.description.label_tag }}
-                {{ form.description|add_class:"form-control" }}
-                {% for error in form.description.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
+        </div>
+
+        <!-- Date and Time Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Date and Time</h5>
             </div>
-            <div class="mb-3">
-                {{ form.capacity.label_tag }}
-                {{ form.capacity|add_class:"form-control" }}
-                {% for error in form.capacity.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        {{ combined_form.start_date.label_tag }}
+                        {{ combined_form.start_date|add_class:"form-control" }}
+                        {% for error in combined_form.start_date.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        {{ combined_form.start_time.label_tag }}
+                        {{ combined_form.start_time|add_class:"form-control" }}
+                        {% for error in combined_form.start_time.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        {{ combined_form.end_date.label_tag }}
+                        {{ combined_form.end_date|add_class:"form-control" }}
+                        {% for error in combined_form.end_date.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        {{ combined_form.end_time.label_tag }}
+                        {{ combined_form.end_time|add_class:"form-control" }}
+                        {% for error in combined_form.end_time.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="id_category">Category:</label>
-                {{ form.category|add_class:"form-control" }}
-                {% for error in form.category.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
+        </div>
+
+        <!-- Description Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Description</h5>
             </div>
-            <div class="mb-3">
-                <label for="id_price">Price:</label>
-                {{ form.price|add_class:"form-control" }}
-                {% for error in form.price.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        {{ combined_form.description.label_tag }}<span class="text-danger">*</span>
+                        {{ combined_form.description|add_class:"form-control" }}
+                        {% for error in combined_form.description.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            <div class="mb-3 form-check">
-                {{ form.free }} <label class="form-check-label" for="id_free">Is this event free?</label>
+        </div>
+
+        <!-- Location Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Location</h5>
             </div>
-            <button type="submit" class="btn btn-primary">Create Event</button>
-        </form>
-    </div>
+            <div class="card-body">
+                <h6>Location Details</h6>
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        {{ combined_form.venue_name.label_tag }}<span class="text-danger">*</span>
+                        {{ combined_form.venue_name|add_class:"form-control" }}
+                        {% for error in combined_form.venue_name.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        {{ combined_form.address_line_1.label_tag }}<span class="text-danger">*</span>
+                        {{ combined_form.address_line_1|add_class:"form-control" }}
+                        {% for error in combined_form.address_line_1.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        {{ combined_form.address_line_2.label_tag }}
+                        {{ combined_form.address_line_2|add_class:"form-control" }}
+                        {% for error in combined_form.address_line_2.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        {{ combined_form.town_city.label_tag }}<span class="text-danger">*</span>
+                        {{ combined_form.town_city|add_class:"form-control" }}
+                        {% for error in combined_form.town_city.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        {{ combined_form.county.label_tag }}
+                        {{ combined_form.county|add_class:"form-control" }}
+                        {% for error in combined_form.county.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4">
+                        {{ combined_form.postcode.label_tag }}<span class="text-danger">*</span>
+                        {{ combined_form.postcode|add_class:"form-control" }}
+                        {% for error in combined_form.postcode.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Capacity and Price Sections Side by Side -->
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Capacity Section -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Capacity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                {{ combined_form.capacity.label_tag }}<span class="text-danger">*</span>
+                                {{ combined_form.capacity|add_class:"form-control"|attr:"placeholder:Enter the maximum number of attendees" }}
+                                {% for error in combined_form.capacity.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <!-- Price Section -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Price</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-8" id="price-field">
+                                {{ combined_form.price.label_tag }}<span class="text-danger">*</span>
+                                {{ combined_form.price|add_class:"form-control"|attr:"placeholder:£ Enter the ticket price" }}
+                                {% for error in combined_form.price.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label for="id_free" class="mb-0">
+                                    {{ combined_form.free.label }} 
+                                    <input type="checkbox" id="id_free" name="free" value="True" class="ms-2">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary custom-btn px-4 py-2">Create Event</button>
+        </div>
+    </form>
+</div>
+
 {% endblock %}
-
-

@@ -57,6 +57,9 @@
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'create_event' %}active{% endif %}" href="{% url 'create_event' %}">Create Event</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'created_events' %}">My Events</a>
+                </li>
                 {% endif %}
                 {% if is_event_user %}
                 <li class="nav-item">

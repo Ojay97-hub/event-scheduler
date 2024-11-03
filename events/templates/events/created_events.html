@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Your Created Events</h1>
+    
+    {% if events %}
+    <div class="row">
+        {% for event in events %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.title }}</h5>
+                    <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
+                    <p class="card-text"><strong>Time:</strong> {{ event.start_time|time:"g:i A" }}</p>
+                    <p class="card-text"><strong>Location:</strong> {{ event.location.venue_name }}</p>
+                    <p class="card-text"><small>Category: {{ event.get_category_display }}</small></p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-info">View Event</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center">You haven't created any events yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

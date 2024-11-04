@@ -59,41 +59,6 @@ class LocationForm(forms.ModelForm):
             'postcode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter postcode'}),
         }
 
-# Combined form for creating an event with location
-class CombinedEventForm(forms.Form):
-    # Fields from EventForm
-    title = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Event Title'}))
-    start_date = forms.DateField(widget=DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-    start_time = forms.TimeField(widget=TimeInput(attrs={'type': 'time', 'class': 'form-control'}))
-    end_date = forms.DateField(widget=DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-    end_time = forms.TimeField(widget=TimeInput(attrs={'type': 'time', 'class': 'form-control'}))
-    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Event Description'}))
-    capacity = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter capacity'}))
-    category = forms.ChoiceField(choices=CATEGORY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
-    price = forms.DecimalField(max_digits=10, decimal_places=2, widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter price'}))
-    free = forms.BooleanField(required=False)
-
-    # Fields from LocationForm
-    venue_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter venue name'}))
-    address_line_1 = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter address line 1'}))
-    address_line_2 = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter address line 2 (optional)'}))
-    town_city = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter town or city'}))
-    county = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter county (optional)'}))
-    postcode = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter postcode'}))
-
-    def clean(self):
-        cleaned_data = super().clean()
-        start_date = cleaned_data.get('start_date')
-        end_date = cleaned_data.get('end_date')
-        start_time = cleaned_data.get('start_time')
-        end_time = cleaned_data.get('end_time')
-
-        if start_date and end_date and start_date > end_date:
-            raise forms.ValidationError("End date must be after start date.")
-
-        if start_date == end_date and start_time and end_time and start_time >= end_time:
-            raise forms.ValidationError("End time must be after start time.")
-
 # Register as event user or event organiser
 class CustomUserCreationForm(UserCreationForm):
     USER_TYPE_CHOICES = (

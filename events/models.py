@@ -5,11 +5,25 @@ from datetime import datetime
 from django.db.models import Count 
 
 # Create your models here.
+class Location(models.Model):
+    venue_name = models.CharField(max_length=200)
+    address_line_1 = models.CharField(max_length=300)
+    address_line_2 = models.CharField(max_length=300, blank=True, null=True)
+    town_city = models.CharField(max_length=100)
+    county = models.CharField(max_length=100, blank=True, null=True)
+    postcode = models.CharField(max_length=20)
+
+    def current_event_title(self):
+        event = self.events.filter(start_date__gte=timezone.now()).first()
+        return event.title if event else "No Upcoming Event"
+
+    def get_events(self):
+        return self.events.all()  # Retrieve all events related to this location
+
+    def __str__(self):
+        return f"{self.venue_name}, {self.town_city}, {self.postcode}"
+
 class Event(models.Model):
-    """
-    An event with details such as its title, date, time, location, description, capacity, price/free,
-    and associated category.
-    """
     CATEGORY_CHOICES = [
         ('workshop', 'Workshop'),
         ('conference', 'Conference'),
@@ -32,13 +46,14 @@ class Event(models.Model):
     end_date = models.DateTimeField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-    location = models.ForeignKey('Location', on_delete=models.CASCADE, related_name='events', null=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='events', null=True)
     description = models.TextField()
     capacity = models.PositiveIntegerField()
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='eventtype')
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='workshop')
     price = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     free = models.BooleanField(default=False)
     organiser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events', null=True)
+    canceled = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         # Set default for end date and time if not provided
@@ -50,34 +65,21 @@ class Event(models.Model):
         super().save(*args, **kwargs)
 
     def get_status(self):
+        if self.canceled:
+            return 'Canceled'
         start_datetime = timezone.make_aware(datetime.combine(self.start_date, self.start_time))
         if start_datetime < timezone.now():
             return 'Past'
         return 'Upcoming'
 
     def capacity_status(self):
-        remaining_spots = self.capacity - self.registrations.count()
+        remaining_spots = self.capacity - self.registrations.count()  # Ensure 'registrations' is defined
         if remaining_spots <= 0:
             return "Event Full"
         return f"{remaining_spots} spots remaining"
 
     def __str__(self):
         return self.title
-
-class Location(models.Model):
-    venue_name = models.CharField(max_length=200)
-    address_line_1 = models.CharField(max_length=300)
-    address_line_2 = models.CharField(max_length=300, blank=True, null=True)
-    town_city = models.CharField(max_length=100)
-    county = models.CharField(max_length=100, blank=True, null=True)
-    postcode = models.CharField(max_length=20)
-
-    def current_event_title(self):
-        event = self.events.filter(start_date__gte=timezone.now()).first()
-        return event.title if event else "No Upcoming Event"
-
-    def __str__(self):
-        return f"{self.venue_name}, {self.town_city}, {self.postcode}"
 
 class Registration(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

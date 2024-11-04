@@ -9,29 +9,38 @@
         <div class="card-body">
             <h1 class="card-title">{{ event.title }}</h1>
             <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
-            <p class="card-text"><strong>Time:</strong> {{ event.time }}</p>
+            <p class="card-text"><strong>Time:</strong> {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</p>
             <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
             <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
             <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
             <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
             
-            <!-- Registration Form -->
-            {% if user.is_authenticated %}
-                {% if is_registered %}
-                    <p class="text-success">You are already registered for this event!</p>
-                {% else %}
-                    <p>In order to successfully register for this event, please enter your email below:</p>
-                    <form method="POST" action="{% url 'event_register' event.id %}">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email:</label>
-                            <input type="email" id="email" name="email" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Register</button>
-                    </form>
-                {% endif %}
+            {% if user == event.organiser %}
+            <!-- Show Edit and Cancel options for the organiser -->
+            <a href="{% url 'edit_event' event.id %}" class="btn btn-warning">Edit Event</a>
+            <form method="POST" action="{% url 'delete_event' event.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this event? This action cannot be undone.');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Cancel Event</button>
+            </form>
             {% else %}
-                <p class="text-danger">Please log in to register for this event.</p>
+                <!-- Registration Form -->
+                {% if user.is_authenticated %}
+                    {% if is_registered %}
+                        <p class="text-success">You are already registered for this event!</p>
+                    {% else %}
+                        <p>In order to successfully register for this event, please enter your email below:</p>
+                        <form method="POST" action="{% url 'event_register' event.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <p class="text-danger">Please log in to register for this event.</p>
+                {% endif %}
             {% endif %}
         </div>
     </div>

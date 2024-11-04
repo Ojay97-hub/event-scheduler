@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.views.generic import TemplateView, DetailView
 from .models import Event, Registration, Location
-from .forms import EventForm, LocationForm, CombinedEventForm, CustomUserCreationForm, EventRegistrationForm
+from .forms import EventForm, LocationForm, CustomUserCreationForm, EventRegistrationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
@@ -16,6 +16,9 @@ from django.db.models import Value, DateTimeField
 from django.db.models.functions import Concat
 
 # Create your views here.
+class HomeView(TemplateView):
+    template_name = 'home.html'
+
 class EventsList(generic.ListView):
     model = Event
     template_name = 'events/event_list.html'
@@ -86,11 +89,6 @@ class EventsList(generic.ListView):
 
         return context
 
-
-class HomeView(TemplateView):
-    template_name = 'home.html'
-
-
 class EventDetailView(DetailView):
     model = Event
     template_name = 'events/event_detail.html'
@@ -110,50 +108,80 @@ class EventDetailView(DetailView):
 @login_required
 def create_event(request):
     if request.method == 'POST':
-        combined_form = CombinedEventForm(request.POST)
+        event_form = EventForm(request.POST)
+        location_form = LocationForm(request.POST)
 
-        if combined_form.is_valid():
-            # Save location first
-            location = Location.objects.create(
-                venue_name=combined_form.cleaned_data['venue_name'],
-                address_line_1=combined_form.cleaned_data['address_line_1'],
-                address_line_2=combined_form.cleaned_data['address_line_2'],
-                town_city=combined_form.cleaned_data['town_city'],
-                county=combined_form.cleaned_data['county'],
-                postcode=combined_form.cleaned_data['postcode']
-            )
-
-            # Create event with the saved location
-            event = Event.objects.create(
-                title=combined_form.cleaned_data['title'],
-                category=combined_form.cleaned_data['category'],
-                start_date=combined_form.cleaned_data['start_date'],
-                start_time=combined_form.cleaned_data['start_time'],
-                end_date=combined_form.cleaned_data['end_date'],
-                end_time=combined_form.cleaned_data['end_time'],
-                description=combined_form.cleaned_data['description'],
-                capacity=combined_form.cleaned_data['capacity'],
-                price=combined_form.cleaned_data['price'],
-                free=combined_form.cleaned_data['free'],
-                organiser=request.user,
-                location=location
-            )
-
-            messages.success(request, 'Event created successfully!')
-            return redirect('Event_List')  # Redirect to the event list page
-        else:
-            messages.error(request, 'Please correct the errors below.')
-
-            # Print combined form errors for debugging
-            print("Combined Form Errors:", combined_form.errors)
+        if event_form.is_valid() and location_form.is_valid():
+            # Save the location first
+            location = location_form.save()
+            # Now create the event with the saved location
+            event = event_form.save(commit=False)
+            event.location = location
+            event.save()
+            return redirect('Event_List')  # Adjust the redirect as needed
 
     else:
-        combined_form = CombinedEventForm()
+        event_form = EventForm()
+        location_form = LocationForm()
 
-    return render(request, 'events/create_event.html', {
-        'combined_form': combined_form
-    })
+    context = {
+        'event_form': event_form,
+        'location_form': location_form,
+    }
+    return render(request, 'events/create_event.html', context)
 
+@login_required
+def edit_event(request, event_id):
+    # Get the event object or return a 404 error if not found
+    event = get_object_or_404(Event, id=event_id)
+    
+    # Check if the user is the organizer of the event
+    if request.user != event.organiser:
+        return redirect('Event_List')  # Replace with appropriate view name
+
+    if request.method == 'POST':
+        # Initialize forms with POST data
+        event_form = EventForm(request.POST, instance=event)
+        location_form = LocationForm(request.POST, instance=event.location)
+
+        # Print POST data for debugging
+        print("POST data:", request.POST)
+
+        if event_form.is_valid() and location_form.is_valid():
+            # If forms are valid, save them
+            event_form.save()
+            location_form.save()
+            print("Forms are valid, redirecting to event detail.")
+            return redirect('event_detail', pk=event.id)  # Ensure 'pk' is used correctly
+
+        else:
+            # Print form errors if validation fails
+            print("Event form errors:", event_form.errors)
+            print("Location form errors:", location_form.errors)
+
+    else:
+        # Initialize forms with existing instance data for GET request
+        event_form = EventForm(instance=event)
+        location_form = LocationForm(instance=event.location)
+
+    context = {
+        'form': event_form,
+        'location_form': location_form,
+        'event': event,
+    }
+    
+    return render(request, 'events/edit_event.html', context)
+
+@login_required
+def delete_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id, organiser=request.user)
+
+    if request.method == 'POST':
+        event.delete()
+        messages.success(request, 'Event deleted successfully.')
+        return redirect('created_events')  # Redirect to the page where they can see their created events
+
+    return redirect('event_detail', pk=event.id)
 
 @login_required
 def created_events_view(request):

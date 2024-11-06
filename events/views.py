@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
 from datetime import datetime
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.db.models import Value, DateTimeField
 from django.db.models.functions import Concat
 
@@ -283,12 +283,18 @@ def registered_events(request):
     # Get all events the user is registered for
     registered_events = Registration.objects.filter(user=request.user)
 
-    # Get current date and time
-    now = timezone.now()
+    # Get the current date
+    today = timezone.now().date()
 
-    # Separate into upcoming and past events
-    upcoming_events = [registration for registration in registered_events if registration.event.start_date >= now.date()]
-    past_events = [registration for registration in registered_events if registration.event.start_date < now.date()]
+    # Separate into upcoming and past events, ensuring compatibility in date comparison
+    upcoming_events = [
+        registration for registration in registered_events 
+        if registration.event.start_date.date() >= today
+    ]
+    past_events = [
+        registration for registration in registered_events 
+        if registration.event.start_date.date() < today
+    ]
 
     context = {
         'upcoming_events': upcoming_events,
@@ -296,3 +302,23 @@ def registered_events(request):
     }
 
     return render(request, 'events/registered_events.html', context)
+
+# organiser access to registered attendees
+@login_required
+def attendee_list(request, event_id):
+    # Get the event and ensure the user is the organizer
+    event = get_object_or_404(Event, id=event_id)
+
+    if request.user != event.organiser:
+        # Show a warning message and redirect
+        messages.warning(request, "You are not authorized to view the attendees for this event.")
+        return redirect('Event_List')
+
+    # Retrieve attendees registered for the event
+    attendees = Registration.objects.filter(event=event).select_related('user')
+
+    context = {
+        'event': event,
+        'attendees': attendees,
+    }
+    return render(request, 'events/attendee_list.html', context)

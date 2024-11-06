@@ -22,6 +22,7 @@
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">Cancel Event</button>
             </form>
+            <a href="{% url 'attendee_list' event.id %}" class="btn btn-info">View Attendee List</a>
             {% else %}
                 <!-- Registration Form -->
                 {% if user.is_authenticated %}

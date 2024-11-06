@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Attendees for {{ event.title }}</h1>
+    <p>Date: {{ event.start_date|date:"F j, Y" }} | Time: {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</p>
+    <div class="card">
+        <div class="card-body">
+            {% if attendees %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registration in attendees %}
+                            <tr>
+                                <td>{{ registration.user.get_username }}</td>
+                                <td>{{ registration.user.email }}</td>
+                                <td>
+                                    <a href="mailto:{{ registration.user.email }}" class="btn btn-primary btn-sm">
+                                        Contact
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No attendees have registered for this event yet.</p>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'event_detail' event.id %}" class="btn btn-secondary mt-3">Back to Event Details</a>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Events by {{ organiser.username }}</h1>
+
+    <div class="row">
+        {% for event in events %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="card-title">{{ event.title }}</h2>
+                    <p class="card-text"><strong>Start Date:</strong> {{ event.start_date|date:"F j, Y, g:i a" }}</p>
+                    <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
+                    <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
+                    <p class="card-text"><strong>Category:</strong> {{ event.category }}</p>
+                    <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
+                    <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
+
+                    {% if user.is_authenticated %}
+                        {% if user == event.organiser %}
+                            <p class="text-warning">You cannot register for your own event.</p>
+                        {% else %}
+                            {% if event.start_date > today %}
+                                {% if event.id in registered_events %}
+                                    <button class="btn btn-success" disabled>Registered</button>
+                                {% else %}
+                                    <a href="{% url 'event_register' event.id %}" class="btn btn-primary">Register</a>
+                                {% endif %}
+                            {% else %}
+                                <p class="text-warning">This event has already passed!</p>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <p class="text-danger">Please log in to register for this event.</p>
+                    {% endif %}
+                    
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-info">View Event</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

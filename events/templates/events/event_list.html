@@ -20,6 +20,16 @@
                         {% endfor %}
                     </select>
                 </div>
+
+                <div class="mb-3">
+                    <label for="organiser-filter">Filter by Organiser:</label>
+                    <select id="organiser-filter" name="organiser" class="form-select mb-3">
+                        <option value="">All Organisers</option>
+                        {% for user in organisers %}
+                        <option value="{{ user.id }}" {% if request.GET.organiser == user.id %}selected{% endif %}>{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 
                 <div class="mb-3">
                     <label for="price-min">Price Range:</label>
@@ -53,15 +63,17 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h2 class="card-title">{{ event.title }}</h2>
+                    <p class="card-text"><strong>An event by: </strong> {{ event.organiser.username }}</p>
                     <p class="card-text"><strong>Start Date:</strong> {{ event.start_date|date:"F j, Y, g:i a" }}</p>
                     <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
                     <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
                     <p class="card-text"><strong>Category:</strong> {{ event.category }}</p>
                     <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
                     <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
-                    
-                    <!-- Registration Button -->
-                    {% if user.is_authenticated %}
+
+                    <!-- Show registration button or event details based on user's status -->
+                    {% if user.is_authenticated and user != event.organiser %}
+                        <!-- Only show registration button if the user is NOT the event organiser -->
                         {% if event.start_date > today %}
                             {% if event.id in registered_events %}
                                 <button class="btn btn-success" disabled>Registered</button>
@@ -71,10 +83,17 @@
                         {% else %}
                             <p class="text-warning">This event has come and gone! We hope to see you at the next one!</p>
                         {% endif %}
+                    {% elif user.is_authenticated %}
+                        <p class="text-warning">You cannot register for your own event.</p>
                     {% else %}
                         <p class="text-danger">Please log in to register for this event.</p>
                     {% endif %}
-    
+
+                    <!-- Link to the organiser's page -->
+                    {% if user != event.organiser and event.organiser.id %}
+                    <a href="{% url 'organiser_events' event.organiser.id %}" class="btn btn-info">View Organiser</a>
+                    {% endif %}
+            
                     <a href="{% url 'event_detail' event.id %}" class="btn btn-info">View Event</a>
                 </div>
             </div>
@@ -84,4 +103,3 @@
     
 </div>
 {% endblock %}
-

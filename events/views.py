@@ -5,14 +5,14 @@ from .models import Event, Registration, Location
 from .forms import EventForm, LocationForm, CustomUserCreationForm, EventRegistrationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
 from datetime import datetime
 from django.core.exceptions import ValidationError, PermissionDenied
-from django.db.models import Value, DateTimeField
+from django.db.models import Value, DateTimeField, Exists, OuterRef
 from django.db.models.functions import Concat
 
 # Create your views here.
@@ -32,10 +32,15 @@ class EventsList(generic.ListView):
         price_min = self.request.GET.get('price_min', '')
         price_max = self.request.GET.get('price_max', '')
         free_only = self.request.GET.get('free', '')
+        organiser_id = self.request.GET.get('organiser', '')
 
         # Filter by category
         if category:
             queryset = queryset.filter(category=category)
+        
+        # Filter by organiser
+        if organiser_id:
+            queryset = queryset.filter(organiser_id=organiser_id)
 
         # Filter by price
         if price_min:
@@ -86,6 +91,10 @@ class EventsList(generic.ListView):
             context['registered_events'] = list(registered_event_ids)
 
         context['today'] = timezone.now()
+
+        # Get a list of users who are organisers (those who have created at least one event)
+        organisers = User.objects.filter(events__isnull=False).distinct()
+        context['organisers'] = organisers
 
         return context
 
@@ -212,11 +221,39 @@ def register(request):
         form = CustomUserCreationForm()
     return render(request, 'account/signup.html', {'form': form})
 
+# Ensure only organisers or admins can access this view
+@login_required
+def organiser_events(request, organiser_id):
+    # Get the organiser object
+    organiser = get_object_or_404(User, id=organiser_id)
+
+    # Check if the logged-in user is the organiser or an admin
+    if request.user != organiser and not request.user.is_staff:
+        messages.warning(request, "You are not allowed to view this organiser's events.")
+        return redirect('event_list')  # Redirect to the event list if the user is not the organiser
+
+    # Get all events by this organiser
+    events = Event.objects.filter(organiser=organiser)
+
+    # Get the current date and time to check registration status
+    today = timezone.now()
+
+    # Render the organiser's page with events
+    return render(request, 'events/view_organiser.html', {
+        'organiser': organiser,
+        'events': events,
+        'today': today
+    })
 
 # Registration view for events
 @login_required
 def register_for_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
+
+    # Prevent organisers from registering for events
+    if request.user == event.organiser:
+        messages.warning(request, "Organisers cannot register for their own events.")
+        return redirect('event_list')
 
     if request.method == 'POST':
         form = EventRegistrationForm(request.POST)
@@ -226,19 +263,19 @@ def register_for_event(request, event_id):
             # Check if the user is already registered for this event
             if Registration.objects.filter(user=request.user, event=event).exists():
                 messages.warning(request, 'You are already registered for this event.')
-                return redirect('Event_List')
+                return redirect('event_list')
 
             # Check if the event is full
             if event.capacity <= event.registrations.count():
                 messages.warning(request, 'This event has reached its capacity.')
-                return redirect('Event_List')
+                return redirect('event_list')
 
             # Create a new registration
             registration = Registration(user=request.user, event=event)
 
             try:
                 # Validate the registration (this will raise a ValidationError if invalid)
-                registration.clean()  
+                registration.clean()  # Validation on model level
                 registration.save()  # Save the registration
 
                 # Send confirmation email
@@ -249,17 +286,23 @@ def register_for_event(request, event_id):
                     recipient_list=[email],
                 )
                 messages.success(request, 'You have successfully registered for the event! A confirmation email has been sent.')
+                return redirect('event_list')  # Redirect after successful registration
+
             except ValidationError as e:
                 messages.error(request, str(e))  # Show validation error
             except Exception as e:
                 messages.error(request, 'Registration successful, but failed to send confirmation email.')
 
-            return redirect('Event_List')
     else:
         form = EventRegistrationForm()
 
+    # Check if user is already registered for the event
     is_registered = Registration.objects.filter(user=request.user, event=event).exists()
-    return render(request, 'events/event_detail.html', {'event': event, 'form': form, 'is_registered': is_registered})
+    return render(request, 'events/event_detail.html', {
+        'event': event,
+        'form': form,
+        'is_registered': is_registered
+    })
 
 
 # Unregister from an event

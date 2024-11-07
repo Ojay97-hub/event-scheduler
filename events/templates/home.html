@@ -19,7 +19,7 @@
                     <!-- Else is Event User -->
                     <p class="lead">You are now logged in as an Event User.</p>
                     <!-- Browse Events CTA -->
-                    <a href="{% url 'Event_List' %}" class="btn btn-primary btn-lg mr-2">Browse Events</a>
+                    <a href="{% url 'event_list' %}" class="btn btn-primary btn-lg mr-2">Browse Events</a>
                 {% endif %}
                         
                 <!-- Sign Up and Log In Buttons -->
@@ -110,7 +110,7 @@
         <section class="cta-section text-center bg-primary text-white py-5 container rounded mb-3">
             <div>
                 <h2>Start Exploring Events Today!</h2>
-                <a href="{% url 'Event_List' %}" class="btn btn-light btn-lg mt-3">View Events</a>
+                <a href="{% url 'event_list' %}" class="btn btn-light btn-lg mt-3">View Events</a>
             </div>
         </section>
 {% endblock %}

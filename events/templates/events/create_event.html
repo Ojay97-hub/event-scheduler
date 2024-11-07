@@ -73,15 +73,6 @@
                         {% endfor %}
                     </div>
                     <div class="col-md-6">
-                        {{ event_form.price.label_tag }}
-                        {{ event_form.price|add_class:"form-control" }}
-                        {% for error in event_form.price.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
                         {{ event_form.category.label_tag }}<span class="text-danger">*</span>
                         {{ event_form.category|add_class:"form-control" }}
                         {% for error in event_form.category.errors %}
@@ -89,14 +80,23 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="form-check mb-3">
-                    {{ event_form.free.label_tag }}
-                    {{ event_form.free|add_class:"form-check-input" }}
-                    {% for error in event_form.free.errors %}
-                        <div class="text-danger">{{ error }}</div>
-                    {% endfor %}
+
+                <div class="row mb-3">
+                    <div class="col-md-6" id="price-field">
+                        {{ event_form.price.label_tag }}
+                        <input type="number" name="{{ event_form.price.name }}" id="price-input" class="form-control" value="{{ event_form.price.value }}">
+                        {% for error in event_form.price.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-check-label" for="free-checkbox">{{ event_form.free.label }}</label>
+                        <input type="checkbox" name="{{ event_form.free.name }}" id="free-checkbox" class="form-check-input" {% if event_form.free.value %}checked{% endif %}>
+                        {% for error in event_form.free.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
         </div>
 
         <!-- Location Section -->
@@ -166,4 +166,25 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const freeCheckbox = document.getElementById('free-checkbox');
+        const priceField = document.getElementById('price-field');
+
+        function togglePriceField() {
+            if (freeCheckbox.checked) {
+                priceField.style.display = 'none';
+            } else {
+                priceField.style.display = 'block';
+            }
+        }
+
+        // Initial toggle based on checkbox state
+        togglePriceField();
+
+        // Add event listener to toggle on checkbox change
+        freeCheckbox.addEventListener('change', togglePriceField);
+    });
+</script>
 {% endblock %}

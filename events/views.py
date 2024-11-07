@@ -96,6 +96,9 @@ class EventsList(generic.ListView):
         organisers = User.objects.filter(events__isnull=False).distinct()
         context['organisers'] = organisers
 
+        # Add context for checking if the user is the organiser for any event
+        context['is_event_organiser'] = {event.id: (event.organiser == self.request.user) for event in context['object_list']}
+
         return context
 
 class EventDetailView(DetailView):
@@ -127,7 +130,7 @@ def create_event(request):
             event = event_form.save(commit=False)
             event.location = location
             event.save()
-            return redirect('Event_List')  # Adjust the redirect as needed
+            return redirect('event_list')  # Adjust the redirect as needed
 
     else:
         event_form = EventForm()
@@ -146,7 +149,7 @@ def edit_event(request, event_id):
     
     # Check if the user is the organizer of the event
     if request.user != event.organiser:
-        return redirect('Event_List')  # Replace with appropriate view name
+        return redirect('event_list')  # Replace with appropriate view name
 
     if request.method == 'POST':
         # Initialize forms with POST data
@@ -227,7 +230,7 @@ def organiser_events(request, organiser_id):
     # Get the organiser object
     organiser = get_object_or_404(User, id=organiser_id)
 
-    # Check if the logged-in user is the organiser or an admin
+    # Check if the logged-in user is the organiser, or an admin (staff member)
     if request.user != organiser and not request.user.is_staff:
         messages.warning(request, "You are not allowed to view this organiser's events.")
         return redirect('event_list')  # Redirect to the event list if the user is not the organiser
@@ -355,7 +358,7 @@ def attendee_list(request, event_id):
     if request.user != event.organiser:
         # Show a warning message and redirect
         messages.warning(request, "You are not authorized to view the attendees for this event.")
-        return redirect('Event_List')
+        return redirect('event_list')
 
     # Retrieve attendees registered for the event
     attendees = Registration.objects.filter(event=event).select_related('user')

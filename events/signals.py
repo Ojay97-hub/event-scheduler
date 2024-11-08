@@ -1,3 +1,4 @@
+# events/signals.py
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.core.mail import send_mail
@@ -8,12 +9,14 @@ from .models import Event
 def notify_attendees_and_organiser_on_event_deletion(sender, instance, **kwargs):
     registrations = instance.registrations.all()
     
+    # Use start_date as the event date
+    event_date = instance.start_date  # Corrected field
+
     # Notify attendees
     for registration in registrations:
         attendee_email = registration.user.email
         username = registration.user.username
         event_title = instance.title
-        event_date = instance.date
 
         # Send email to attendee
         try:

@@ -172,7 +172,7 @@
                 <h5>Price</h5>
             </div>
             <div class="card-body">
-                <div class="mb-3">
+                <div class="mb-3" id="price-field">
                     {{ form.price.label_tag }}<span class="text-danger">*</span>
                     {{ form.price|add_class:"form-control" }}
                     {% for error in form.price.errors %}
@@ -180,8 +180,8 @@
                     {% endfor %}
                 </div>
                 <div class="form-check mb-3">
-                    <input type="checkbox" class="form-check-input" id="is_free" name="is_free" {% if form.is_free.value %}checked{% endif %}>
-                    <label class="form-check-label" for="is_free">Free Event</label>
+                    <input type="checkbox" class="form-check-input" id="free-checkbox" name="is_free" {% if form.is_free.value %}checked{% endif %}>
+                    <label class="form-check-label" for="free-checkbox">Free Event</label>
                 </div>
             </div>
         </div>
@@ -192,4 +192,24 @@
         </div>
     </form>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const freeCheckbox = document.getElementById('free-checkbox');
+        const priceField = document.getElementById('price-field');
+
+        function togglePriceField() {
+            if (freeCheckbox.checked) {
+                priceField.style.display = 'none';
+            } else {
+                priceField.style.display = 'block';
+            }
+        }
+
+        // Initial toggle based on checkbox state
+        togglePriceField();
+
+        // Add event listener to toggle on checkbox change
+        freeCheckbox.addEventListener('change', togglePriceField);
+    });
+</script>
 {% endblock %}

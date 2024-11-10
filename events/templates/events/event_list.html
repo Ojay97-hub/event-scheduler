@@ -70,44 +70,33 @@
                     <p class="card-text"><strong>Category:</strong> {{ event.category }}</p>
                     <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
                     <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
-        
-                     <!-- Show registration button or event details based on user's status -->
+                
+                    <!-- Show registration button or event details based on user's status -->
                     {% if user.is_authenticated %}
-                        {% if user == event.user %}
-                            <!-- Event user: can register if the event is upcoming and they are not already registered -->
+                        {% if is_event_organiser %}
+                            <!-- Event Organiser: Show only "View Event" button -->
+                            <a href="{% url 'event_detail' event.id %}" class="btn btn-info">View Event</a>
+                        {% else %}
+                            <!-- Event User: Show "Register" or "Registered" button -->
                             {% if event.start_date > today %}
                                 {% if event.id in registered_events %}
-                                    <!-- Registered event user -->
                                     <button class="btn btn-success" disabled>Registered</button>
                                 {% else %}
-                                    <!-- Unregistered event user -->
                                     <a href="{% url 'event_register' event.id %}" class="btn btn-primary">Register</a>
-                                    <a href="{% url 'event_detail' event.id %}" class="btn btn-info">View Event</a>
                                 {% endif %}
                             {% else %}
-                                <!-- Event has passed -->
                                 <p class="text-warning">This event has come and gone! We hope to see you at the next one!</p>
                             {% endif %}
-                        {% else %}
-                            <!-- Event organiser: can only see the View Event button -->
                             <a href="{% url 'event_detail' event.id %}" class="btn btn-info">View Event</a>
-        
-                            <!-- Check if event has an organiser and view organisers page -->
-                            {% if event.organiser %}
-                                <a href="{% url 'organiser_events' organiser_id=event.organiser.id %}" class="btn btn-info">Organiser's Page</a>
-                            {% else %}
-                                <p class="text-warning">No organiser details available.</p>
-                            {% endif %}
                         {% endif %}
                     {% else %}
-                        <!-- Non-authenticated users see a prompt to log in -->
+                        <!-- Non-authenticated users see a message prompting login -->
                         <p class="text-danger">Please log in to register for this event.</p>
                     {% endif %}
                 </div>
             </div>
         </div>
         {% endfor %}
-        
     </div>
 </div>
 {% endblock %}

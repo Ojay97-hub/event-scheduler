@@ -92,12 +92,11 @@ class EventsList(generic.ListView):
 
         context['today'] = timezone.now()
 
-        # Get a list of users who are organisers (those who have created at least one event)
+        # Get a list of users who are organisers
         organisers = User.objects.filter(events__isnull=False).distinct()
         context['organisers'] = organisers
 
-        # Add context for checking if the user is the organiser for any event
-        context['is_event_organiser'] = {event.id: (event.organiser == self.request.user) for event in context['object_list']}
+        context['organiser_status_by_event'] = {event.id: (event.organiser == self.request.user) for event in context['object_list']}
 
         return context
 
@@ -227,27 +226,26 @@ def register(request):
 # Ensure only organisers or admins can access this view
 @login_required
 def organiser_events(request, organiser_id):
-    # Get the organiser object or return a 404 if not found
+    # Get the organiser object
     organiser = get_object_or_404(User, id=organiser_id)
 
-    # Check if the logged-in user is the organiser, an admin (staff), or in the organisers group
-    if request.user == organiser or request.user.is_staff or request.user.groups.filter(name='Event Organiser').exists():
-        # User is allowed to view the organiser's events
-        events = Event.objects.filter(organiser=organiser)
-
-        # Get the current date and time to check registration status
-        today = timezone.now()
-
-        # Render the organiser's page with events
-        return render(request, 'events/view_organiser.html', {
-            'organiser': organiser,
-            'events': events,
-            'today': today
-        })
-    else:
-        # User is an event user, deny access and show a warning message
+    # Check if the logged-in user is the organiser, or an admin (staff member)
+    if request.user != organiser and not request.user.is_staff:
         messages.warning(request, "You are not allowed to view this organiser's events.")
-        return redirect('event_list')  # Redirect to the event list if the user is not an organiser
+        return redirect('event_list')  # Redirect to the event list if the user is not the organiser
+
+    # Get all events by this organiser
+    events = Event.objects.filter(organiser=organiser)
+
+    # Get the current date and time to check registration status
+    today = timezone.now()
+
+    # Render the organiser's page with events
+    return render(request, 'events/view_organiser.html', {
+        'organiser': organiser,
+        'events': events,
+        'today': today
+    })
 
 # Registration view for events
 @login_required

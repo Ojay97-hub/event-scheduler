@@ -128,8 +128,9 @@ def create_event(request):
             # Now create the event with the saved location
             event = event_form.save(commit=False)
             event.location = location
+            event.organiser = request.user
             event.save()
-            return redirect('event_list')  # Adjust the redirect as needed
+            return redirect('created_events')  # Adjust the redirect as needed
 
     else:
         event_form = EventForm()

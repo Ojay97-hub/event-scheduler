@@ -47,12 +47,12 @@ class Event(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='events', null=True)
+    organiser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events', null=True)
     description = models.TextField()
     capacity = models.PositiveIntegerField()
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='workshop')
     price = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     free = models.BooleanField(default=False)
-    organiser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events', null=True)
     canceled = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
@@ -73,7 +73,7 @@ class Event(models.Model):
         return 'Upcoming'
 
     def capacity_status(self):
-        remaining_spots = self.capacity - self.registrations.count()  # Ensure 'registrations' is defined
+        remaining_spots = self.capacity - self.registrations.count() 
         if remaining_spots <= 0:
             return "Event Full"
         return f"{remaining_spots} spots remaining"

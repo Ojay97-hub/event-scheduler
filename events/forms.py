@@ -68,11 +68,15 @@ class CustomUserCreationForm(UserCreationForm):
 
     user_type = forms.ChoiceField(choices=USER_TYPE_CHOICES)
 
+    email = forms.EmailField(
+        required=True, 
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+        label='Email address'  
+    )
+
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2', 'user_type')
-
-    email = forms.EmailField(required=True)
 
 # Event registration
 class EventRegistrationForm(forms.Form):

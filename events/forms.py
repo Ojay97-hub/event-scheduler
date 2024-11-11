@@ -31,7 +31,8 @@ class EventForm(forms.ModelForm):
             'end_date': DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'end_time': TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
         }
-
+        
+    
     def clean(self):
         cleaned_data = super().clean()
         start_date = cleaned_data.get('start_date')

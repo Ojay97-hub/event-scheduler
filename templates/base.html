@@ -80,6 +80,17 @@
                 </li>
                 {% endif %}
             </ul>
+             
+            <!-- Right-aligned user authentication display -->
+              <div class="d-inline-block ms-auto" style="max-width: fit-content;">
+                <div>
+                    {% if user.is_authenticated %}
+                    <p class="text-end m-0">You are logged in as {{ user }}</p>
+                    {% else %}
+                    <p class="text-end m-0">You are not logged in</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </nav>
@@ -94,20 +105,6 @@
                 {% endfor %}
             </div>
             {% endif %}
-        </div>
-
-        <!-- user authentication -->
-        <div class="container mt-4">
-            <div class="card d-inline-block float-end" style="max-width: fit-content; position: absolute; right: 20px;">
-                <div class="card-body authentication" style="padding: 6px;">
-                    <!-- user authentication -->
-                    {% if user.is_authenticated %}
-                    <p class="text-end m-3">You are logged in as <strong>{{ user }}</strong></p>
-                    {% else %}
-                    <p class="text-end m-3">You are not logged in</p>
-                    {% endif %}
-                </div>
-            </div>
         </div>
 
         <div class="container mt-3">

@@ -3,6 +3,8 @@ from .models import Event, Location
 from django.forms.widgets import DateInput, TimeInput
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
+from urllib.parse import urlparse
 
 CATEGORY_CHOICES = [
     ('workshop', 'Workshop'),
@@ -24,15 +26,15 @@ CATEGORY_CHOICES = [
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['title', 'start_date', 'start_time', 'end_date', 'end_time', 'description', 'capacity', 'category', 'price', 'free']
+        fields = ['title', 'image_url', 'start_date', 'start_time', 'end_date', 'end_time', 'description', 'capacity', 'category', 'price', 'free']
         widgets = {
             'start_date': DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'start_time': TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
             'end_date': DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'end_time': TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'image_url': forms.URLInput(attrs={'placeholder': 'Enter a valid image URL'}),
         }
         
-    
     def clean(self):
         cleaned_data = super().clean()
         start_date = cleaned_data.get('start_date')
@@ -45,6 +47,21 @@ class EventForm(forms.ModelForm):
 
         if start_date == end_date and start_time and end_time and start_time >= end_time:
             raise forms.ValidationError("End time must be after start time.")
+
+        # Image URL validation
+        image_url = cleaned_data.get('image_url')
+        if image_url:
+            valid_extensions = ('.jpg', '.jpeg', '.png', '.gif')
+            parsed_url = urlparse(image_url)
+            path = parsed_url.path.lower()
+
+            # Remove query parameters from the URL path before checking extension
+            path_without_query = path.split('?')[0]
+
+            if not path_without_query.endswith(valid_extensions):
+                raise ValidationError("Please enter a URL that points to a valid image (e.g., .jpg, .png).")
+
+        return cleaned_data
 
 # Location form for creating a new location
 class LocationForm(forms.ModelForm):

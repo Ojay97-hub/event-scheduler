@@ -61,14 +61,14 @@
         {% for event in object_list %}
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-
                 <div class="card-body">
+                    {% if event.image_url %}
+                    <img src="{{ event.image_url }}" class="card-img-top" alt="{{ event.title }}">
+                    {% endif %}
                     <h2 class="card-title">{{ event.title }}</h2>
                     <p class="card-text"><strong>An event by: </strong> {{ event.organiser.username }}</p>
-                    <p class="card-text"><strong>Start Date:</strong> {{ event.start_date|date:"F j, Y, g:i a" }}</p>
-                    <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
+                    <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, g:i a" }}</p>
                     <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
-                    <p class="card-text"><strong>Category:</strong> {{ event.category }}</p>
                     <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
                     <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
                 
@@ -76,7 +76,7 @@
                     {% if user.is_authenticated %}
                         {% if is_event_organiser %}
                             <!-- Event Organiser: Show only "View Event" button -->
-                            <a href="{% url 'event_detail' event.id %}" class="btn btn-info">View Event</a>
+                            <a href="{% url 'event_detail' event.id %}" class="btn btn-info">Event Details</a>
                         {% else %}
                             <!-- Event User: Show "Register" or "Registered" button -->
                             {% if event.start_date > today %}

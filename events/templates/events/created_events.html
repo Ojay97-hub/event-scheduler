@@ -11,6 +11,9 @@
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
                 <div class="card-body">
+                    {% if event.image_url %}
+                    <img src="{{ event.image_url }}" class="card-img-top" alt="{{ event.title }}">
+                    {% endif %}
                     <h5 class="card-title">{{ event.title }}</h5>
                     <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
                     <p class="card-text"><strong>Time:</strong> {{ event.start_time|time:"g:i A" }}</p>

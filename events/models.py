@@ -42,6 +42,7 @@ class Event(models.Model):
 
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
+    image_url = models.URLField("Event Image URL", blank=True, null=True)
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField()
     start_time = models.TimeField()

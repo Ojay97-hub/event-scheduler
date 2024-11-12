@@ -57,15 +57,13 @@ INSTALLED_APPS = [
     'django_summernote', 
     'events',
     'widget_tweaks',
-    'cloudinary',
-    'cloudinary_storage',
 ]
 
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'

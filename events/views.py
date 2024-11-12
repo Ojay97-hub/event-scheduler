@@ -131,6 +131,13 @@ def create_event(request):
             event.organiser = request.user
             event.save()
             return redirect('created_events')  # Adjust the redirect as needed
+        else:
+            # Debugging form errors
+            print("Event form errors:", event_form.errors)
+            print("Location form errors:", location_form.errors)
+
+            # Optional: print POST data to inspect
+            print(request.POST)
 
     else:
         event_form = EventForm()

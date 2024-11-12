@@ -61,11 +61,13 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    {{ event_form.image.label_tag }}
-                    {{ event_form.image|add_class:"form-control" }}
-                    {% for error in event_form.image.errors %}
+                    {{ event_form.image_url.label_tag }}
+                    <p>Includes: .jpg, .jpeg, .png, .gif</p>
+                    {{ event_form.image_url|add_class:"form-control" }}
+                    {% for error in event_form.image_url.errors %}
                         <div class="text-danger">{{ error }}</div>
                     {% endfor %}
+        
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-12">

@@ -57,6 +57,8 @@ class Event(models.Model):
     canceled = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
+        # Automatically set `free` to True if price is None or 0
+        self.free = self.price is None or self.price == 0
         # Set default for end date and time if not provided
         if not self.end_date:
             self.end_date = self.start_date  # Default end date to start date if not set

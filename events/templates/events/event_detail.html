@@ -4,11 +4,11 @@
 
 {% block content %}
 <div class="container mt-5">
-    <div class="card mb-4 shadow-sm"></div>
+    <div class="card mb-4 shadow-sm">
         {% if event.image_url %}
         <img src="{{ event.image_url }}" class="card-img-top" alt="{{ event.title }}">
         {% else %}
-            <img src="{% static 'images/generic-event-img.jpg' %}" class="card-img-top" alt="{{ event.title }}">
+        <img src="{% static 'images/generic-event-img.jpg' %}" class="card-img-top" alt="{{ event.title }}">
         {% endif %}
         <div class="card-body">
             <h1 class="card-title">{{ event.title }}</h1>
@@ -18,44 +18,42 @@
             <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
             <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
             <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
-            
+
             {% if user == event.organiser %}
-                <!-- Show Edit and Cancel options for the organiser -->
-                <a href="{% url 'edit_event' event.id %}" class="btn btn-warning">Edit Event</a>
-                <form method="POST" action="{% url 'delete_event' event.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this event? This action cannot be undone.');">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Cancel Event</button>
-                </form>
-                <a href="{% url 'attendee_list' event.id %}" class="btn btn-info">View Attendee List</a>
+            <!-- Show Edit and Cancel options for the organiser -->
+            <a href="{% url 'edit_event' event.id %}" class="btn btn-warning">Edit Event</a>
+            <!-- Button to trigger modal -->
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelEventModal">
+                Cancel Event
+            </button>
+            <a href="{% url 'attendee_list' event.id %}" class="btn btn-info">View Attendee List</a>
             {% else %}
-                <!-- Registration Form -->
-                {% if user.is_authenticated %}
-                    {% if is_event_organiser %}
-                        <!-- Event Organiser: Show registration status -->
-                        {% if is_registered %}
-                            <p class="text-success">You are already registered for this event!</p>
-                        {% else %}
-                            <p>Login as an event user to register for this event!</p>
-                        {% endif %}
-                    {% else %}
-                        <!-- Event User: Show "Register" form -->
-                        {% if is_registered %}
-                            <p class="text-success">You are already registered for this event!</p>
-                        {% else %}
-                            <p>In order to successfully register for this event, please enter your email below:</p>
-                            <form method="POST" action="{% url 'event_register' event.id %}">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email:</label>
-                                    <input type="email" id="email" name="email" class="form-control" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Register</button>
-                            </form>
-                        {% endif %}
-                    {% endif %}
-                {% else %}
-                    <p class="text-danger">Please log in to register for this event.</p>
-                {% endif %}
+            <!-- Registration Form -->
+            {% if user.is_authenticated %}
+            {% if is_event_organiser %}
+            {% if is_registered %}
+            <p class="text-success">You are already registered for this event!</p>
+            {% else %}
+            <p>Login as an event user to register for this event!</p>
+            {% endif %}
+            {% else %}
+            {% if is_registered %}
+            <p class="text-success">You are already registered for this event!</p>
+            {% else %}
+            <p>In order to successfully register for this event, please enter your email below:</p>
+            <form method="POST" action="{% url 'event_register' event.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+            {% endif %}
+            {% endif %}
+            {% else %}
+            <p class="text-danger">Please log in to register for this event.</p>
+            {% endif %}
             {% endif %}
         </div>
     </div>
@@ -65,5 +63,27 @@
     <!-- Only show this button for event organisers -->
     <a href="{% url 'created_events' %}" class="btn btn-secondary">Back to My Events</a>
     {% endif %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="cancelEventModal" tabindex="-1" aria-labelledby="cancelEventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelEventModalLabel">Cancel Event</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to cancel this event? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <form method="POST" action="{% url 'delete_event' event.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Yes, Cancel Event</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -4,31 +4,40 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="text-center mb-4">Your Created Events</h1>
-    
+
+    <div class="text-right mb-4">
+        <a href="{% url 'create_event' %}" class="btn btn-success">Create New Event</a>
+    </div>
+
     {% if events %}
     <div class="row">
         {% for event in events %}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
+                {% if event.image_url %}
+                <img src="{{ event.image_url }}" class="card-img-top" alt="Image for {{ event.title }}">
+                {% endif %}
                 <div class="card-body">
-                    {% if event.image_url %}
-                    <img src="{{ event.image_url }}" class="card-img-top" alt="{{ event.title }}">
-                    {% endif %}
                     <h5 class="card-title">{{ event.title }}</h5>
                     <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
                     <p class="card-text"><strong>Time:</strong> {{ event.start_time|time:"g:i A" }}</p>
                     <p class="card-text"><strong>Location:</strong> {{ event.location.venue_name }}</p>
                     <p class="card-text"><small>Category: {{ event.get_category_display }}</small></p>
+                    <p class="card-text"><strong>Attendees:</strong> {{ event.registrations.count }}</p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
-                    <a href="{% url 'event_detail' event.id %}" class="btn btn-info">Manage Event</a>
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-info">Manage</a>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
+
+    <div class="mt-4">
+        <!-- Include pagination here if needed -->
+    </div>
     {% else %}
-    <p class="text-center">You haven't created any events yet.</p>
+    <p class="text-center">You haven't created any events yet. <a href="{% url 'create_event' %}">Create one now!</a></p>
     {% endif %}
 </div>
 {% endblock %}

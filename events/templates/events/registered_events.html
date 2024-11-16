@@ -11,6 +11,9 @@
         {% for registration in upcoming_events %}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
+                {% if registration.event.image_url %}
+                <img src="{{ registration.event.image_url }}" class="card-img-top" alt="Image for {{ registration.event.title }}">
+                {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ registration.event.title }}</h5>
                     <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>
@@ -37,6 +40,9 @@
         {% for registration in past_events %}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
+                {% if registration.event.image_url %}
+                <img src="{{ registration.event.image_url }}" class="card-img-top" alt="Image for {{ registration.event.title }}">
+                {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ registration.event.title }}</h5>
                     <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>

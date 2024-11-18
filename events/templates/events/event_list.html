@@ -79,14 +79,17 @@
                             <a href="{% url 'event_detail' event.id %}" class="btn btn-info">Event Details</a>
                         {% else %}
                             <!-- Event User: Show "Register" or "Registered" button -->
-                            {% if event.start_date > today %}
+                            {% if event.is_past %}
+                                <!-- Past Event -->
+                                <p class="text-warning">This event has come and gone! We hope to see you at the next one!</p>
+                            {% else %}
                                 {% if event.id in registered_events %}
+                                    <!-- User is already registered -->
                                     <button class="btn btn-success" disabled>Registered</button>
                                 {% else %}
+                                    <!-- Event is in the future, and user can register -->
                                     <a href="{% url 'event_register' event.id %}" class="btn btn-primary">Register</a>
                                 {% endif %}
-                            {% else %}
-                                <p class="text-warning">This event has come and gone! We hope to see you at the next one!</p>
                             {% endif %}
                             <a href="{% url 'event_detail' event.id %}" class="btn btn-info">View Event</a>
                         {% endif %}

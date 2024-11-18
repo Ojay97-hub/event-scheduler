@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.views.generic import TemplateView, DetailView
-from .models import Event, Registration, Location
-from .forms import EventForm, LocationForm, CustomUserCreationForm, EventRegistrationForm
+from .models import Event, Registration, Location, Comment
+from .forms import EventForm, LocationForm, CustomUserCreationForm, EventRegistrationForm, CommentForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
@@ -12,8 +12,11 @@ from django.conf import settings
 from django.utils import timezone
 from datetime import datetime
 from django.core.exceptions import ValidationError, PermissionDenied
-from django.db.models import Value, DateTimeField, Exists, OuterRef
+from django.db.models import Value, DateTimeField, Exists, OuterRef, Prefetch
 from django.db.models.functions import Concat
+from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 class HomeView(TemplateView):
@@ -24,8 +27,10 @@ class EventsList(generic.ListView):
     template_name = 'events/event_list.html'
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(start_date__gt=timezone.now().date())
+        # Get the base queryset filtered by current or future events
+        queryset = super().get_queryset().filter(start_date__gte=timezone.now().date())
 
+        # Retrieve filters from query parameters
         category = self.request.GET.get('category', '')
         date_start = self.request.GET.get('date_start', '')
         date_end = self.request.GET.get('date_end', '')
@@ -34,15 +39,15 @@ class EventsList(generic.ListView):
         free_only = self.request.GET.get('free', '')
         organiser_id = self.request.GET.get('organiser', '')
 
-        # Filter by category
+        # Apply category filter
         if category:
             queryset = queryset.filter(category=category)
-        
-        # Filter by organiser
+
+        # Apply organiser filter
         if organiser_id:
             queryset = queryset.filter(organiser_id=organiser_id)
 
-        # Filter by price
+        # Apply price filters
         if price_min:
             try:
                 queryset = queryset.filter(price__gte=float(price_min))
@@ -55,18 +60,18 @@ class EventsList(generic.ListView):
             except ValueError:
                 messages.error(self.request, "Invalid maximum price value.")
 
-        # Filter by free events
+        # Apply free event filter
         if free_only:
             queryset = queryset.filter(free=True)
 
-        # Filter by dates
+        # Apply date filters
         if date_start:
             try:
                 date_start = timezone.datetime.strptime(date_start, "%Y-%m-%d").date()
                 queryset = queryset.filter(start_date__gte=date_start)
             except ValueError:
                 messages.error(self.request, "Invalid start date format.")
-                
+
         if date_end:
             try:
                 date_end = timezone.datetime.strptime(date_end, "%Y-%m-%d").date()
@@ -74,7 +79,7 @@ class EventsList(generic.ListView):
             except ValueError:
                 messages.error(self.request, "Invalid end date format.")
 
-        # Combine start_date and start_time for ordering
+        # Annotate and order events by their start datetime
         queryset = queryset.annotate(
             start_datetime=Concat('start_date', Value(' '), 'start_time', output_field=DateTimeField())
         ).order_by('start_datetime').distinct()
@@ -83,9 +88,30 @@ class EventsList(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['category_choices'] = Event.CATEGORY_CHOICES
 
-        # Get registered events for the logged-in user
+        # Current date and time
+        today = timezone.now().date()  # Use only the date part
+        current_time = timezone.now().time()  # Full current time
+
+        # Calculate whether each event is in the past
+        for event in context['object_list']:
+            # Ensure we're comparing the date part only
+            if isinstance(event.end_date, datetime):  # If it's a datetime object, we need to extract the date part
+                event_end_date = event.end_date.date()  # Convert to date part only
+            else:
+                event_end_date = event.end_date  # It's already a date object
+
+            event.is_past = (
+                event_end_date < today or  # Event end date has passed
+                (event_end_date == today and event.end_time <= current_time)  # Event ends today and time has passed
+            )
+
+        # Add additional context for category choices, today, and current time
+        context['category_choices'] = Event.CATEGORY_CHOICES
+        context['today'] = today
+        context['now'] = timezone.now()  # Keep the full datetime for any further comparisons or views
+
+        # Registered events for the authenticated user
         if self.request.user.is_authenticated:
             registered_event_ids = Registration.objects.filter(user=self.request.user).values_list('event__id', flat=True)
             context['registered_events'] = list(registered_event_ids)
@@ -100,6 +126,7 @@ class EventsList(generic.ListView):
 
         return context
 
+# Event detail view 
 class EventDetailView(DetailView):
     model = Event
     template_name = 'events/event_detail.html'
@@ -113,8 +140,128 @@ class EventDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['form'] = EventRegistrationForm()  # Registration form for the event
         context['is_registered'] = Registration.objects.filter(user=self.request.user, event=self.object).exists() if self.request.user.is_authenticated else False
+
+        # Get the current date and time
+        today = timezone.localtime(timezone.now()) 
+
+        # Combine event start date and start time into a single datetime object and make it timezone-aware
+        event_start_datetime = timezone.make_aware(datetime.combine(self.object.start_date, self.object.start_time))
+
+        # Check if the event has already taken place
+        context['event_has_taken_place'] = event_start_datetime <= today
+
+
+        # Fetch parent comments and prefetch related replies
+        parent_comments = self.object.comments.filter(parent__isnull=True).prefetch_related(
+            Prefetch('replies', queryset=Comment.objects.all())
+        )
+
+        # Add data to context
+        context['parent_comments'] = parent_comments
+        context['form'] = EventRegistrationForm()  # Include the registration form if needed
         return context
 
+# COMMENTS
+# Helper function to check ownership and handle redirect
+def check_comment_ownership(comment, user):
+    if comment.user != user:
+        return redirect('event_detail', pk=comment.event.pk)  # Use pk instead of event_id
+
+@login_required
+def add_comment(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.event = event
+            comment.user = request.user
+
+            # Check if it's a reply to another comment
+            parent_comment_id = request.POST.get('parent_comment')
+            if parent_comment_id:
+                parent_comment = get_object_or_404(Comment, id=parent_comment_id)
+                comment.parent = parent_comment  # Set the parent comment
+
+            comment.save()
+            return redirect('event_detail', pk=event.pk)
+    else:
+        form = CommentForm()
+
+    return render(request, 'events/event_detail.html', {'event': event, 'form': form})
+
+@login_required 
+def add_reply(request, event_id):
+    if request.method == 'POST':
+        # Get the parent comment by its ID
+        parent_comment = get_object_or_404(Comment, id=request.POST['parent_comment'])
+        content = request.POST['content']
+
+        # Create a new reply as a comment with the parent comment set
+        new_reply = Comment.objects.create(
+            user=request.user,
+            content=content,
+            parent=parent_comment,  # Set the parent comment
+            event_id=event_id  # Associate the reply with the correct event
+        )
+        return redirect('event_detail', pk=event_id)
+
+# Editing a comment
+@login_required
+@csrf_exempt
+def edit_comment(request, comment_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            new_content = data.get('content')
+
+            if not new_content:
+                return JsonResponse({'success': False, 'error': 'Content cannot be empty'})
+
+            # Get the comment and update
+            comment = Comment.objects.get(id=comment_id)
+            if comment.user != request.user:
+                return JsonResponse({'success': False, 'error': 'You do not have permission to edit this comment'})
+
+            comment.content = new_content
+            comment.save()  # Save the updated comment
+            return JsonResponse({'success': True})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON'})
+        except Comment.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Comment not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+# Deleting a comment
+@login_required
+def delete_comment(request, comment_id):
+    if request.method == 'POST' and request.user.is_authenticated:
+        try:
+            comment = Comment.objects.get(id=comment_id, user=request.user)
+            comment.delete()
+            return JsonResponse({'success': True})
+        except Comment.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Comment not found'}, status=404)
+    return JsonResponse({'success': False, 'error': 'Unauthorized'}, status=403)
+
+# def delete_comment(request, comment_id):
+#     comment = get_object_or_404(Comment, id=comment_id)
+
+#     # Check if the user owns the comment
+#     if comment.user != request.user:
+#         return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
+
+#     if request.method == 'POST':
+#         comment.delete()
+#         return JsonResponse({'success': True})
+    
+#     return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=400)
 
 @login_required
 def create_event(request):
@@ -131,13 +278,6 @@ def create_event(request):
             event.organiser = request.user
             event.save()
             return redirect('created_events')  # Adjust the redirect as needed
-        # else:
-        #     # Debugging form errors
-        #     print("Event form errors:", event_form.errors)
-        #     print("Location form errors:", location_form.errors)
-
-        #     # Optional: print POST data to inspect
-        #     print(request.POST)
 
     else:
         event_form = EventForm()
@@ -336,17 +476,17 @@ def registered_events(request):
     # Get all events the user is registered for
     registered_events = Registration.objects.filter(user=request.user)
 
-    # Get the current date
-    today = timezone.now().date()
+    # Get the current date and time
+    now = timezone.now()
 
-    # Separate into upcoming and past events, ensuring compatibility in date comparison
+    # Separate into upcoming and past events
     upcoming_events = [
         registration for registration in registered_events 
-        if registration.event.start_date.date() >= today
+        if registration.event.start_date >= now
     ]
     past_events = [
         registration for registration in registered_events 
-        if registration.event.start_date.date() < today
+        if registration.event.start_date < now
     ]
 
     context = {

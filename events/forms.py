@@ -1,5 +1,5 @@
 from django import forms
-from .models import Event, Location
+from .models import Event, Location, Comment
 from django.forms.widgets import DateInput, TimeInput
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -99,3 +99,9 @@ class CustomUserCreationForm(UserCreationForm):
 # Event registration
 class EventRegistrationForm(forms.Form):
     email = forms.EmailField(label="Enter your email for confirmation", required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email address'}))
+
+# Add a comment
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']

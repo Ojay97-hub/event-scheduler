@@ -5,6 +5,8 @@ from datetime import datetime
 from django.db.models import Count 
 
 # Create your models here.
+
+# Location model for creating an event
 class Location(models.Model):
     venue_name = models.CharField(max_length=200)
     address_line_1 = models.CharField(max_length=300)
@@ -23,6 +25,8 @@ class Location(models.Model):
     def __str__(self):
         return f"{self.venue_name}, {self.town_city}, {self.postcode}"
 
+    
+# Event model 
 class Event(models.Model):
     CATEGORY_CHOICES = [
         ('workshop', 'Workshop'),
@@ -84,6 +88,7 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
+# Registering for events 
 class Registration(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='registrations')
@@ -97,3 +102,18 @@ class Registration(models.Model):
 
     def __str__(self):
         return f"{self.user.username} registered for {self.event.title}"
+
+# Comments 
+class Comment(models.Model):
+    event = models.ForeignKey(Event, related_name="comments", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Comment by {self.user.username} on {self.event.title}"
+
+    class Meta:
+        ordering = ['-created_at']  # Orders comments by creation time (most recent first)

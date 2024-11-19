@@ -82,8 +82,7 @@
             </div>
         </div>
 
-        <!-- Image -->
-                 <!-- Image Section -->
+        <!-- Image Section -->
         <div class="card mb-4">
             <div class="card-header">
                 <h5>Event Image</h5>
@@ -128,49 +127,67 @@
                 <h5>Location</h5>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    {{ location_form.venue_name.label_tag }}
-                    {{ location_form.venue_name|add_class:"form-control" }}
-                    {% for error in location_form.venue_name.errors %}
-                        <div class="text-danger">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                <div class="mb-3">
-                    {{ location_form.address_line_1.label_tag }}
-                    {{ location_form.address_line_1|add_class:"form-control" }}
-                    {% for error in location_form.address_line_1.errors %}
-                        <div class="text-danger">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                <div class="mb-3">
-                    {{ location_form.address_line_2.label_tag }}
-                    {{ location_form.address_line_2|add_class:"form-control" }}
-                    {% for error in location_form.address_line_2.errors %}
-                        <div class="text-danger">{{ error }}</div>
-                    {% endfor %}
+                <div id="location-fields">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            {{ location_form.venue_name.label_tag }}
+                            {{ location_form.venue_name|add_class:"form-control" }}
+                            {% for error in location_form.venue_name.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            {{ location_form.address_line_1.label_tag }}
+                            {{ location_form.address_line_1|add_class:"form-control" }}
+                            {% for error in location_form.address_line_1.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            {{ location_form.address_line_2.label_tag }}
+                            {{ location_form.address_line_2|add_class:"form-control" }}
+                            {% for error in location_form.address_line_2.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ location_form.town_city.label_tag }}
+                            {{ location_form.town_city|add_class:"form-control" }}
+                            {% for error in location_form.town_city.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ location_form.county.label_tag }}
+                            {{ location_form.county|add_class:"form-control" }}
+                            {% for error in location_form.county.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            {{ location_form.postcode.label_tag }}
+                            {{ location_form.postcode|add_class:"form-control" }}
+                            {% for error in location_form.postcode.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-6">
-                        {{ location_form.town_city.label_tag }}
-                        {{ location_form.town_city|add_class:"form-control" }}
-                        {% for error in location_form.town_city.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
+                    <div class="col-md-12">
+                        <div class="form-check">
+                            <label for="{{ location_form.is_online.id_for_label }}" class="form-check-label">Online Event</label>
+                            {{ location_form.is_online }}
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        {{ location_form.county.label_tag }}
-                        {{ location_form.county|add_class:"form-control" }}
-                        {% for error in location_form.county.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="mb-3">
-                    {{ location_form.postcode.label_tag }}
-                    {{ location_form.postcode|add_class:"form-control" }}
-                    {% for error in location_form.postcode.errors %}
-                        <div class="text-danger">{{ error }}</div>
-                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -185,6 +202,7 @@
                     {{ form.capacity.label_tag }}
                     {{ form.capacity|add_class:"form-control" }}
                     {% for error in form.capacity.errors %}
+                        <div class="text-danger">{{ error }}</div>
                     {% endfor %}
                 </div>
             </div>
@@ -196,15 +214,15 @@
                 <h5>Price</h5>
             </div>
             <div class="card-body">
-                <div class="mb-3" id="price-field">
+                <div id="price-field" class="mb-3">
                     {{ form.price.label_tag }}
-                    {{ form.price|add_class:"form-control" }}
+                    {{ form.price|add_class:"form-control"|attr:"id:price-input" }}
                     {% for error in form.price.errors %}
                         <div class="text-danger">{{ error }}</div>
                     {% endfor %}
                 </div>
                 <div class="form-check mb-3">
-                    <input type="checkbox" class="form-check-input" id="free-checkbox" name="is_free" {% if form.is_free.value %}checked{% endif %}>
+                    <input type="checkbox" class="form-check-input" id="free-checkbox" name="free" {% if form.free.value %}checked{% endif %}>
                     <label class="form-check-label" for="free-checkbox">Free Event</label>
                 </div>
             </div>
@@ -216,24 +234,4 @@
         </div>
     </form>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const freeCheckbox = document.getElementById('free-checkbox');
-        const priceField = document.getElementById('price-field');
-
-        function togglePriceField() {
-            if (freeCheckbox.checked) {
-                priceField.style.display = 'none';
-            } else {
-                priceField.style.display = 'block';
-            }
-        }
-
-        // Initial toggle based on checkbox state
-        togglePriceField();
-
-        // Add event listener to toggle on checkbox change
-        freeCheckbox.addEventListener('change', togglePriceField);
-    });
-</script>
 {% endblock %}

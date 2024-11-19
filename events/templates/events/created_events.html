@@ -16,12 +16,21 @@
             <div class="card h-100">
                 {% if event.image_url %}
                 <img src="{{ event.image_url }}" class="card-img-top" alt="Image for {{ event.title }}">
+                {% else %}
+                <img src="{% static 'images/default-event.jpg' %}" class="card-img-top" alt="Default Event Image">
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ event.title }}</h5>
                     <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
                     <p class="card-text"><strong>Time:</strong> {{ event.start_time|time:"g:i A" }}</p>
-                    <p class="card-text"><strong>Location:</strong> {{ event.location.venue_name }}</p>
+                    <p class="card-text">
+                        <strong>Location:</strong>
+                        {% if event.location.is_online %}
+                            <span class="text-success">Online Event</span>
+                        {% else %}
+                            {{ event.location.venue_name }}
+                        {% endif %}
+                    </p>
                     <p class="card-text"><small>Category: {{ event.get_category_display }}</small></p>
                     <p class="card-text"><strong>Attendees:</strong> {{ event.registrations.count }}</p>
                 </div>

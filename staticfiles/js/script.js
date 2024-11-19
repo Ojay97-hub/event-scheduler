@@ -1,1 +1,0 @@
-console.log("EVERYTHING IS AWESOME!");

@@ -15,22 +15,28 @@
             <h1 class="card-title">{{ event.title }}</h1>
             <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
             <p class="card-text"><strong>Time:</strong> {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</p>
-            <p class="card-text"><strong>Location:</strong> {{ event.location }}</p>
+            <p class="card-text"><strong>Location:</strong> 
+                {% if event.location.is_online %}
+                    <span class="text-success">This is an online event.</span>
+                {% else %}
+                    {{ event.location.venue_name }},
+                    {{ event.location.address_line_1 }}{% if event.location.address_line_2 %}, {{ event.location.address_line_2 }}{% endif %},
+                    {{ event.location.town_city }}{% if event.location.county %}, {{ event.location.county }}{% endif %},
+                    {{ event.location.postcode }}
+                {% endif %}
+            </p>
             <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
             <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
-            <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
+            <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} £{{ event.price }} {% endif %}</p>
 
             {% if user == event.organiser %}
-               <!-- Show Edit and Cancel options for the organiser -->
             <a href="{% url 'edit_event' event.id %}" class="btn btn-warning">Edit Event</a>
-            <!-- Button to trigger modal -->
             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelEventModal">
                 Cancel Event
             </button>
             <a href="{% url 'attendee_list' event.id %}" class="btn btn-info">View Attendee List</a>
             {% else %}
-              <!-- Registration Form -->
-                {% if user.is_authenticated %}
+            {% if user.is_authenticated %}
                 {% if event_has_taken_place %}
                 <p class="text-muted">This event has already taken place. We hope to see you at our upcoming events!</p>
                 {% else %}
@@ -59,18 +65,16 @@
             {% else %}
                 <p class="text-danger">Please log in to register for this event.</p>
             {% endif %}
-        {% endif %}
+            {% endif %}
         </div>
     </div>
 
     <a href="{% url 'event_list' %}" class="btn btn-secondary mb-3">Back to Events List</a>
 
     {% if is_event_organiser %}
-    <!-- Only show this button for event organisers -->
-    <a href="{% url 'created_events' %}" class="btn btn-secondary">Back to My Events</a>
+    <a href="{% url 'created_events' %}" class="btn btn-secondary mb-3">Back to My Events</a>
     {% endif %}
 
-    <!-- Modal for canceling event -->
     <div class="modal fade" id="cancelEventModal" tabindex="-1" aria-labelledby="cancelEventModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -92,6 +96,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
-

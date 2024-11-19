@@ -9,108 +9,116 @@
     <div class="alert alert-info text-center">
         You are creating an event as <strong>{{ request.user.username }}</strong>
     </div>
-    
+
     <form method="POST" class="bg-light p-4 rounded shadow">
         {% csrf_token %}
-        
+
         <!-- Event Details Section -->
         <div class="card mb-4">
             <div class="card-header">
                 <h5>Event Details</h5>
             </div>
             <div class="card-body">
+                <!-- TITLE -->
                 <div class="row mb-3">
                     <div class="col-md-12">
                         {{ event_form.title.label_tag }}
                         {{ event_form.title|add_class:"form-control" }}
                         {% for error in event_form.title.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
                 </div>
+                <!-- DATE -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         {{ event_form.start_date.label_tag }}
                         {{ event_form.start_date|add_class:"form-control" }}
                         {% for error in event_form.start_date.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
                     <div class="col-md-6">
                         {{ event_form.end_date.label_tag }}
                         {{ event_form.end_date|add_class:"form-control" }}
                         {% for error in event_form.end_date.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
                 </div>
+                <!-- TIME -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         {{ event_form.start_time.label_tag }}
                         {{ event_form.start_time|add_class:"form-control" }}
                         {% for error in event_form.start_time.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
                     <div class="col-md-6">
                         {{ event_form.end_time.label_tag }}
                         {{ event_form.end_time|add_class:"form-control" }}
                         {% for error in event_form.end_time.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
                 </div>
+                <!-- IMAGE URL -->
                 <div class="mb-3">
                     {{ event_form.image_url.label_tag }}
                     <p>Includes: .jpg, .jpeg, .png, .gif</p>
                     {{ event_form.image_url|add_class:"form-control" }}
                     {% for error in event_form.image_url.errors %}
-                        <div class="text-danger">{{ error }}</div>
+                        <div class="invalid-feedback d-block">{{ error }}</div>
                     {% endfor %}
-        
                 </div>
+                <!-- DESCRIPTION -->
                 <div class="row mb-3">
                     <div class="col-md-12">
                         {{ event_form.description.label_tag }}
                         {{ event_form.description|add_class:"form-control" }}
                         {% for error in event_form.description.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
                 </div>
+                <!-- CAPACITY -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         {{ event_form.capacity.label_tag }}
                         {{ event_form.capacity|add_class:"form-control" }}
                         {% for error in event_form.capacity.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
+                    <!-- CATEGORY -->
                     <div class="col-md-6">
                         {{ event_form.category.label_tag }}
                         {{ event_form.category|add_class:"form-control" }}
                         {% for error in event_form.category.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
                 </div>
-
+                <!-- PRICE OR FREE -->
                 <div class="row mb-3">
                     <div class="col-md-6" id="price-field">
-                        {{ event_form.price.label_tag }}
-                        <input type="number" name="{{ event_form.price.name }}" id="price-input" class="form-control" value="{{ event_form.price.value }}">
+                        <label for="price-input">Price:</label>
+                        <input type="number" name="price" id="price-input" class="form-control"
+                               value="{{ event_form.price.value|default:'' }}" min="1">
                         {% for error in event_form.price.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
                     <div class="col-md-6">
                         <label class="form-check-label" for="free-checkbox">{{ event_form.free.label }}</label>
                         <input type="checkbox" name="{{ event_form.free.name }}" id="free-checkbox" class="form-check-input" {% if event_form.free.value %}checked{% endif %}>
                         {% for error in event_form.free.errors %}
-                            <div class="text-danger">{{ error }}</div>
+                            <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
                 </div>
+            </div>
         </div>
 
         <!-- Location Section -->
@@ -119,56 +127,66 @@
                 <h5>Location</h5>
             </div>
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        {{ location_form.venue_name.label_tag }}
-                        {{ location_form.venue_name|add_class:"form-control" }}
-                        {% for error in location_form.venue_name.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
+                <div id="location-fields">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            {{ location_form.venue_name.label_tag }}
+                            {{ location_form.venue_name|add_class:"form-control" }}
+                            {% for error in location_form.venue_name.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            {{ location_form.address_line_1.label_tag }}
+                            {{ location_form.address_line_1|add_class:"form-control" }}
+                            {% for error in location_form.address_line_1.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            {{ location_form.address_line_2.label_tag }}
+                            {{ location_form.address_line_2|add_class:"form-control" }}
+                            {% for error in location_form.address_line_2.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ location_form.town_city.label_tag }}
+                            {{ location_form.town_city|add_class:"form-control" }}
+                            {% for error in location_form.town_city.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ location_form.county.label_tag }}
+                            {{ location_form.county|add_class:"form-control" }}
+                            {% for error in location_form.county.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            {{ location_form.postcode.label_tag }}
+                            {{ location_form.postcode|add_class:"form-control" }}
+                            {% for error in location_form.postcode.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-12">
-                        {{ location_form.address_line_1.label_tag }}
-                        {{ location_form.address_line_1|add_class:"form-control" }}
-                        {% for error in location_form.address_line_1.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        {{ location_form.address_line_2.label_tag }}
-                        {{ location_form.address_line_2|add_class:"form-control" }}
-                        {% for error in location_form.address_line_2.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        {{ location_form.town_city.label_tag }}
-                        {{ location_form.town_city|add_class:"form-control" }}
-                        {% for error in location_form.town_city.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="col-md-6">
-                        {{ location_form.county.label_tag }}
-                        {{ location_form.county|add_class:"form-control" }}
-                        {% for error in location_form.county.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        {{ location_form.postcode.label_tag }}
-                        {{ location_form.postcode|add_class:"form-control" }}
-                        {% for error in location_form.postcode.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
+                        <div class="form-check">
+                            <label for="{{ location_form.is_online.id_for_label }}" class="form-check-label">Online Event</label>
+                            {{ location_form.is_online }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -180,25 +198,4 @@
         </div>
     </form>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const freeCheckbox = document.getElementById('free-checkbox');
-        const priceField = document.getElementById('price-field');
-
-        function togglePriceField() {
-            if (freeCheckbox.checked) {
-                priceField.style.display = 'none';
-            } else {
-                priceField.style.display = 'block';
-            }
-        }
-
-        // Initial toggle based on checkbox state
-        togglePriceField();
-
-        // Add event listener to toggle on checkbox change
-        freeCheckbox.addEventListener('change', togglePriceField);
-    });
-</script>
 {% endblock %}

@@ -38,6 +38,8 @@ class EventsList(generic.ListView):
         price_max = self.request.GET.get('price_max', '')
         free_only = self.request.GET.get('free', '')
         organiser_id = self.request.GET.get('organiser', '')
+        is_online = self.request.GET.get('is_online', '')
+        is_in_person = self.request.GET.get('is_in_person', '')
 
         # Apply category filter
         if category:
@@ -63,6 +65,12 @@ class EventsList(generic.ListView):
         # Apply free event filter
         if free_only:
             queryset = queryset.filter(free=True)
+
+        # Apply online and in-person filters
+        if is_online and not is_in_person:
+            queryset = queryset.filter(location__is_online=True)
+        elif is_in_person and not is_online:
+            queryset = queryset.filter(location__is_online=False)
 
         # Apply date filters
         if date_start:
@@ -122,6 +130,7 @@ class EventsList(generic.ListView):
         organisers = User.objects.filter(events__isnull=False).distinct()
         context['organisers'] = organisers
 
+        # Organiser status for each event
         context['organiser_status_by_event'] = {event.id: (event.organiser == self.request.user) for event in context['object_list']}
 
         return context
@@ -150,14 +159,7 @@ class EventDetailView(DetailView):
         # Check if the event has already taken place
         context['event_has_taken_place'] = event_start_datetime <= today
 
-
-        # Fetch parent comments and prefetch related replies
-        parent_comments = self.object.comments.filter(parent__isnull=True).prefetch_related(
-            Prefetch('replies', queryset=Comment.objects.all())
-        )
-
         # Add data to context
-        context['parent_comments'] = parent_comments
         context['form'] = EventRegistrationForm()  # Include the registration form if needed
         return context
 
@@ -167,7 +169,11 @@ def create_event(request):
         event_form = EventForm(request.POST)
         location_form = LocationForm(request.POST)
 
+        print("Debug: EventForm data:", event_form.data)
+        print("Debug: LocationForm data:", location_form.data)
+
         if event_form.is_valid() and location_form.is_valid():
+            print("Debug: Both forms are valid.")
             # Save the location first
             location = location_form.save()
             # Now create the event with the saved location
@@ -175,7 +181,12 @@ def create_event(request):
             event.location = location
             event.organiser = request.user
             event.save()
+            print("Debug: Event saved successfully.")
             return redirect('created_events')  # Adjust the redirect as needed
+
+        # Print errors for debugging
+        print("Debug: EventForm errors:", event_form.errors)
+        print("Debug: LocationForm errors:", location_form.errors)
 
     else:
         event_form = EventForm()
@@ -189,45 +200,54 @@ def create_event(request):
 
 @login_required
 def edit_event(request, event_id):
-    # Get the event object or return a 404 error if not found
     event = get_object_or_404(Event, id=event_id)
-    
-    # Check if the user is the organizer of the event
+
+    # Only allow the organiser to edit the event
     if request.user != event.organiser:
-        return redirect('event_list')  # Replace with appropriate view name
+        messages.error(request, "You are not authorized to edit this event.")
+        return redirect('event_detail', pk=event.id)
 
     if request.method == 'POST':
-        # Initialize forms with POST data
+        print("Debug: POST request received.")
+
         event_form = EventForm(request.POST, instance=event)
         location_form = LocationForm(request.POST, instance=event.location)
 
-        # Print POST data for debugging
-        print("POST data:", request.POST)
+        print(f"Debug: EventForm data: {event_form.data}")
+        print(f"Debug: LocationForm data: {location_form.data}")
 
         if event_form.is_valid() and location_form.is_valid():
-            # If forms are valid, save them
-            event_form.save()
-            location_form.save()
-            print("Forms are valid, redirecting to event detail.")
-            return redirect('event_detail', pk=event.id)  # Ensure 'pk' is used correctly
+            print("Debug: Both forms are valid.")
 
+            # Save the location first
+            location = location_form.save()
+            print(f"Debug: Updated location: {location}")
+
+            # Save the event
+            event = event_form.save(commit=False)
+            event.location = location
+            event.save()
+            print(f"Debug: Updated event: {event}")
+
+            messages.success(request, "Event updated successfully.")
+            print(f"Debug: Redirecting to event_detail with pk={event.id}")
+            return redirect('event_detail', pk=event.id)
         else:
-            # Print form errors if validation fails
-            print("Event form errors:", event_form.errors)
-            print("Location form errors:", location_form.errors)
-
+            print("Debug: EventForm errors:", event_form.errors)
+            print("Debug: LocationForm errors:", location_form.errors)
+            messages.error(request, "Please correct the errors below.")
     else:
-        # Initialize forms with existing instance data for GET request
+        print("Debug: GET request received.")
+
         event_form = EventForm(instance=event)
         location_form = LocationForm(instance=event.location)
 
-    context = {
+    return render(request, 'events/edit_event.html', {
         'form': event_form,
         'location_form': location_form,
         'event': event,
-    }
-    
-    return render(request, 'events/edit_event.html', context)
+    })
+
 
 @login_required
 def delete_event(request, event_id):

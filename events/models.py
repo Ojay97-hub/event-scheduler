@@ -14,6 +14,7 @@ class Location(models.Model):
     town_city = models.CharField(max_length=100)
     county = models.CharField(max_length=100, blank=True, null=True)
     postcode = models.CharField(max_length=20)
+    is_online = models.BooleanField(default=False)
 
     def current_event_title(self):
         event = self.events.filter(start_date__gte=timezone.now()).first()
@@ -46,7 +47,7 @@ class Event(models.Model):
 
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
-    image_url = models.URLField("Event Image URL", blank=True, null=True)
+    image_url = models.URLField(max_length=500, blank=False, null=False, default="https://example.com/default-image.jpg")
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField()
     start_time = models.TimeField()

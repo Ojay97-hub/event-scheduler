@@ -20,7 +20,7 @@
                         {% endfor %}
                     </select>
                 </div>
-
+            
                 <div class="mb-3">
                     <label for="organiser-filter">Filter by Organiser:</label>
                     <select id="organiser-filter" name="organiser" class="form-select mb-3">
@@ -38,12 +38,31 @@
                         <input type="number" id="price-max" name="price_max" class="form-control" placeholder="Max" value="{{ request.GET.price_max }}">
                     </div>
                 </div>
-
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="free-events" name="free" {% if request.GET.free %}checked{% endif %}>
-                    <label class="form-check-label" for="free-events">Free Events</label>
+            
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Event Type:</label>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="online-events" name="is_online" {% if request.GET.is_online %}checked{% endif %}>
+                                <label class="form-check-label" for="online-events">Online Events</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="in-person-events" name="is_in_person" {% if request.GET.is_in_person %}checked{% endif %}>
+                                <label class="form-check-label" for="in-person-events">In-Person Events</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="free-events" name="free" {% if request.GET.free %}checked{% endif %}>
+                                <label class="form-check-label" for="free-events">Free Events</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
+            
                 <div class="mb-3">
                     <label for="date-start">Date Range:</label>
                     <div class="d-flex">
@@ -51,7 +70,7 @@
                         <input type="date" id="date-end" name="date_end" class="form-control" value="{{ request.GET.date_end }}">
                     </div>
                 </div>
-
+            
                 <button type="submit" class="btn btn-primary">Filter</button>
             </form>
         </div>
@@ -66,11 +85,18 @@
                     <img src="{{ event.image_url }}" class="card-img-top" alt="{{ event.title }}">
                     {% endif %}
                     <h2 class="card-title">{{ event.title }}</h2>
+                    <p class="card-text"><strong>Location:</strong> 
+                        {% if event.location.is_online %}
+                            Online
+                        {% else %}
+                            {{ event.location.town_city }}, {{ event.location.postcode }}
+                        {% endif %}
+                    </p>
                     <p class="card-text"><strong>An event by: </strong> {{ event.organiser.username }}</p>
                     <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, g:i a" }}</p>
                     <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
                     <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
-                    <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} ${{ event.price }} {% endif %}</p>
+                    <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} £{{ event.price }} {% endif %}</p>
                 
                     <!-- Show registration button or event details based on user's status -->
                     {% if user.is_authenticated %}

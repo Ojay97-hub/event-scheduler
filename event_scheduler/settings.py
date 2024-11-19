@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'django_summernote', 
     'events',
     'widget_tweaks',
-    'debug_toolbar',
+    # 'debug_toolbar',
 ]
 
 # Media files

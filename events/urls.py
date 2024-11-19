@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.urls import path, include
-import debug_toolbar
 from django.shortcuts import render, redirect, get_object_or_404
 from . import views
 from .views import HomeView, EventsList, create_event, register, register_for_event, EventDetailView, registered_events, delete_event, edit_event, attendee_list, organiser_events

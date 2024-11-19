@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     'django_summernote', 
     'events',
     'widget_tweaks',
-    # 'debug_toolbar',
 ]
 
 # Media files
@@ -71,7 +70,6 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

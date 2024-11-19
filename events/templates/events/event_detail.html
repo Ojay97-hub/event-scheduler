@@ -73,8 +73,10 @@
 
     {% if is_event_organiser %}
     <a href="{% url 'created_events' %}" class="btn btn-secondary mb-3">Back to My Events</a>
+    {% elif user.is_authenticated %}
+    <a href="{% url 'registered_events' %}" class="btn btn-secondary mb-3">Back to My Events</a>
     {% endif %}
-
+    
     <div class="modal fade" id="cancelEventModal" tabindex="-1" aria-labelledby="cancelEventModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

@@ -17,7 +17,13 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ registration.event.title }}</h5>
                     <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>
-                    <p class="card-text"><strong>Location:</strong> {{ registration.event.location }}</p>
+                    <p class="card-text"><strong>Location:</strong> 
+                        {% if registration.event.location.is_online %}
+                            <span class="text-success">Online Event</span>
+                        {% else %}
+                            {{ registration.event.location.town_city }}, {{ registration.event.location.postcode }}
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
                     <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-info">View Event</a>
@@ -46,7 +52,13 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ registration.event.title }}</h5>
                     <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>
-                    <p class="card-text"><strong>Location:</strong> {{ registration.event.location }}</p>
+                    <p class="card-text"><strong>Location:</strong> 
+                        {% if registration.event.location.is_online %}
+                            <span class="text-success">Online Event</span>
+                        {% else %}
+                            {{ registration.event.location.town_city }}, {{ registration.event.location.postcode }}
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
                     <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-info">View Event</a>

@@ -25,6 +25,8 @@ class HomeView(TemplateView):
 class EventsList(generic.ListView):
     model = Event
     template_name = 'events/event_list.html'
+    context_object_name = "object_list"
+    paginate_by = 9 
 
     def get_queryset(self):
         # Get the base queryset filtered by current or future events

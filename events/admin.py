@@ -1,17 +1,11 @@
 from django.contrib import admin
 from django.utils import timezone
-from .models import Event, Registration, Location, Comment
+from .models import Event, Registration, Location
 from django_summernote.admin import SummernoteModelAdmin
 
 class RegistrationInline(admin.TabularInline):
     model = Registration
     extra = 1 
-
-class CommentInline(admin.TabularInline):
-    model = Comment
-    extra = 1
-    readonly_fields = ['user', 'content', 'created_at', 'updated_at'] 
-    can_delete = True  
 
 class StatusFilter(admin.SimpleListFilter):
     title = 'Status'
@@ -46,4 +40,3 @@ class LocationAdmin(admin.ModelAdmin):
 admin.site.register(Event, EventsAdmin)
 admin.site.register(Registration)
 admin.site.register(Location, LocationAdmin)
-admin.site.register(Comment)

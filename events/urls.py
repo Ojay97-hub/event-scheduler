@@ -3,7 +3,7 @@ from django.urls import path, include
 import debug_toolbar
 from django.shortcuts import render, redirect, get_object_or_404
 from . import views
-from .views import HomeView, EventsList, create_event, register, register_for_event, EventDetailView, registered_events, delete_event, edit_event, attendee_list, organiser_events, add_comment, add_reply, edit_comment, delete_comment
+from .views import HomeView, EventsList, create_event, register, register_for_event, EventDetailView, registered_events, delete_event, edit_event, attendee_list, organiser_events
 
 urlpatterns = [
     # Other URL patterns
@@ -20,14 +20,4 @@ urlpatterns = [
     path('event/register/<int:event_id>/', register_for_event, name='event_register'),  # Event registration
     path('my-events/', registered_events, name='registered_events'),  # View registered events
     path('unregister/<int:event_id>/', views.unregister_from_event, name='unregister_from_event'),  # Unregister from event
-
-    # Comment URLs
-    path('event/<int:event_id>/comment/add/', add_comment, name='add_comment'),  # Add comment
-    path('event/<int:event_id>/reply/', views.add_reply, name='add_reply'), # Reply to comment
-    path('edit_comment/<int:comment_id>/', views.edit_comment, name='edit_comment'),  # Edit comment
-    path('delete_comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),  # Delete comment
 ]
-
-# Add this if you are running in development mode to enable the debug toolbar
-if settings.DEBUG:
-    urlpatterns = [path('__debug__/', include(debug_toolbar.urls))] + urlpatterns

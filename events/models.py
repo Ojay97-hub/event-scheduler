@@ -102,18 +102,3 @@ class Registration(models.Model):
 
     def __str__(self):
         return f"{self.user.username} registered for {self.event.title}"
-
-# Comments 
-class Comment(models.Model):
-    event = models.ForeignKey(Event, related_name="comments", on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Comment by {self.user.username} on {self.event.title}"
-
-    class Meta:
-        ordering = ['-created_at']  # Orders comments by creation time (most recent first)

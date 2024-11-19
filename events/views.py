@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.views.generic import TemplateView, DetailView
-from .models import Event, Registration, Location, Comment
-from .forms import EventForm, LocationForm, CustomUserCreationForm, EventRegistrationForm, CommentForm
+from .models import Event, Registration, Location
+from .forms import EventForm, LocationForm, CustomUserCreationForm, EventRegistrationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
@@ -160,108 +160,6 @@ class EventDetailView(DetailView):
         context['parent_comments'] = parent_comments
         context['form'] = EventRegistrationForm()  # Include the registration form if needed
         return context
-
-# COMMENTS
-# Helper function to check ownership and handle redirect
-def check_comment_ownership(comment, user):
-    if comment.user != user:
-        return redirect('event_detail', pk=comment.event.pk)  # Use pk instead of event_id
-
-@login_required
-def add_comment(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
-
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.event = event
-            comment.user = request.user
-
-            # Check if it's a reply to another comment
-            parent_comment_id = request.POST.get('parent_comment')
-            if parent_comment_id:
-                parent_comment = get_object_or_404(Comment, id=parent_comment_id)
-                comment.parent = parent_comment  # Set the parent comment
-
-            comment.save()
-            return redirect('event_detail', pk=event.pk)
-    else:
-        form = CommentForm()
-
-    return render(request, 'events/event_detail.html', {'event': event, 'form': form})
-
-@login_required 
-def add_reply(request, event_id):
-    if request.method == 'POST':
-        # Get the parent comment by its ID
-        parent_comment = get_object_or_404(Comment, id=request.POST['parent_comment'])
-        content = request.POST['content']
-
-        # Create a new reply as a comment with the parent comment set
-        new_reply = Comment.objects.create(
-            user=request.user,
-            content=content,
-            parent=parent_comment,  # Set the parent comment
-            event_id=event_id  # Associate the reply with the correct event
-        )
-        return redirect('event_detail', pk=event_id)
-
-# Editing a comment
-@login_required
-@csrf_exempt
-def edit_comment(request, comment_id):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            new_content = data.get('content')
-
-            if not new_content:
-                return JsonResponse({'success': False, 'error': 'Content cannot be empty'})
-
-            # Get the comment and update
-            comment = Comment.objects.get(id=comment_id)
-            if comment.user != request.user:
-                return JsonResponse({'success': False, 'error': 'You do not have permission to edit this comment'})
-
-            comment.content = new_content
-            comment.save()  # Save the updated comment
-            return JsonResponse({'success': True})
-
-        except json.JSONDecodeError:
-            return JsonResponse({'success': False, 'error': 'Invalid JSON'})
-        except Comment.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Comment not found'})
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
-
-# Deleting a comment
-@login_required
-def delete_comment(request, comment_id):
-    if request.method == 'POST' and request.user.is_authenticated:
-        try:
-            comment = Comment.objects.get(id=comment_id, user=request.user)
-            comment.delete()
-            return JsonResponse({'success': True})
-        except Comment.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Comment not found'}, status=404)
-    return JsonResponse({'success': False, 'error': 'Unauthorized'}, status=403)
-
-# def delete_comment(request, comment_id):
-#     comment = get_object_or_404(Comment, id=comment_id)
-
-#     # Check if the user owns the comment
-#     if comment.user != request.user:
-#         return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
-
-#     if request.method == 'POST':
-#         comment.delete()
-#         return JsonResponse({'success': True})
-    
-#     return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=400)
 
 @login_required
 def create_event(request):

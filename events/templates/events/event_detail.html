@@ -63,105 +63,6 @@
         </div>
     </div>
 
-    <!-- COMMENT SECTION WITH TOGGLE BUTTON -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <!-- View Comments Button -->
-            <button class="btn btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#commentsSection" aria-expanded="false" aria-controls="commentsSection" id="toggleButton">
-                View Comments
-            </button>
-    
-            <!-- Collapsible Comments Section -->
-            <div class="collapse" id="commentsSection">
-                <h4 class="text-center mb-4 pb-2">Comments</h4>
-    
-                <!-- Add a Comment Section -->
-                {% if user.is_authenticated %}
-                <form method="POST" action="{% url 'add_comment' event.id %}">
-                    {% csrf_token %}
-                    <div class="mb-3 position-relative">
-                        <textarea name="content" class="form-control" rows="3" placeholder="Write a comment..." id="commentText" oninput="checkWordCount('commentText', 'commentWordCount')"></textarea>
-                        <button type="submit" class="btn btn-primary position-absolute end-0 bottom-0 mb-2 me-2" id="commentSubmitBtn">Post</button>
-                    </div>
-                    <div>
-                        <p id="commentWordCount" class="text-muted text-end">0/50 words</p>
-                    </div>
-                </form>
-                {% else %}
-                <p class="text-center text-danger">Please log in to leave a comment.</p>
-                {% endif %}
-    
-                <!-- Parent Comments -->
-                <div class="row">
-                    <div class="col">
-                        {% for comment in parent_comments %}
-                        <div class="d-flex flex-start mb-4" id="comment{{ comment.id }}">
-                            <div class="flex-grow-1 flex-shrink-1">
-                                <div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="mb-1">
-                                            <strong>{{ comment.user.username }}</strong>
-                                            <span class="small">- {{ comment.created_at|timesince }} ago</span>
-                                        </p>
-    
-                                        <!-- Edit and Delete Buttons (only for the comment owner) -->
-                                        {% if comment.user == user %}
-                                        <div class="d-flex">
-                                            <a href="javascript:void(0);" class="text-info me-2" onclick="editComment({{ comment.id }})">
-                                                <i class="fas fa-edit fa-xs"></i><span class="small"> Edit</span>
-                                            </a>
-                                            <a href="javascript:void(0);" class="text-danger" onclick="deleteComment({{ comment.id }})">
-                                                <i class="fas fa-trash fa-xs"></i><span class="small"> Delete</span>
-                                            </a>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-    
-                                    <!-- Comment Content -->
-                                    <p class="small mb-0" id="commentContent{{ comment.id }}">{{ comment.content }}</p>
-    
-                                    <!-- Reply Button (Right-Aligned and Styled) -->
-                                    <div class="d-flex justify-content-end">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="toggleReplyForm({{ comment.id }})" style="min-width: 100px;">
-                                            <i class="fas fa-reply"></i> Reply
-                                        </button>
-                                    </div>
-    
-                                    <!-- Reply Form (Initially Hidden) -->
-                                    <div id="replyForm{{ comment.id }}" class="d-none mt-3">
-                                        <form method="POST" action="{% url 'add_reply' event.id %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="parent_comment" value="{{ comment.id }}">
-                                            <textarea name="content" class="form-control" rows="2" placeholder="Write your reply..."></textarea>
-                                            <button type="submit" class="btn btn-primary btn-sm mt-2">Post Reply</button>
-                                        </form>
-                                    </div>
-    
-                                    <!-- Display Replies (Indented) -->
-                                    <div class="mt-3" style="margin-left: 20px;">
-                                        {% for reply in comment.replies.all %}
-                                        <div class="d-flex flex-start mb-3" id="comment{{ reply.id }}">
-                                            <div class="flex-grow-1 flex-shrink-1">
-                                                <p class="small mb-0"><strong>{{ reply.user.username }}</strong> - {{ reply.content }}</p>
-                                            </div>
-                                        </div>
-                                        {% empty %}
-                                        <p class="text-muted">No replies yet.</p>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <p class="text-center text-muted">No comments yet. Be the first to comment!</p>
-                        {% endfor %}
-                    </div>
-                </div>
-    
-            </div> <!-- End of Collapse -->
-        </div>
-    </div>
-
     <a href="{% url 'event_list' %}" class="btn btn-secondary mb-3">Back to Events List</a>
 
     {% if is_event_organiser %}
@@ -192,6 +93,5 @@
     </div>
 </div>
 
-<!-- Comments in the JS file -->
-<script src="{% static 'js/comments.js' %}"></script>
 {% endblock %}
+

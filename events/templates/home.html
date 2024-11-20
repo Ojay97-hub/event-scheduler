@@ -12,19 +12,17 @@
                 {% if user.is_authenticated %}
                 <!-- Check if user is an Event Organiser -->
                 {% if is_event_organiser %}
-                    <p class="lead">You are now logged in as an <u>Event Organiser.</u></p>
+                    <p class="lead">You are now logged in as an <em><u>Event Organiser.</u></em></p>
                     <!-- Create events CTA -->
-                    <a href="{% url 'create_event' %}" class="btn btn-primary btn-lg mr-2">Create Event</a>
+                    <a href="{% url 'create_event' %}" class="btn btn-lg mr-2">Create Event</a>
                 {% else %}
                     <!-- Else is Event User -->
-                    <p class="lead">You are now logged in as an Event User.</p>
+                    <p class="lead">You are now logged in as an <em><u>Event User.</u></em></p>
                     <!-- Browse Events CTA -->
-                    <a href="{% url 'event_list' %}" class="btn btn-primary btn-lg mr-2">Browse Events</a>
+                    <a href="{% url 'event_list' %}" class="btn btn-lg mr-2">Browse Events</a>
                 {% endif %}
                         
                 <!-- Sign Up and Log In Buttons -->
-                <div class="mt-4">
-                        <a href="{% url 'account_logout' %}" class="btn btn-secondary btn-lg">Logout</a>
                     {% else %}
                     <!-- Message for unauthenticated users -->
                     <p class="lead">In order to use our features, please either sign up or log in!</p>
@@ -35,7 +33,29 @@
                 
             </div>
             
-            <img src="{% static 'images/hero_image.jpg' %}" alt="Eventory Hero" class="img-fluid mt-3 mb-4 rounded">
+            <!-- Hero Image Carousel -->
+            <div id="heroCarousel" class="carousel slide mt-3 mb-4 rounded" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'images/hero_image.jpg' %}" class="d-block w-100" alt="Colosseum">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'images/hero_image2.jpg' %}" class="d-block w-100" alt="Second Slide">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'images/hero_image3.jpg' %}" class="d-block w-100" alt="Third Slide">
+                    </div>
+                </div>
+                <!-- Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
 
             <div class="bg-white rounded shadow-sm p-4">
                 <h2>What We Do</h2>

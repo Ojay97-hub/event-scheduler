@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Sign-up for Events Below!</h1>
+    <h1 class="text-center mb-4">Go Find Your Next Event!</h1>
 
     <div class="mb-4">
         <button class="btn btn-secondary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel" aria-expanded="false" aria-controls="filterPanel">
@@ -93,7 +93,7 @@
                         {% endif %}
                     </p>
                     <p class="card-text"><strong>An event by: </strong> {{ event.organiser.username }}</p>
-                    <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, g:i a" }}</p>
+                    <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
                     <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
                     <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
                     <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} £{{ event.price }} {% endif %}</p>

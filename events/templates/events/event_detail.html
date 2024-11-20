@@ -12,8 +12,8 @@
         <img src="{% static 'images/generic-event-img.jpg' %}" class="card-img-top" alt="{{ event.title }}">
         {% endif %}
         <div class="card-body">
-            <h1 class="card-title">{{ event.title }}</h1>
-            <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
+            <h1 class="card-title detail-title">{{ event.title }}</h1>
+            <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }} to {{ event.end_date|date:"F j, Y" }}</p>
             <p class="card-text"><strong>Time:</strong> {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</p>
             <p class="card-text"><strong>Location:</strong> 
                 {% if event.location.is_online %}

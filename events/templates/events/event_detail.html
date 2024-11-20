@@ -17,7 +17,7 @@
             <p class="card-text"><strong>Time:</strong> {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</p>
             <p class="card-text"><strong>Location:</strong> 
                 {% if event.location.is_online %}
-                    <span class="text-success">This is an online event.</span>
+                    <span>Online event!</span>
                 {% else %}
                     {{ event.location.venue_name }},
                     {{ event.location.address_line_1 }}{% if event.location.address_line_2 %}, {{ event.location.address_line_2 }}{% endif %},

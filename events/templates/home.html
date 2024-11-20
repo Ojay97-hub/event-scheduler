@@ -12,7 +12,7 @@
                 {% if user.is_authenticated %}
                 <!-- Check if user is an Event Organiser -->
                 {% if is_event_organiser %}
-                    <p class="lead">You are now logged in as an Event Organiser.</p>
+                    <p class="lead">You are now logged in as an <u>Event Organiser.</u></p>
                     <!-- Create events CTA -->
                     <a href="{% url 'create_event' %}" class="btn btn-primary btn-lg mr-2">Create Event</a>
                 {% else %}
@@ -81,15 +81,15 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-body text-center">
-                                <p class="card-text">"Eventory helped me find the perfect events in my area!"</p>
-                                <footer class="blockquote-footer">Jane Doe</footer>
+                                <p class="card-text review">"Eventory helped me find the perfect events in my area!"</p>
+                                <footer class="blockquote-footer">Sarah Jones</footer>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-body text-center">
-                                <p class="card-text">"Creating events has never been easier!"</p>
+                                <p class="card-text review">"Creating events has never been easier!"</p>
                                 <footer class="blockquote-footer">John Smith</footer>
                             </div>
                         </div>
@@ -97,7 +97,7 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-body text-center">
-                                <p class="card-text">"Great platform to stay connected with local happenings."</p>
+                                <p class="card-text review">"Great platform to stay connected with local happenings."</p>
                                 <footer class="blockquote-footer">Alice Brown</footer>
                             </div>
                         </div>

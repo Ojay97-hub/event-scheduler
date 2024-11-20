@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="custom-container mt-5">
     <h1 class="text-center mb-4">Go Find Your Next Event!</h1>
 
     <div class="mb-4">
@@ -85,7 +85,7 @@
                     <img src="{{ event.image_url }}" class="card-img-top" alt="{{ event.title }}">
                     {% endif %}
                     <h2 class="card-title">{{ event.title }}</h2>
-                    <p class="card-text"><strong>Location:</strong> 
+                    <p class="card-text hide"><strong>Location:</strong> 
                         {% if event.location.is_online %}
                             Online
                         {% else %}
@@ -93,16 +93,16 @@
                         {% endif %}
                     </p>
                     <p class="card-text"><strong>An event by: </strong> {{ event.organiser.username }}</p>
-                    <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
-                    <p class="card-text"><strong>Description:</strong> {{ event.description }}</p>
-                    <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
-                    <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} £{{ event.price }} {% endif %}</p>
+                    <p class="card-text hide"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
+                    <p class="card-text"><strong>Description:</strong> {{ event.description|truncatewords:10  }}</p>
+                    <p class="card-text hide"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
+                    <p class="card-text hide"><strong>Price:</strong> {% if event.free %} Free {% else %} £{{ event.price }} {% endif %}</p>
                 
                     <!-- Show registration button or event details based on user's status -->
                     {% if user.is_authenticated %}
                         {% if is_event_organiser %}
                             <!-- Event Organiser: Show only "View Event" button -->
-                            <a href="{% url 'event_detail' event.id %}" class="btn btn-info">Event Details</a>
+                            <a href="{% url 'event_detail' event.id %}" class="btn btn-info">More Info</a>
                         {% else %}
                             <!-- Event User: Show "Register" or "Registered" button -->
                             {% if event.is_past %}
@@ -122,6 +122,7 @@
                     {% else %}
                         <!-- Non-authenticated users see a message prompting login -->
                         <p class="text-danger">Please log in to register for this event.</p>
+                         <a href="{% url 'event_detail' event.id %}" class="btn btn-info">View Event</a>
                     {% endif %}
                 </div>
             </div>

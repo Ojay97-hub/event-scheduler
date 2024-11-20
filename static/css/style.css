@@ -10,7 +10,7 @@ body {
 
 /* important overrides */
 .bg-primary {
-    background-color: #6b8e23 !important; 
+    background-color: #212529!important; 
     
 }
 
@@ -47,7 +47,7 @@ h1.detail-title {
 .navbar-brand {
     font-weight: bold;
     font-size: 1.8rem;
-    color: #ffd700;  /* Rich gold color for contrast */
+    color: #ffd700; 
     text-transform: uppercase;
 }
 
@@ -58,16 +58,16 @@ h1.detail-title {
     border-radius: 5px;
     padding: 5px 20px;
     margin: 10px; 
-    background-color: #428fa6c7;  /* Darker green background */
+    background-color: #428fa6c7;
 }
 
 .navbar-nav .nav-link:hover {
     color: #000; 
-    background-color: #ffd700;  /* Even darker green on hover */
+    background-color: #ffd700;  
 }
 
 .nav-link.active {
-    background-color: #2e4d2a;  /* Darker green for active links */
+    background-color: #ffd700; 
     color: #fff; 
 }
 
@@ -95,7 +95,7 @@ p.text-end {
 
 .card-body {
     background: #fff;
-    border-radius: 15px; 
+    border-radius: 15px;  
 }
 
 .card-title {
@@ -108,6 +108,17 @@ p.text-end {
 .card-text {
     font-size: 1rem; 
     margin: 5px;
+}
+
+.col-md-4.mb-4 { 
+    max-width: 450px;
+    margin: 0 auto; 
+}
+
+.custom-container {
+    max-width: 1200px; 
+    margin: 0 auto;         
+    padding: 0 15px; 
 }
 
 /* Button styles */
@@ -189,6 +200,10 @@ a.page-link:hover {
     font-weight: bold;
 }
 
+.blockquote-footer {
+    margin-top: 5px;
+}
+
 /* Footer styles */
 .footer {
     background-color: #333;
@@ -212,6 +227,36 @@ a.page-link:hover {
 }
 
 /* Responsive styles */
+@media (max-width: 1195px) {
+    .col-md-4 {
+        flex: 0 0 50%; /* 2 cards per row */
+        max-width: 50%;
+    }
+}
+@media (max-width: 1000px) {
+    p.text-end {
+        display: none;
+    }
+
+
+    .col-md-4.mb-4 {
+       min-width: 400px; 
+       
+   }
+
+}
+@media (max-width: 770px) {
+    .col-md-4 {
+        flex: 0 0 100%; /* 1 card per row for extra small screens */
+        max-width: 100%;
+    }
+
+    .col-md-4.mb-4 {
+        margin: auto;
+       
+   }
+}
+
 @media (max-width: 768px) {
     .card-title {
         font-size: 1.4rem; /* Smaller title on mobile */
@@ -222,6 +267,24 @@ a.page-link:hover {
     }
 }
 
-@media (max-widt: 1185px) {
-    
+@media (max-width: 450px) {
+    .card-title {
+        font-size: 1.4rem; /* Smaller title on mobile */
+    }
+
+    .navbar-nav .nav-link {
+        padding: 8px 15px; /* Smaller padding on mobile */
+    }
+
+    .col-md-4.mb-4 {
+        min-width: 250px;
+        max-width: 350px;
+
+        
+    }
+
+    .hide {
+        display: none;
+    }
 }
+

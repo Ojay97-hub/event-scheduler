@@ -1,4 +1,4 @@
-#Library imports
+# Library imports
 from urllib.parse import urlparse
 import requests
 
@@ -29,6 +29,8 @@ CATEGORY_CHOICES = [
 ]
 
 # Event form for creation
+
+
 class EventForm(forms.ModelForm):
     """
     A form for creating or editing events.
@@ -59,7 +61,9 @@ class EventForm(forms.ModelForm):
     """
     class Meta:
         model = Event
-        fields = ['title', 'image_url', 'start_date', 'start_time', 'end_date', 'end_time', 'description', 'capacity', 'category', 'price', 'free']
+        fields = ['title', 'image_url', 'start_date', 'start_time', 'end_date',
+                  'end_time', 'description', 'capacity',
+                  'category', 'price', 'free']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -112,15 +116,17 @@ class EventForm(forms.ModelForm):
         image_url = self.cleaned_data.get('image_url')
         if not image_url:
             raise forms.ValidationError("This field is required.")
-        
+
         try:
             response = requests.head(image_url, timeout=5)
             content_type = response.headers.get('Content-Type', '').lower()
             if 'image' not in content_type:
-                raise forms.ValidationError("The URL must point to a valid image.")
+                raise forms.ValidationError(
+                    "The URL must point to a valid image.")
         except requests.RequestException:
-            raise forms.ValidationError("The provided URL is not reachable or invalid.")
-        
+            raise forms.ValidationError(
+                "The provided URL is not reachable or invalid.")
+
         return image_url
 
     def clean(self):
@@ -135,9 +141,11 @@ class EventForm(forms.ModelForm):
 
         # Validate dates and times
         if start_date and end_date and start_date > end_date:
-            raise forms.ValidationError("The event's end date must occur after the start date.")
-        if start_date == end_date and start_time and end_time and start_time >= end_time:
-            raise forms.ValidationError("The event's end time must occur after the start time.")
+            raise forms.ValidationError(
+              "The event's end date must occur after the start date.")
+        if start_date == end_date and start_time >= end_time:
+            raise forms.ValidationError(
+                "The event's end time must occur after the start time.")
 
         # Validate price and free
         if free and price:
@@ -152,6 +160,8 @@ class EventForm(forms.ModelForm):
         return cleaned_data
 
 # Location form for creating a new location
+
+
 class LocationForm(forms.ModelForm):
     """
     A form for creating or editing locations.
@@ -173,28 +183,44 @@ class LocationForm(forms.ModelForm):
     """
     class Meta:
         model = Location
-        fields = ['venue_name', 'address_line_1', 'address_line_2', 'town_city', 'county', 'postcode', 'is_online']
+        fields = ['venue_name', 'address_line_1',
+                  'address_line_2', 'town_city', 'county',
+                  'postcode', 'is_online']
         labels = {
             'is_online': 'Online Event',
         }
         widgets = {
-            'venue_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter venue name'}),
-            'address_line_1': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter address line 1'}),
-            'address_line_2': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter address line 2 (optional)'}),
-            'town_city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter town or city'}),
-            'county': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter county (optional)'}),
-            'postcode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter postcode'}),
-            'is_online': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'venue_name': forms.TextInput(attrs={
+                'class': 'form-control', 'placeholder':
+                    'Enter venue name'}),
+            'address_line_1': forms.TextInput(attrs={
+                'class': 'form-control', 'placeholder':
+                    'Enter address line 1'}),
+            'address_line_2': forms.TextInput(attrs={
+                'class': 'form-control', 'placeholder':
+                    'Enter address line 2 (optional)'}),
+            'town_city': forms.TextInput(attrs={
+                'class': 'form-control', 'placeholder':
+                    'Enter town or city'}),
+            'county': forms.TextInput(attrs={
+                'class': 'form-control', 'placeholder':
+                    'Enter county (optional)'}),
+            'postcode': forms.TextInput(attrs={
+                'class': 'form-control', 'placeholder': 'Enter postcode'}),
+            'is_online': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Dynamically set required fields based on `is_online`
-        if self.data.get('is_online') == 'on':  # Check if "Online Event" checkbox is checked
-            for field in ['venue_name', 'address_line_1', 'town_city', 'postcode']:
+        if self.data.get('is_online') == 'on':
+            for field in [
+                    'venue_name', 'address_line_1', 'town_city', 'postcode']:
                 self.fields[field].required = False
         else:
-            for field in ['venue_name', 'address_line_1', 'town_city', 'postcode']:
+            for field in [
+                    'venue_name', 'address_line_1', 'town_city', 'postcode']:
                 self.fields[field].required = True
 
     def clean(self):
@@ -204,12 +230,15 @@ class LocationForm(forms.ModelForm):
 
         if is_online:
             # Skip validation for location fields if the event is online
-            location_fields = ['venue_name', 'address_line_1', 'address_line_2', 'town_city', 'county', 'postcode']
+            location_fields = [
+                    'venue_name', 'address_line_1', 'address_line_2',
+                    'town_city', 'county', 'postcode']
             for field in location_fields:
                 cleaned_data[field] = ''  # Clear the values for consistency
         else:
             # Validate location fields for in-person events
-            required_fields = ['venue_name', 'address_line_1', 'town_city', 'postcode']
+            required_fields = [
+                'venue_name', 'address_line_1', 'town_city', 'postcode']
             for field in required_fields:
                 if not cleaned_data.get(field):
                     self.add_error(field, "This field is required.")
@@ -217,6 +246,8 @@ class LocationForm(forms.ModelForm):
         return cleaned_data
 
 # Register as event user or event organiser
+
+
 class CustomUserCreationForm(UserCreationForm):
     """
     A custom form for registering users as event users or organisers.
@@ -225,7 +256,8 @@ class CustomUserCreationForm(UserCreationForm):
     - `username` (CharField): Username for the user.
     - `email` (EmailField): Email address of the user.
     - `password1` and `password2` (CharField): Password fields.
-    - `user_type` (ChoiceField): Indicates if the user is an 'Event User' or 'Event Organiser'.
+    - `user_type` (ChoiceField): Indicates if the user
+       is an 'Event User' or 'Event Organiser'.
 
     **Model**
     - Linked to the `User` model.
@@ -238,9 +270,9 @@ class CustomUserCreationForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=USER_TYPE_CHOICES)
 
     email = forms.EmailField(
-        required=True, 
+        required=True,
         widget=forms.EmailInput(attrs={'class': 'form-control'}),
-        label='Email address'  
+        label='Email address'
     )
 
     class Meta:
@@ -248,6 +280,8 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2', 'user_type')
 
 # Event registration
+
+
 class EventRegistrationForm(forms.Form):
     """
     A form for registering users for an event.
@@ -255,4 +289,7 @@ class EventRegistrationForm(forms.Form):
     **Fields**
     - `email` (EmailField): Email address for event registration confirmation.
     """
-    email = forms.EmailField(label="Enter your email for confirmation", required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email address'}))
+    email = forms.EmailField(
+        label="Enter your email for confirmation", required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control', 'placeholder': 'Email address'}))

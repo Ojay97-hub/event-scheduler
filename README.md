@@ -123,7 +123,6 @@ Validation table for CSS, Javascript and Python:
 |-------------|-------------------------|-------------------------------------------------------------------------|------------------------------------|
 | CSS         | `style.css`            | Contains styles for the overall look and feel of the application.       | Valid (Checked with W3C CSS Validator) |
 | JavaScript  | `script.js`            | Handles interactivity and event-driven functionality on the frontend.    | Valid (Linted with ESLint)         |
-| Python      | `manage.py`            | Entry point for Django commands.                                        | Valid (PEP8 Compliant)             |
 | Python      | `settings.py`          | Contains configuration settings for the Django project.                 | Valid (PEP8 Compliant)             |
 | Python      | `views.py`             | Defines the logic and rendering for various web pages.                  | Valid (PEP8 Compliant)             |
 | Python      | `models.py`            | Defines the data models for the application.                            | Valid (PEP8 Compliant)             |

@@ -21,7 +21,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Local imports
 from .models import Event, Registration, Location
-from .forms import EventForm, LocationForm, CustomUserCreationForm, EventRegistrationForm
+from .forms import (
+    EventForm,
+    LocationForm,
+    CustomUserCreationForm,
+    EventRegistrationForm,
+)
+
 
 # Create your views here.
 class HomeView(TemplateView):
@@ -36,9 +42,11 @@ class HomeView(TemplateView):
     """
     template_name = 'home.html'
 
+
 class EventsList(generic.ListView):
     """
-    Displays a paginated list of upcoming events with various filtering options.
+    Displays a paginated list of upcoming events
+    with various filtering options.
 
     **Model**
     - Displays data from the `Event` model.
@@ -48,9 +56,11 @@ class EventsList(generic.ListView):
     - `category_choices`: Event category choices from the `Event` model.
     - `today`: Current date.
     - `now`: Current date and time.
-    - `registered_events`: List of event IDs that the authenticated user is registered for.
+    - `registered_events`: List of event IDs that the authenticated user is
+      registered for.
     - `organisers`: List of users who are event organisers.
-    - `organiser_status_by_event`: Dictionary mapping event IDs to organiser status for the current user.
+    - `organiser_status_by_event`: Dictionary mapping event IDs to organiser
+      status for the current user.
 
     **Template**
     - `events/event_list.html`
@@ -58,11 +68,12 @@ class EventsList(generic.ListView):
     model = Event
     template_name = 'events/event_list.html'
     context_object_name = "object_list"
-    paginate_by = 9 
+    paginate_by = 9
 
     def get_queryset(self):
         # Get the base queryset filtered by current or future events
-        queryset = super().get_queryset().filter(start_date__gte=timezone.now().date())
+        now = timezone.now().date()
+        queryset = super().get_queryset().filter(start_date__gte=now)
 
         # Retrieve filters from query parameters
         category = self.request.GET.get('category', '')
@@ -109,21 +120,24 @@ class EventsList(generic.ListView):
         # Apply date filters
         if date_start:
             try:
-                date_start = timezone.datetime.strptime(date_start, "%Y-%m-%d").date()
+                date_start = timezone.datetime.strptime
+                (date_start, "%Y-%m-%d").date()
                 queryset = queryset.filter(start_date__gte=date_start)
             except ValueError:
                 messages.error(self.request, "Invalid start date format.")
 
         if date_end:
             try:
-                date_end = timezone.datetime.strptime(date_end, "%Y-%m-%d").date()
+                date_end = timezone.datetime.strptime
+                (date_end, "%Y-%m-%d").date()
                 queryset = queryset.filter(end_date__lte=date_end)
             except ValueError:
                 messages.error(self.request, "Invalid end date format.")
 
         # Annotate and order events by their start datetime
         queryset = queryset.annotate(
-            start_datetime=Concat('start_date', Value(' '), 'start_time', output_field=DateTimeField())
+            start_datetime=Concat('start_date', Value(' '), 'start_time',
+                                  output_field=DateTimeField())
         ).order_by('start_datetime').distinct()
 
         return queryset
@@ -132,30 +146,31 @@ class EventsList(generic.ListView):
         context = super().get_context_data(**kwargs)
 
         # Current date and time
-        today = timezone.now().date()  # Use only the date part
-        current_time = timezone.now().time()  # Full current time
+        today = timezone.now().date()
+        current_time = timezone.now().time()
 
         # Calculate whether each event is in the past
         for event in context['object_list']:
-            # Ensure we're comparing the date part only
-            if isinstance(event.end_date, datetime):  # If it's a datetime object, we need to extract the date part
-                event_end_date = event.end_date.date()  # Convert to date part only
+            if isinstance(event.end_date, datetime):
+                event_end_date = event.end_date.date()
             else:
-                event_end_date = event.end_date  # It's already a date object
+                event_end_date = event.end_date
 
             event.is_past = (
-                event_end_date < today or  # Event end date has passed
-                (event_end_date == today and event.end_time <= current_time)  # Event ends today and time has passed
+                event_end_date < today or
+                (event_end_date == today and event.end_time <= current_time)
             )
 
         # Add additional context for category choices, today, and current time
         context['category_choices'] = Event.CATEGORY_CHOICES
         context['today'] = today
-        context['now'] = timezone.now()  # Keep the full datetime for any further comparisons or views
+        context['now'] = timezone.now()
 
         # Registered events for the authenticated user
         if self.request.user.is_authenticated:
-            registered_event_ids = Registration.objects.filter(user=self.request.user).values_list('event__id', flat=True)
+            registered_event_ids = Registration.objects.filter(
+                user=self.request.user
+            ).values_list('event__id', flat=True)
             context['registered_events'] = list(registered_event_ids)
 
         context['today'] = timezone.now()
@@ -165,11 +180,15 @@ class EventsList(generic.ListView):
         context['organisers'] = organisers
 
         # Organiser status for each event
-        context['organiser_status_by_event'] = {event.id: (event.organiser == self.request.user) for event in context['object_list']}
+        context['organiser_status_by_event'] = {
+            event.id: (event.organiser == self.request.user)
+            for event in context['object_list']
+        }
 
         return context
 
-# Event detail view 
+
+# Event detail view
 class EventDetailView(DetailView):
     """
     Displays details for a specific event.
@@ -180,8 +199,10 @@ class EventDetailView(DetailView):
     **Context**
     - `event`: The event instance being displayed.
     - `form`: The `EventRegistrationForm` for event registration.
-    - `is_registered`: Boolean indicating whether the user is registered for the event.
-    - `event_has_taken_place`: Boolean indicating if the event has already occurred.
+    - `is_registered`: Boolean indicating whether the user is
+        registered for the event.
+    - `event_has_taken_place`: Boolean indicating if
+        the event has already occurred.
 
     **Template**
     - `events/event_detail.html`
@@ -196,21 +217,25 @@ class EventDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = EventRegistrationForm()  # Registration form for the event
-        context['is_registered'] = Registration.objects.filter(user=self.request.user, event=self.object).exists() if self.request.user.is_authenticated else False
+        context['form'] = EventRegistrationForm()
+        context['is_registered'] = Registration.objects.filter(
+            user=self.request.user, event=self.object
+        ).exists() if self.request.user.is_authenticated else False
 
         # Get the current date and time
-        today = timezone.localtime(timezone.now()) 
+        today = timezone.localtime(timezone.now())
 
-        # Combine event start date and start time into a single datetime object and make it timezone-aware
-        event_start_datetime = timezone.make_aware(datetime.combine(self.object.start_date, self.object.start_time))
+        event_start_datetime = timezone.make_aware(
+            datetime.combine(self.object.start_date, self.object.start_time)
+        )
 
         # Check if the event has already taken place
         context['event_has_taken_place'] = event_start_datetime <= today
 
         # Add data to context
-        context['form'] = EventRegistrationForm()  # Include the registration form if needed
+        context['form'] = EventRegistrationForm()
         return context
+
 
 @login_required
 def create_event(request):
@@ -228,14 +253,12 @@ def create_event(request):
         event_form = EventForm(request.POST)
         location_form = LocationForm(request.POST)
         if event_form.is_valid() and location_form.is_valid():
-            # Save the location first
             location = location_form.save()
-            # Now create the event with the saved location
             event = event_form.save(commit=False)
             event.location = location
             event.organiser = request.user
             event.save()
-            return redirect('created_events')  # Adjust the redirect as needed
+            return redirect('created_events')
     else:
         event_form = EventForm()
         location_form = LocationForm()
@@ -245,6 +268,7 @@ def create_event(request):
         'location_form': location_form,
     }
     return render(request, 'events/create_event.html', context)
+
 
 @login_required
 def edit_event(request, event_id):
@@ -286,7 +310,6 @@ def edit_event(request, event_id):
         else:
             messages.error(request, "Please correct the errors below.")
     else:
-        # Initialize forms for GET request
         event_form = EventForm(instance=event)
         location_form = LocationForm(instance=event.location)
 
@@ -306,16 +329,18 @@ def delete_event(request, event_id):
     - Deletes an individual instance of the `Event` model.
 
     **Template**
-    - None. Redirects to `created_events` on success or `event_detail` otherwise.
+    - None. Redirects to `created_events`
+      on success or `event_detail` otherwise.
     """
     event = get_object_or_404(Event, id=event_id, organiser=request.user)
 
     if request.method == 'POST':
         event.delete()
         messages.success(request, 'Event deleted successfully.')
-        return redirect('created_events')  # Redirect to the page where they can see their created events
+        return redirect('created_events')
 
     return redirect('event_detail', pk=event.id)
+
 
 @login_required
 def created_events_view(request):
@@ -350,22 +375,25 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()  # Save the user instance
-            user_type = form.cleaned_data['user_type']  # Get user_type from form data
+            user_type = form.cleaned_data['user_type']
 
             # Get the appropriate group based on user type
             try:
-                group = Group.objects.get(name=user_type.replace('_', ' ').title())
+                group_name = user_type.replace('_', ' ').title()
+                group = Group.objects.get(name=group_name)
                 user.groups.add(group)  # Add the user to the selected group
             except Group.DoesNotExist:
                 messages.error(request, 'User type group does not exist.')
                 return redirect('signup')
 
             login(request, user)  # Log in the user
-            messages.success(request, 'Registration successful! You are now logged in.')
-            return redirect('home')  # Redirect to home after successful registration
+            messages.success(request, 'Registration successful!'
+                                      'You are now logged in.')
+            return redirect('home')
     else:
         form = CustomUserCreationForm()
     return render(request, 'account/signup.html', {'form': form})
+
 
 # Registration view for events
 @login_required
@@ -386,7 +414,8 @@ def register_for_event(request, event_id):
 
     # Prevent organisers from registering for events
     if request.user == event.organiser:
-        messages.warning(request, "Organisers cannot register for their own events.")
+        messages.warning(request, "Organisers cannot register"
+                         "for their own events.")
         return redirect('event_list')
 
     if request.method == 'POST':
@@ -395,43 +424,58 @@ def register_for_event(request, event_id):
             email = form.cleaned_data['email']
 
             # Check if the user is already registered for this event
-            if Registration.objects.filter(user=request.user, event=event).exists():
-                messages.warning(request, 'You are already registered for this event.')
+            registration_exists = Registration.objects.filter(
+                user=request.user, event=event
+            ).exists()
+
+            if registration_exists:
+                messages.warning(
+                    request, 'You are already registered for this event.'
+                )
                 return redirect('event_list')
 
             # Check if the event is full
             if event.capacity <= event.registrations.count():
-                messages.warning(request, 'This event has reached its capacity.')
+                messages.warning
+                (request, 'This event has reached its capacity.')
                 return redirect('event_list')
 
             # Create a new registration
             registration = Registration(user=request.user, event=event)
 
             try:
-                # Validate the registration (this will raise a ValidationError if invalid)
+                # Validate the registration
                 registration.clean()  # Validation on model level
-                registration.save()  # Save the registration
+                registration.save()
 
                 # Send confirmation email
                 send_mail(
                     subject=f"Registration Confirmation for {event.title}",
-                    message=f"Thank you for registering for {event.title} on {event.start_date} at {event.start_time}.",
+                    message=(
+                        f"Thank you for registering for {event.title} on "
+                        f"{event.start_date} at {event.start_time}."
+                    ),
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[email],
                 )
-                messages.success(request, 'You have successfully registered for the event! A confirmation email has been sent.')
-                return redirect('event_list')  # Redirect after successful registration
+
+                messages.success(request, 'You have successfully registered'
+                                 'for the event! A confirmation'
+                                 'email has been sent.')
+                return redirect('event_list')
 
             except ValidationError as e:
                 messages.error(request, str(e))  # Show validation error
             except Exception as e:
-                messages.error(request, 'Registration successful, but failed to send confirmation email.')
+                messages.error(request, 'Registration successful,'
+                               'but failed to send confirmation email.')
 
     else:
         form = EventRegistrationForm()
 
     # Check if user is already registered for the event
-    is_registered = Registration.objects.filter(user=request.user, event=event).exists()
+    is_registered = Registration.objects.filter(
+        user=request.user, event=event).exists()
     return render(request, 'events/event_detail.html', {
         'event': event,
         'form': form,
@@ -455,11 +499,13 @@ def unregister_from_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
 
     # Get the registration object directly, or raise a 404 if it doesn't exist
-    registration = get_object_or_404(Registration, user=request.user, event=event)
+    registration = get_object_or_404(
+        Registration, user=request.user, event=event)
 
     # Delete the registration
     registration.delete()
-    messages.success(request, 'You have successfully unregistered from the event.')
+    messages.success(request, 'You have successfully'
+                     'unregistered from the event.')
 
     return redirect('registered_events')
 
@@ -467,7 +513,8 @@ def unregister_from_event(request, event_id):
 @login_required
 def registered_events(request):
     """
-    Displays a list of events the user is registered for, categorized into upcoming and past events.
+    Displays a list of events the user is registered for,
+    categorised into upcoming and past events.
 
     **Model**
     - Displays data from the `Registration` model.
@@ -487,11 +534,11 @@ def registered_events(request):
 
     # Separate into upcoming and past events
     upcoming_events = [
-        registration for registration in registered_events 
+        registration for registration in registered_events
         if registration.event.start_date >= now
     ]
     past_events = [
-        registration for registration in registered_events 
+        registration for registration in registered_events
         if registration.event.start_date < now
     ]
 
@@ -502,11 +549,13 @@ def registered_events(request):
 
     return render(request, 'events/registered_events.html', context)
 
+
 # organiser access to registered attendees
 @login_required
 def attendee_list(request, event_id):
     """
-    Displays the list of attendees for an event, accessible only to the event organiser.
+    Displays the list of attendees for an event,
+    accessible only to the event organiser.
 
     **Model**
     - Displays data from the `Registration` model.
@@ -522,8 +571,10 @@ def attendee_list(request, event_id):
     event = get_object_or_404(Event, id=event_id)
 
     if request.user != event.organiser:
-        # Show a warning message and redirect
-        messages.warning(request, "You are not authorized to view the attendees for this event.")
+        messages.warning(
+            request,
+            "You are not authorised to view the attendees for this event."
+        )
         return redirect('event_list')
 
     # Retrieve attendees registered for the event

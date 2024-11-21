@@ -46,40 +46,45 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    /**
+     * Toggles the user type between "Event User" and "Event Organiser" in the signup form.
+     *
+     * This function updates:
+     * 1. The label displayed next to the switch input.
+     * 2. The hidden input field's value, which is sent with the form submission.
+     *
+     * The function checks the state of the switch (`checked` or not) and updates:
+     * - Label text to "Event Organiser" if checked, otherwise "Event User".
+     * - Hidden input value to "event_organiser" if checked, otherwise "event_user".
+     */
+    function toggleUserType() {
+        const switchInput = document.getElementById('userTypeSwitch');
+        const userTypeLabel = document.getElementById('userTypeLabel');
+        const userTypeInput = document.getElementById('user_type_input');
+
+        if (!switchInput || !userTypeLabel || !userTypeInput) return;
+
+        // Fetch the translated strings from the data attributes
+        const eventUserText = switchInput.getAttribute('data-event-user') || 'Event User';
+        const eventOrganiserText = switchInput.getAttribute('data-event-organiser') || 'Event Organiser';
+
+        if (switchInput.checked) {
+            userTypeLabel.textContent = eventOrganiserText;
+            userTypeInput.value = 'event_organiser';
+        } else {
+            userTypeLabel.textContent = eventUserText;
+            userTypeInput.value = 'event_user';
+        }
+    }
+
     // ** Initial Toggle on Page Load **
     togglePriceField(); // Set the initial state of the price field
     toggleLocationFields(); // Set the initial state of the location fields
+    toggleUserType(); // Ensure the toggleUserType reflects the correct state on page load
 
     // ** Add Event Listeners **
-    if (freeCheckbox) freeCheckbox.addEventListener('change', togglePriceField); // Listen for changes on the free checkbox
-    if (isOnlineCheckbox) isOnlineCheckbox.addEventListener('change', toggleLocationFields); // Listen for changes on the isOnline checkbox
+    if (freeCheckbox) freeCheckbox.addEventListener('change', togglePriceField);
+    if (isOnlineCheckbox) isOnlineCheckbox.addEventListener('change', toggleLocationFields); 
+    const userTypeSwitch = document.getElementById('userTypeSwitch');
+    if (userTypeSwitch) userTypeSwitch.addEventListener('change', toggleUserType);
 });
-
-/**
- * Toggles the user type between "Event User" and "Event Organiser" in the signup form.
- *
- * This function updates:
- * 1. The label displayed next to the switch input.
- * 2. The hidden input field's value, which is sent with the form submission.
- *
- * The function checks the state of the switch (`checked` or not) and updates:
- * - Label text to "Event Organiser" if checked, otherwise "Event User".
- * - Hidden input value to "event_organiser" if checked, otherwise "event_user".
- */
-function toggleUserType() {
-    const switchInput = document.getElementById('userTypeSwitch');
-    const userTypeLabel = document.getElementById('userTypeLabel');
-    const userTypeInput = document.getElementById('user_type_input');
-
-    // Fetch the translated strings from the data attributes
-    const eventUserText = switchInput.getAttribute('data-event-user');
-    const eventOrganiserText = switchInput.getAttribute('data-event-organiser');
-
-    if (switchInput.checked) {
-        userTypeLabel.textContent = eventOrganiserText;
-        userTypeInput.value = 'event_organiser';
-    } else {
-        userTypeLabel.textContent = eventUserText;
-        userTypeInput.value = 'event_user';
-    }
-}

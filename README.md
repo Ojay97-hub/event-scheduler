@@ -2,6 +2,7 @@
 
 **BRAND IMAGE**
 
+![brand image](/static/images/validation/brand_image.png)
 
 **"Connect People, Create Memories!"**
 
@@ -107,7 +108,6 @@ Validation table for HTML templates:
 
 | File Name           | Purpose                                                                 | W3C Validation Status              |
 |---------------------|-------------------------------------------------------------------------|-------------------------------------|
-| `Base`             | The base template that contains common structure and styles for all pages. | PASS                      |
 | `Sign up`          | The sign-up page where users can register for an account.                | PASS                              |
 | `Home`             | The homepage displaying an overview and key actions for the application. | PASS                             |
 | `Event list`       | Lists all available events for users to browse and register.             | PASS                           |
@@ -117,6 +117,11 @@ Validation table for HTML templates:
 | `Registered events`| Shows the list of events a user has registered for.                     | PASS                              |
 | `Created events`   | Displays the list of events created by an organiser.                    | PASS                              |
 | `Attendee list`    | Provides a list of attendees for a specific event (visible to organisers). | PASS                              |
+
+##### Screenshots
+
+Sign Up:
+Home Page: 
 
 Validation table for CSS, Javascript and Python:
 | File Type   | File Name               | Purpose                                                                 | Validation Status                  |
@@ -131,6 +136,9 @@ Validation table for CSS, Javascript and Python:
 | Python      | `admin.py`             | Registers models in the Django admin interface.                         | Valid (PEP8 Compliant)             |
 | Python      | `signals.py`           | Contains signal handlers for event cancellations    | Valid (PEP8 Compliant)             |
 | Python      | `context_processors.py`| Adds custom data for event user & organisers groups             | Valid (PEP8 Compliant)             |
+
+Screenshots: 
+
 
 #### MANUAL TESTING 
 

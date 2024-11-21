@@ -3,14 +3,14 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Your Created Events</h1>
+    <h1 id="created-events-title" class="text-center mb-4">Your Created Events</h1>
 
     <div class="text-right mb-4">
-        <a href="{% url 'create_event' %}" class="btn btn-success create">Create New Event</a>
+        <a href="{% url 'create_event' %}" class="btn btn-success create" aria-label="Create a new event">Create New Event</a>
     </div>
 
     {% if events %}
-    <div class="row">
+    <div class="row" aria-labelledby="created-events-title">
         {% for event in events %}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
@@ -20,11 +20,10 @@
                 <img src="{% static 'images/default-event.jpg' %}" class="card-img-top" alt="Default Event Image">
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">{{ event.title }}</h5>
+                    <h3 class="card-title h5">{{ event.title }}</h3>
                     <p class="card-text"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
                     <p class="card-text"><strong>Time:</strong> {{ event.start_time|time:"g:i A" }}</p>
-                    <p class="card-text">
-                        <strong>Location:</strong>
+                    <p class="card-text"><strong>Location:</strong> 
                         {% if event.location.is_online %}
                             <span class="text-success">Online Event</span>
                         {% else %}
@@ -35,15 +34,11 @@
                     <p class="card-text"><strong>Attendees:</strong> {{ event.registrations.count }}</p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
-                    <a href="{% url 'event_detail' event.id %}" class="btn btn-info">Manage</a>
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-info" aria-label="Manage {{ event.title }}">Manage</a>
                 </div>
             </div>
         </div>
         {% endfor %}
-    </div>
-
-    <div class="mt-4">
-        <!-- Include pagination here if needed -->
     </div>
     {% else %}
     <p class="text-center">You haven't created any events yet. <a href="{% url 'create_event' %}">Create one now!</a></p>

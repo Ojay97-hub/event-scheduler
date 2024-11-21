@@ -242,6 +242,10 @@ a.page-link:hover {
     text-align: center; 
 }
 
+.footer a {
+    text-decoration: none;
+}
+
 .footer p {
     margin: 0;
     font-size: 0.9rem; 
@@ -318,7 +322,6 @@ a.page-link:hover {
         min-width: 250px;
         max-width: 350px;
 
-        
     }
 
     .hide {

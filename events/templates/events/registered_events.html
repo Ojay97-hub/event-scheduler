@@ -5,9 +5,9 @@
 <div class="container mt-4">
     <h1 class="mb-4 text-center"><em>My Registered Events</em></h1>
 
-    <h2>Upcoming Events</h2>
+    <h2 id="upcoming-events-section">Upcoming Events</h2>
     {% if upcoming_events %}
-    <div class="row">
+    <div class="row" aria-labelledby="upcoming-events-section">
         {% for registration in upcoming_events %}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
@@ -15,7 +15,7 @@
                 <img src="{{ registration.event.image_url }}" class="card-img-top" alt="Image for {{ registration.event.title }}">
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">{{ registration.event.title }}</h5>
+                    <h3 class="card-title h5">{{ registration.event.title }}</h3>
                     <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>
                     <p class="card-text"><strong>Location:</strong> 
                         {% if registration.event.location.is_online %}
@@ -26,10 +26,10 @@
                     </p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
-                    <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-info">View Event</a>
+                    <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-info" aria-label="View details for {{ registration.event.title }}">View Event</a>
                     <form method="POST" action="{% url 'unregister_from_event' registration.event.id %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Cancel</button>
+                        <button type="submit" class="btn btn-danger" aria-label="Cancel registration for {{ registration.event.title }}">Cancel</button>
                     </form>
                 </div>
             </div>
@@ -37,12 +37,12 @@
         {% endfor %}
     </div>
     {% else %}
-    <p>You have no upcoming events.</p>
+    <p aria-labelledby="upcoming-events-section">You have no upcoming events.</p>
     {% endif %}
 
-    <h2 class="mt-5">Past Events</h2>
+    <h2 id="past-events-section" class="mt-5">Past Events</h2>
     {% if past_events %}
-    <div class="row">
+    <div class="row" aria-labelledby="past-events-section">
         {% for registration in past_events %}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
@@ -50,7 +50,7 @@
                 <img src="{{ registration.event.image_url }}" class="card-img-top" alt="Image for {{ registration.event.title }}">
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">{{ registration.event.title }}</h5>
+                    <h3 class="card-title h5">{{ registration.event.title }}</h3>
                     <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>
                     <p class="card-text"><strong>Location:</strong> 
                         {% if registration.event.location.is_online %}
@@ -60,15 +60,15 @@
                         {% endif %}
                     </p>
                 </div>
-                <div class="card-footer d-flex justify-content-between">
-                    <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-info">View Event</a>
+                <div class="card-footer">
+                    <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-secondary" aria-label="View details for {{ registration.event.title }}">View Event</a>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
-    <p>You have no past events.</p>
+    <p aria-labelledby="past-events-section">You have no past events.</p>
     {% endif %}
 </div>
 {% endblock %}

@@ -269,12 +269,10 @@ def edit_event(request, event_id):
         return redirect('event_detail', pk=event.id)
 
     if request.method == 'POST':
-
         event_form = EventForm(request.POST, instance=event)
         location_form = LocationForm(request.POST, instance=event.location)
 
         if event_form.is_valid() and location_form.is_valid():
-
             # Save the location first
             location = location_form.save()
 
@@ -287,7 +285,8 @@ def edit_event(request, event_id):
             return redirect('event_detail', pk=event.id)
         else:
             messages.error(request, "Please correct the errors below.")
-
+    else:
+        # Initialize forms for GET request
         event_form = EventForm(instance=event)
         location_form = LocationForm(instance=event.location)
 

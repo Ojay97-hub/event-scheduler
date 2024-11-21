@@ -4,133 +4,132 @@
 {% block content %}
 
 <!-- Hero Section -->
-    <section class="hero-section text-center bg-light py-5">
-        <div class="container">
-            <h1 class="display-4">Welcome to <strong>Eventory</strong></h1>
+<section class="hero-section text-center bg-light py-5">
+    <div class="container">
+        <h1 class="display-4">Welcome to <strong>Eventory</strong></h1>
 
-            <div id="authentication">
-                {% if user.is_authenticated %}
-                <!-- Check if user is an Event Organiser -->
-                {% if is_event_organiser %}
-                    <p class="lead">You are now logged in as an <em><u>Event Organiser.</u></em></p>
-                    <!-- Create events CTA -->
-                    <a href="{% url 'create_event' %}" class="btn btn-lg mr-2">Create Event</a>
+        <div id="authentication">
+            {% if user.is_authenticated %}
+            <!-- Check if user is an Event Organiser -->
+            {% if is_event_organiser %}
+                <p class="lead">You are now logged in as an <em><u>Event Organiser.</u></em></p>
+                <!-- Create events CTA -->
+                <a href="{% url 'create_event' %}" class="btn btn-lg mr-2" aria-label="Create a new event on Eventory">Create Event</a>
+            {% else %}
+                <!-- Else is Event User -->
+                <p class="lead">You are now logged in as an <em><u>Event User.</u></em></p>
+                <!-- Browse Events CTA -->
+                <a href="{% url 'event_list' %}" class="btn btn-lg mr-2" aria-label="Browse available events on Eventory">Browse Events</a>
+            {% endif %}
+                    
+            <!-- Sign Up and Log In Buttons -->
                 {% else %}
-                    <!-- Else is Event User -->
-                    <p class="lead">You are now logged in as an <em><u>Event User.</u></em></p>
-                    <!-- Browse Events CTA -->
-                    <a href="{% url 'event_list' %}" class="btn btn-lg mr-2">Browse Events</a>
+                <!-- Message for unauthenticated users -->
+                <p class="lead">In order to use our features, please either sign up or log in!</p>
+                    <a href="{% url 'account_signup' %}" class="btn btn-secondary btn-lg mr-2" aria-label="Sign up for an Eventory account">Sign Up</a>
+                    <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg" aria-label="Log in to your Eventory account">Log In</a>
                 {% endif %}
-                        
-                <!-- Sign Up and Log In Buttons -->
-                    {% else %}
-                    <!-- Message for unauthenticated users -->
-                    <p class="lead">In order to use our features, please either sign up or log in!</p>
-                        <a href="{% url 'account_signup' %}" class="btn btn-secondary btn-lg mr-2">Sign Up</a>
-                        <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg">Log In</a>
-                    {% endif %}
-                </div>
-                
-            </div>
-            
-            <!-- Hero Image Carousel -->
-            <div id="heroCarousel" class="carousel slide mt-3 mb-4 rounded" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="{% static 'images/hero_image.jpg' %}" class="d-block w-100" alt="Colosseum">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{% static 'images/hero_image2.jpg' %}" class="d-block w-100" alt="Second Slide">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{% static 'images/hero_image3.jpg' %}" class="d-block w-100" alt="Third Slide">
-                    </div>
-                </div>
-                <!-- Controls -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-
-            <div class="bg-white rounded shadow-sm p-4">
-                <h2>What We Do</h2>
-                <p>Eventory is your go-to platform for discovering exciting events and creating unforgettable experiences. Whether you're an event enthusiast or an organiser, we aim to connect you with the right opportunities. Explore a wide variety of events, from workshops to concerts, and easily promote your own events to a diverse audience.</p>
-                
-                <h3 class="mt-4">Our Ethos</h3>
-                <p class="font-italic text-primary">"Connect People, Create Memories!"</p>
-                
-                <h3 class="mt-4">Mission Statement</h3>
-                <p>At Eventory, our mission is to provide a user-friendly platform that enhances community engagement through events. We strive to foster connections among people by making it easy to discover and create events that resonate with their interests.</p>
             </div>
         </div>
-    </section>
-
-        <!-- Features Section -->
-        <section class="features-section py-5 bg-white container rounded">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4 text-center mb-4">
-                        <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
-                        <h3>Find Events</h3>
-                        <p>Browse through a wide range of events and choose the one that fits you best.</p>
-                    </div>
-                    <div class="col-md-4 text-center mb-4">
-                        <i class="fas fa-pencil-alt fa-3x text-primary mb-3"></i>
-                        <h3>Create Events</h3>
-                        <p>Create and promote your own events in just a few clicks.</p>
-                    </div>
-                    <div class="col-md-4 text-center mb-4">
-                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                        <h3>Join the Community</h3>
-                        <p>Connect with people who share the same interests as you by attending events.</p>
-                    </div>
+        
+        <!-- Hero Image Carousel -->
+        <div id="heroCarousel" class="carousel slide mt-3 mb-4 rounded" data-bs-ride="carousel" aria-label="Eventory Hero Images">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{% static 'images/hero_image.jpg' %}" class="d-block w-100" alt="An inspiring view of the Colosseum at sunset">
+                </div>
+                <div class="carousel-item">
+                    <img src="{% static 'images/hero_image2.jpg' %}" class="d-block w-100" alt="Second slide with a vibrant crowd">
+                </div>
+                <div class="carousel-item">
+                    <img src="{% static 'images/hero_image3.jpg' %}" class="d-block w-100" alt="Third slide showing a music concert">
                 </div>
             </div>
-        </section>
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="Previous Slide">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" aria-label="Next Slide">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
 
-        <!-- Testimonials Section -->
-        <section class="testimonials-section py-5 bg-light">
-            <div class="container">
-                <h2 class="text-center mb-5">What People Are Saying</h2>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <p class="card-text review">"Eventory helped me find the perfect events in my area!"</p>
-                                <footer class="blockquote-footer">Sarah Jones</footer>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <p class="card-text review">"Creating events has never been easier!"</p>
-                                <footer class="blockquote-footer">John Smith</footer>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <p class="card-text review">"Great platform to stay connected with local happenings."</p>
-                                <footer class="blockquote-footer">Alice Brown</footer>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <div class="bg-white rounded shadow-sm p-4">
+            <h2>What We Do</h2>
+            <p>Eventory is your go-to platform for discovering exciting events and creating unforgettable experiences. Whether you're an event enthusiast or an organiser, we aim to connect you with the right opportunities. Explore a wide variety of events, from workshops to concerts, and easily promote your own events to a diverse audience.</p>
+            
+            <h3 class="mt-4">Our Ethos</h3>
+            <p class="font-italic text-primary">"Connect People, Create Memories!"</p>
+            
+            <h3 class="mt-4">Mission Statement</h3>
+            <p>At Eventory, our mission is to provide a user-friendly platform that enhances community engagement through events. We strive to foster connections among people by making it easy to discover and create events that resonate with their interests.</p>
+        </div>
+    </div>
+</section>
 
-        <!-- Call to Action Section -->
-        <section class="cta-section text-center bg-primary text-white py-5 container rounded mb-3">
-            <div>
-                <h2>Start Exploring Events Today!</h2>
-                <a href="{% url 'event_list' %}" class="btn btn-light btn-lg mt-3">View Events</a>
+<!-- Features Section -->
+<section class="features-section py-5 bg-white container rounded">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <i class="fas fa-calendar-alt fa-3x text-primary mb-3" aria-hidden="true"></i>
+                <h2>Find Events</h2>
+                <p>Browse through a wide range of events and choose the one that fits you best.</p>
             </div>
-        </section>
+            <div class="col-md-4 text-center mb-4">
+                <i class="fas fa-pencil-alt fa-3x text-primary mb-3" aria-hidden="true"></i>
+                <h2>Create Events</h2>
+                <p>Create and promote your own events in just a few clicks.</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <i class="fas fa-users fa-3x text-primary mb-3" aria-hidden="true"></i>
+                <h2>Join the Community</h2>
+                <p>Connect with people who share the same interests as you by attending events.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">What People Are Saying</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <blockquote class="card">
+                    <div class="card-body text-center">
+                        <p class="card-text review">"Eventory helped me find the perfect events in my area!"</p>
+                        <footer class="blockquote-footer" aria-label="Testimonial from Sarah Jones">Sarah Jones</footer>
+                    </div>
+                </blockquote>
+            </div>
+            <div class="col-md-4">
+                <blockquote class="card">
+                    <div class="card-body text-center">
+                        <p class="card-text review">"Creating events has never been easier!"</p>
+                        <footer class="blockquote-footer" aria-label="Testimonial from John Smith">John Smith</footer>
+                    </div>
+                </blockquote>
+            </div>
+            <div class="col-md-4">
+                <blockquote class="card">
+                    <div class="card-body text-center">
+                        <p class="card-text review">"Great platform to stay connected with local happenings."</p>
+                        <footer class="blockquote-footer" aria-label="Testimonial from Alice Brown">Alice Brown</footer>
+                    </div>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section text-center bg-primary text-white py-5 container rounded mb-3">
+    <div>
+        <h2>Start Exploring Events Today!</h2>
+        <a href="{% url 'event_list' %}" class="btn btn-light btn-lg mt-3" aria-label="View all available events on Eventory">View Events</a>
+    </div>
+</section>
 {% endblock %}

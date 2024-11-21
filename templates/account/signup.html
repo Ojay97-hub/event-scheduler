@@ -8,90 +8,88 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 mt-5 offset-md-2">
-            <h3 class="text-center mb-4">{% trans "Sign Up" %}</h3>
-            <p class="text-center">{% blocktrans %}Already have an account? Then please <a class="link" href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+            <h1 class="text-center mb-4">{% trans "Sign Up" %}</h1>
+            <p class="text-center">
+                {% blocktrans with login_url=login_url %}
+                    Already have an account? Then please <a class="link" href="{{ login_url }}" aria-label="Sign in to your account">sign in</a>.
+                {% endblocktrans %}
+            </p>
         </div>
     </div>
     
     <div class="row">
-        <div class="col-md-8 mt-3 mb-3 offset-md-2">
+        <div class="col-md-8 mt-3 offset-md-2">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <form class="signup" id="signup_form" method="post" action="{% url 'register' %}">
+                    <form class="signup" id="signup_form" method="post" action="{% url 'register' %}" aria-label="Sign Up Form">
                         {% csrf_token %}
                         
-                        <h5 class="text-muted mb-3">{% trans "Please fill in the details below to create your account." %}</h5>
+                        <h2 class="h5 text-muted mb-3">{% trans "Please fill in the details below to create your account." %}</h2>
 
+                        <!-- Username -->
                         <div class="mb-3">
-                            {{ form.username.label_tag }}  
-                            {{ form.username|add_class:"form-control" }}  
+                            <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                            {{ form.username|add_class:"form-control" }}
                             {% for error in form.username.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
 
+                        <!-- Email -->
                         <div class="mb-3">
-                            {{ form.email.label_tag }}  
-                            {{ form.email|add_class:"form-control" }}  
+                            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                            {{ form.email|add_class:"form-control" }}
                             {% for error in form.email.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
 
+                        <!-- Password 1 -->
                         <div class="mb-3">
-                            {{ form.password1.label_tag }}  
-                            {{ form.password1|add_class:"form-control" }}  
+                            <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                            {{ form.password1|add_class:"form-control" }}
                             {% for error in form.password1.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
 
+                        <!-- Password 2 -->
                         <div class="mb-3">
-                            {{ form.password2.label_tag }}  
-                            {{ form.password2|add_class:"form-control" }}  
+                            <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                            {{ form.password2|add_class:"form-control" }}
                             {% for error in form.password2.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
 
+                        <!-- User Type Switch -->
                         <div class="mb-3">
-                            <p>Choose which user you want to be below!</p>
-                            <label class="form-label">{% trans "User Type" %}</label>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="userTypeSwitch" onchange="toggleUserType()">
-                                <label class="form-check-label" for="userTypeSwitch" id="userTypeLabel">{% trans "Event User" %}</label>
+                            <p>{% trans "Choose which user you want to be below!" %}</p>
+                            <label for="userTypeSwitch" class="form-label">{% trans "User Type" %}</label>
+                            <div class="d-flex align-items-center">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="userTypeSwitch" onchange="toggleUserType()" 
+                                        aria-label="{% trans 'Toggle user type between Event User and Event Organiser' %}" 
+                                        data-event-user="{% trans 'Event User' %}" 
+                                        data-event-organiser="{% trans 'Event Organiser' %}">
+                                    <label class="form-check-label" for="userTypeSwitch" id="userTypeLabel">{% trans "Event User" %}</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary ms-auto" aria-label="{% trans 'Sign up for a new account' %}">{% trans "Sign Up" %} &raquo;</button>
                             </div>
                             <input type="hidden" name="user_type" id="user_type_input" value="event_user">
                             {% for error in form.user_type.errors %}
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
-
+                        
                         {% if redirect_field_value %}
                         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                         {% endif %}
                         
-                        <button type="submit" class="btn btn-primary btn-block mt-3">{% trans "Sign Up" %} &raquo;</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    function toggleUserType() {
-        const switchInput = document.getElementById('userTypeSwitch');
-        const userTypeLabel = document.getElementById('userTypeLabel');
-        const userTypeInput = document.getElementById('user_type_input');
-
-        if (switchInput.checked) {
-            userTypeLabel.textContent = "{% trans 'Event Organiser' %}";
-            userTypeInput.value = 'event_organiser';
-        } else {
-            userTypeLabel.textContent = "{% trans 'Event User' %}";
-            userTypeInput.value = 'event_user';
-        }
-    }
-</script>
 {% endblock content %}

@@ -13,27 +13,21 @@
             <!-- Check if user is an Event Organiser -->
             {% if is_event_organiser %}
                 <p class="lead">You are now logged in as an <em><u>Event Organiser.</u></em></p>
-                <!-- Create events CTA -->
                 <a href="{% url 'create_event' %}" class="btn btn-lg mr-2" aria-label="Create a new event on Eventory">Create Event</a>
             {% else %}
-                <!-- Else is Event User -->
                 <p class="lead">You are now logged in as an <em><u>Event User.</u></em></p>
-                <!-- Browse Events CTA -->
                 <a href="{% url 'event_list' %}" class="btn btn-lg mr-2" aria-label="Browse available events on Eventory">Browse Events</a>
             {% endif %}
-                    
-            <!-- Sign Up and Log In Buttons -->
-                {% else %}
-                <!-- Message for unauthenticated users -->
-                <p class="lead">In order to use our features, please either sign up or log in!</p>
-                    <a href="{% url 'account_signup' %}" class="btn btn-secondary btn-lg mr-2" aria-label="Sign up for an Eventory account">Sign Up</a>
-                    <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg" aria-label="Log in to your Eventory account">Log In</a>
-                {% endif %}
-            </div>
+            {% else %}
+            <p class="lead">In order to use our features, please either sign up or log in!</p>
+            <a href="{% url 'account_signup' %}" class="btn btn-secondary btn-lg mr-2" aria-label="Sign up for an Eventory account">Sign Up</a>
+            <a href="{% url 'account_login' %}" class="btn btn-secondary btn-lg" aria-label="Log in to your Eventory account">Log In</a>
+            {% endif %}
         </div>
-        
+
         <!-- Hero Image Carousel -->
-        <div id="heroCarousel" class="carousel slide mt-3 mb-4 rounded" data-bs-ride="carousel" aria-label="Eventory Hero Images">
+        <div id="heroCarousel" class="carousel slide mt-3 mb-4 rounded" data-bs-ride="carousel" aria-labelledby="carouselHeading">
+            <h2 id="carouselHeading" class="visually-hidden">Eventory Hero Images</h2>
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <img src="{% static 'images/hero_image.jpg' %}" class="d-block w-100" alt="An inspiring view of the Colosseum at sunset">
@@ -45,7 +39,6 @@
                     <img src="{% static 'images/hero_image3.jpg' %}" class="d-block w-100" alt="Third slide showing a music concert">
                 </div>
             </div>
-            <!-- Controls -->
             <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="Previous Slide">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>

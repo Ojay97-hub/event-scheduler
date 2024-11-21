@@ -10,11 +10,13 @@
         <button class="btn btn-secondary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel" aria-expanded="false" aria-controls="filterPanel" aria-label="Toggle event filters">
             Toggle Filters
         </button>
-        <div class="collapse" id="filterPanel" aria-label="Event Filter Panel">
-            <form method="GET" action="" class="border p-3 bg-light">
+        <div class="collapse" id="filterPanel" aria-labelledby="filterPanelHeading">
+            <h2 id="filterPanelHeading" class="visually-hidden">Event Filter Panel</h2>
+            <form method="GET" action="." class="border p-3 bg-light">
                 <fieldset>
                     <legend class="visually-hidden">Filter Options</legend>
                     
+                    <!-- Filter by Category -->
                     <div class="mb-3">
                         <label for="category-filter">Filter by Category:</label>
                         <select id="category-filter" name="category" class="form-select mb-3" aria-label="Filter events by category">
@@ -25,6 +27,7 @@
                         </select>
                     </div>
 
+                    <!-- Filter by Organiser -->
                     <div class="mb-3">
                         <label for="organiser-filter">Filter by Organiser:</label>
                         <select id="organiser-filter" name="organiser" class="form-select mb-3" aria-label="Filter events by organiser">
@@ -35,6 +38,7 @@
                         </select>
                     </div>
 
+                    <!-- Price Range -->
                     <div class="mb-3">
                         <label for="price-min">Price Range:</label>
                         <div class="d-flex">
@@ -43,6 +47,7 @@
                         </div>
                     </div>
 
+                    <!-- Event Type -->
                     <div class="mb-4">
                         <label class="form-label fw-bold">Event Type:</label>
                         <div class="row">
@@ -67,6 +72,7 @@
                         </div>
                     </div>
 
+                    <!-- Date Range -->
                     <div class="mb-3">
                         <label for="date-start">Date Range:</label>
                         <div class="d-flex">
@@ -75,6 +81,7 @@
                         </div>
                     </div>
 
+                    <!-- Submit Button -->
                     <button type="submit" class="btn btn-primary" aria-label="Apply filters to events">Filter</button>
                 </fieldset>
             </form>

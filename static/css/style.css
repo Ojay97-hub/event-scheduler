@@ -32,12 +32,6 @@ h1.detail-title {
     background: white;
 }
 
-.create {
-    background: #ffd700; 
-    border: #ffd700; 
-    color: #000; 
-    font-weight: 600;
-}
 /* Navbar styles */
 .navbar {
     background-color: #084e6c; 
@@ -158,11 +152,20 @@ p.text-end {
     margin: 10px; 
 }
 
-.btn-primary:hover, .btn-lg:hover {
-    color: white;
-    background-color: #428fa6c7;
-    border-color: #428fa6c7;
+.btn-primary:hover, .btn-lg:hover,.btn-attendee:hover {
+    color:  #EDF4F2;
+    background-color: #31473A;
+    border-color: #31473A;
     transform: scale(1.05);
+}
+
+
+.create, .btn-attendee {
+    background: #ffd700; 
+    border: #ffd700; 
+    color: #000; 
+    font-weight: 600;
+    max-width: 400px;
 }
 
 a.page-link {
@@ -239,6 +242,10 @@ a.page-link:hover {
     text-align: center; 
 }
 
+.footer a {
+    text-decoration: none;
+}
+
 .footer p {
     margin: 0;
     font-size: 0.9rem; 
@@ -274,7 +281,7 @@ a.page-link:hover {
 }
 @media (max-width: 770px) {
     .col-md-4 {
-        flex: 0 0 100%; /* 1 card per row for extra small screens */
+        flex: 0 0 100%; 
         max-width: 100%;
     }
 
@@ -293,6 +300,14 @@ a.page-link:hover {
         padding: 8px 15px; /* Smaller padding on mobile */
     }
 }
+@media (max-width: 477px) {
+    .manage-btns {
+        flex-direction: column !important;
+        align-items: flex-start;
+        margin-bottom: 10px; 
+    }
+
+}
 
 @media (max-width: 450px) {
     .card-title {
@@ -307,7 +322,6 @@ a.page-link:hover {
         min-width: 250px;
         max-width: 350px;
 
-        
     }
 
     .hide {

@@ -1,8 +1,22 @@
+# Third-party imports
 from django.conf import settings
 from django.urls import path, include
 from django.shortcuts import render, redirect, get_object_or_404
+
+# Local imports
 from . import views
-from .views import HomeView, EventsList, create_event, register, register_for_event, EventDetailView, registered_events, delete_event, edit_event, attendee_list, organiser_events
+from .views import (
+    HomeView,
+    EventsList,
+    create_event,
+    register,
+    register_for_event,
+    EventDetailView,
+    registered_events,
+    delete_event,
+    edit_event,
+    attendee_list,
+)
 
 urlpatterns = [
     # Other URL patterns
@@ -14,7 +28,6 @@ urlpatterns = [
     path('events/', EventsList.as_view(), name='event_list'),  # Events List
     path('events/<int:event_id>/attendees/', views.attendee_list, name='attendee_list'),  # Registered attendees list
     path('events/<int:pk>/', EventDetailView.as_view(), name='event_detail'),  # Event detail
-    path('organiser/<int:organiser_id>/events/', views.organiser_events, name='organiser_events'),  # Organiser's events
     path('register/', register, name='register'),  # Register
     path('event/register/<int:event_id>/', register_for_event, name='event_register'),  # Event registration
     path('my-events/', registered_events, name='registered_events'),  # View registered events

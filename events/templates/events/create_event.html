@@ -103,7 +103,7 @@
                 <!-- PRICE OR FREE -->
                 <div class="row mb-3">
                     <div class="col-md-6" id="price-field">
-                        <label for="price-input">Price:</label>
+                        <label for="price-input">Enter your price (if applicable):</label>
                         <input type="number" name="price" id="price-input" class="form-control"
                                value="{{ event_form.price.value|default:'' }}" min="1">
                         {% for error in event_form.price.errors %}
@@ -111,8 +111,8 @@
                         {% endfor %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-check-label" for="free-checkbox">{{ event_form.free.label }}</label>
                         <input type="checkbox" name="{{ event_form.free.name }}" id="free-checkbox" class="form-check-input" {% if event_form.free.value %}checked{% endif %}>
+                        <label class="form-check-label" for="free-checkbox">{{ event_form.free.label }} Event</label>
                         {% for error in event_form.free.errors %}
                             <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}

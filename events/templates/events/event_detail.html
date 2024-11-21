@@ -29,12 +29,18 @@
             <p class="card-text"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
             <p class="card-text"><strong>Price:</strong> {% if event.free %} Free {% else %} £{{ event.price }} {% endif %}</p>
 
-            {% if user == event.organiser %}
-            <a href="{% url 'edit_event' event.id %}" class="btn btn-warning">Edit Event</a>
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelEventModal">
-                Cancel Event
-            </button>
-            <a href="{% url 'attendee_list' event.id %}" class="btn btn-info">View Attendee List</a>
+            <div class="manage-btns d-flex justify-content-between align-items-center">
+                <div>
+                    {% if user == event.organiser %}
+                    <a href="{% url 'edit_event' event.id %}" class="btn btn-warning">Edit Event</a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelEventModal">
+                        Cancel Event
+                    </button>
+                </div>
+                <div>
+                    <a href="{% url 'attendee_list' event.id %}" class="btn btn-attendee">View Attendee List</a>
+                </div>
+            </div>
             {% else %}
             {% if user.is_authenticated %}
                 {% if event_has_taken_place %}

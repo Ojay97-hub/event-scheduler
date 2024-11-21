@@ -55,14 +55,14 @@
                     <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'Event_List' %}active{% endif %}" href="{% url 'event_list' %}">Events</a> 
+                    <a class="nav-link {% if request.resolver_match.url_name == 'event_list' %}active{% endif %}" href="{% url 'event_list' %}">Events</a> 
                 </li>
                 {% if is_event_organiser %}
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'create_event' %}active{% endif %}" href="{% url 'create_event' %}">Create Event</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'created_events' %}">My Events</a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'created_events' %}active{% endif %}" href="{% url 'created_events' %}">My Events</a>
                 </li>
                 {% endif %}
                 {% if is_event_user %}
@@ -121,12 +121,20 @@
     <!-- Footer -->
     <footer class="footer mt-auto py-3 bg-dark text-white">
         <div class="container text-center">
-            <p class="m-0">© 2024 Eventory. All rights reserved.</p>
+            <p class="m-0 mb-3">© 2024 Eventory. All rights reserved.</p>
             <p class="m-0">Follow us: 
-                <i class="fab fa-facebook-square ms-3"></i>
-                <i class="fab fa-twitter-square ms-3"></i>
-                <i class="fab fa-instagram-square ms-3"></i>
-                <i class="fab fa-youtube-square ms-3"></i>
+                <a href="https://www.facebook.com" target="_blank" aria-label="Facebook">
+                    <i class="fab fa-facebook-square ms-3 fa-2x"></i>
+                </a>
+                <a href="https://www.twitter.com" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter-square ms-3 fa-2x"></i>
+                </a>
+                <a href="https://www.instagram.com" target="_blank" aria-label="Instagram">
+                    <i class="fab fa-instagram-square ms-3 fa-2x"></i>
+                </a>
+                <a href="https://www.youtube.com" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube-square ms-3 fa-2x"></i>
+                </a>
             </p>
         </div>
     </footer>

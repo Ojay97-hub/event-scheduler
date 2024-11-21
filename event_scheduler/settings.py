@@ -144,6 +144,26 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ACCOUNT_EMAIL_REQUIRED = True
 
+# Logging errors for production
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/workspace/event-scheduler/logs/debug.log',  
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 

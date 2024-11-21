@@ -1,8 +1,11 @@
+# Library imports
+from datetime import datetime
+import json
+
+# Third-party imports
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.views.generic import TemplateView, DetailView
-from .models import Event, Registration, Location
-from .forms import EventForm, LocationForm, CustomUserCreationForm, EventRegistrationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
@@ -10,19 +13,48 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
-from datetime import datetime
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db.models import Value, DateTimeField, Exists, OuterRef, Prefetch
 from django.db.models.functions import Concat
 from django.http import JsonResponse
-import json
 from django.views.decorators.csrf import csrf_exempt
+
+# Local imports
+from .models import Event, Registration, Location
+from .forms import EventForm, LocationForm, CustomUserCreationForm, EventRegistrationForm
 
 # Create your views here.
 class HomeView(TemplateView):
+    """
+    Displays the home page of the website.
+
+    **Context**
+    - No additional context variables.
+
+    **Template**
+    - `home.html`
+    """
     template_name = 'home.html'
 
 class EventsList(generic.ListView):
+    """
+    Displays a paginated list of upcoming events with various filtering options.
+
+    **Model**
+    - Displays data from the `Event` model.
+
+    **Context**
+    - `object_list`: A list of filtered and paginated `Event` instances.
+    - `category_choices`: Event category choices from the `Event` model.
+    - `today`: Current date.
+    - `now`: Current date and time.
+    - `registered_events`: List of event IDs that the authenticated user is registered for.
+    - `organisers`: List of users who are event organisers.
+    - `organiser_status_by_event`: Dictionary mapping event IDs to organiser status for the current user.
+
+    **Template**
+    - `events/event_list.html`
+    """
     model = Event
     template_name = 'events/event_list.html'
     context_object_name = "object_list"
@@ -139,6 +171,21 @@ class EventsList(generic.ListView):
 
 # Event detail view 
 class EventDetailView(DetailView):
+    """
+    Displays details for a specific event.
+
+    **Model**
+    - Displays an individual instance of the `Event` model.
+
+    **Context**
+    - `event`: The event instance being displayed.
+    - `form`: The `EventRegistrationForm` for event registration.
+    - `is_registered`: Boolean indicating whether the user is registered for the event.
+    - `event_has_taken_place`: Boolean indicating if the event has already occurred.
+
+    **Template**
+    - `events/event_detail.html`
+    """
     model = Event
     template_name = 'events/event_detail.html'
     context_object_name = 'event'
@@ -167,15 +214,20 @@ class EventDetailView(DetailView):
 
 @login_required
 def create_event(request):
+    """
+    Allows event organisers to create a new event with associated location.
+
+    **Forms**
+    - `EventForm`: Captures event details.
+    - `LocationForm`: Captures location details.
+
+    **Template**
+    - `events/create_event.html`
+    """
     if request.method == 'POST':
         event_form = EventForm(request.POST)
         location_form = LocationForm(request.POST)
-
-        print("Debug: EventForm data:", event_form.data)
-        print("Debug: LocationForm data:", location_form.data)
-
         if event_form.is_valid() and location_form.is_valid():
-            print("Debug: Both forms are valid.")
             # Save the location first
             location = location_form.save()
             # Now create the event with the saved location
@@ -183,13 +235,7 @@ def create_event(request):
             event.location = location
             event.organiser = request.user
             event.save()
-            print("Debug: Event saved successfully.")
             return redirect('created_events')  # Adjust the redirect as needed
-
-        # Print errors for debugging
-        print("Debug: EventForm errors:", event_form.errors)
-        print("Debug: LocationForm errors:", location_form.errors)
-
     else:
         event_form = EventForm()
         location_form = LocationForm()
@@ -202,6 +248,19 @@ def create_event(request):
 
 @login_required
 def edit_event(request, event_id):
+    """
+    Allows event organisers to edit an existing event they own.
+
+    **Model**
+    - Edits an individual instance of the `Event` model.
+
+    **Forms**
+    - `EventForm`: Captures updated event details.
+    - `LocationForm`: Captures updated location details.
+
+    **Template**
+    - `events/edit_event.html`
+    """
     event = get_object_or_404(Event, id=event_id)
 
     # Only allow the organiser to edit the event
@@ -210,36 +269,24 @@ def edit_event(request, event_id):
         return redirect('event_detail', pk=event.id)
 
     if request.method == 'POST':
-        print("Debug: POST request received.")
 
         event_form = EventForm(request.POST, instance=event)
         location_form = LocationForm(request.POST, instance=event.location)
 
-        print(f"Debug: EventForm data: {event_form.data}")
-        print(f"Debug: LocationForm data: {location_form.data}")
-
         if event_form.is_valid() and location_form.is_valid():
-            print("Debug: Both forms are valid.")
 
             # Save the location first
             location = location_form.save()
-            print(f"Debug: Updated location: {location}")
 
             # Save the event
             event = event_form.save(commit=False)
             event.location = location
             event.save()
-            print(f"Debug: Updated event: {event}")
 
             messages.success(request, "Event updated successfully.")
-            print(f"Debug: Redirecting to event_detail with pk={event.id}")
             return redirect('event_detail', pk=event.id)
         else:
-            print("Debug: EventForm errors:", event_form.errors)
-            print("Debug: LocationForm errors:", location_form.errors)
             messages.error(request, "Please correct the errors below.")
-    else:
-        print("Debug: GET request received.")
 
         event_form = EventForm(instance=event)
         location_form = LocationForm(instance=event.location)
@@ -253,6 +300,15 @@ def edit_event(request, event_id):
 
 @login_required
 def delete_event(request, event_id):
+    """
+    Allows event organisers to delete an event they own.
+
+    **Model**
+    - Deletes an individual instance of the `Event` model.
+
+    **Template**
+    - None. Redirects to `created_events` on success or `event_detail` otherwise.
+    """
     event = get_object_or_404(Event, id=event_id, organiser=request.user)
 
     if request.method == 'POST':
@@ -264,12 +320,33 @@ def delete_event(request, event_id):
 
 @login_required
 def created_events_view(request):
+    """
+    Displays a list of events created by the logged-in organiser.
+
+    **Model**
+    - Displays data from the `Event` model.
+
+    **Context**
+    - `events`: A list of `Event` instances created by the organiser.
+
+    **Template**
+    - `events/created_events.html`
+    """
     events = Event.objects.filter(organiser=request.user)
     return render(request, 'events/created_events.html', {'events': events})
 
 
 # Register as event user or event organiser
 def register(request):
+    """
+    Handles user registration, adding them to the appropriate group.
+
+    **Forms**
+    - `CustomUserCreationForm`: Captures user registration details.
+
+    **Template**
+    - `account/signup.html`
+    """
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -291,33 +368,21 @@ def register(request):
         form = CustomUserCreationForm()
     return render(request, 'account/signup.html', {'form': form})
 
-# Ensure only organisers or admins can access this view
-@login_required
-def organiser_events(request, organiser_id):
-    # Get the organiser object
-    organiser = get_object_or_404(User, id=organiser_id)
-
-    # Check if the logged-in user is the organiser, or an admin (staff member)
-    if request.user != organiser and not request.user.is_staff:
-        messages.warning(request, "You are not allowed to view this organiser's events.")
-        return redirect('event_list')  # Redirect to the event list if the user is not the organiser
-
-    # Get all events by this organiser
-    events = Event.objects.filter(organiser=organiser)
-
-    # Get the current date and time to check registration status
-    today = timezone.now()
-
-    # Render the organiser's page with events
-    return render(request, 'events/view_organiser.html', {
-        'organiser': organiser,
-        'events': events,
-        'today': today
-    })
-
 # Registration view for events
 @login_required
 def register_for_event(request, event_id):
+    """
+    Allows users to register for an event.
+
+    **Model**
+    - Registers the user for an individual instance of the `Event` model.
+
+    **Forms**
+    - `EventRegistrationForm`: Captures user email for registration.
+
+    **Template**
+    - `events/event_detail.html`
+    """
     event = get_object_or_404(Event, id=event_id)
 
     # Prevent organisers from registering for events
@@ -378,6 +443,15 @@ def register_for_event(request, event_id):
 # Unregister from an event
 @login_required
 def unregister_from_event(request, event_id):
+    """
+    Allows users to unregister from an event they are registered for.
+
+    **Model**
+    - Deletes a `Registration` instance.
+
+    **Template**
+    - None. Redirects to `registered_events`.
+    """
     # Get the event object
     event = get_object_or_404(Event, id=event_id)
 
@@ -393,6 +467,19 @@ def unregister_from_event(request, event_id):
 
 @login_required
 def registered_events(request):
+    """
+    Displays a list of events the user is registered for, categorized into upcoming and past events.
+
+    **Model**
+    - Displays data from the `Registration` model.
+
+    **Context**
+    - `upcoming_events`: List of upcoming events the user is registered for.
+    - `past_events`: List of past events the user was registered for.
+
+    **Template**
+    - `events/registered_events.html`
+    """
     # Get all events the user is registered for
     registered_events = Registration.objects.filter(user=request.user)
 
@@ -419,6 +506,19 @@ def registered_events(request):
 # organiser access to registered attendees
 @login_required
 def attendee_list(request, event_id):
+    """
+    Displays the list of attendees for an event, accessible only to the event organiser.
+
+    **Model**
+    - Displays data from the `Registration` model.
+
+    **Context**
+    - `event`: The event instance for which attendees are being displayed.
+    - `attendees`: A list of users registered for the event.
+
+    **Template**
+    - `events/attendee_list.html`
+    """
     # Get the event and ensure the user is the organizer
     event = get_object_or_404(Event, id=event_id)
 

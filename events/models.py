@@ -1,13 +1,35 @@
-from django.db import models
-from django.contrib.auth.models import User 
-from django.utils import timezone
+# Library imports
 from datetime import datetime
-from django.db.models import Count 
+
+# Third-party imports
+from django.db import models
+from django.db.models import Count
+from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 
 # Location model for creating an event
 class Location(models.Model):
+    """
+    Represents a location where an event will take place.
+
+    **Fields**
+    - `venue_name` (CharField): Name of the venue.
+    - `address_line_1` (CharField): Primary address of the location.
+    - `address_line_2` (CharField, optional): Secondary address line.
+    - `town_city` (CharField): Town or city where the location is situated.
+    - `county` (CharField, optional): County or region of the location.
+    - `postcode` (CharField): Postal code of the location.
+    - `is_online` (BooleanField): Indicates if the event is online.
+
+    **Methods**
+    - `current_event_title`: Returns the title of the next upcoming event at this location or "No Upcoming Event".
+    - `get_events`: Retrieves all events related to this location.
+
+    **Relationships**
+    - Related to `Event` via a `ForeignKey` with the `related_name='events'`.
+    """
     venue_name = models.CharField(max_length=200)
     address_line_1 = models.CharField(max_length=300)
     address_line_2 = models.CharField(max_length=300, blank=True, null=True)
@@ -29,6 +51,33 @@ class Location(models.Model):
     
 # Event model 
 class Event(models.Model):
+    """
+    Represents an event organised by a user.
+
+    **Fields**
+    - `id` (AutoField): Primary key for the event.
+    - `title` (CharField): Title of the event.
+    - `image_url` (URLField): URL to the event's image.
+    - `start_date` (DateTimeField): Date and time when the event starts.
+    - `end_date` (DateTimeField): Date and time when the event ends.
+    - `start_time` (TimeField): Start time of the event.
+    - `end_time` (TimeField): End time of the event.
+    - `description` (TextField): Description of the event.
+    - `capacity` (PositiveIntegerField): Maximum number of attendees.
+    - `category` (CharField): Event category chosen from predefined choices.
+    - `price` (DecimalField, optional): Price for the event tickets.
+    - `free` (BooleanField): Indicates whether the event is free.
+    - `canceled` (BooleanField): Indicates if the event is canceled.
+
+    **Methods**
+    - `save`: Overrides save to automatically set `free` based on `price` and default `end_date`/`end_time` values.
+    - `get_status`: Returns the status of the event ('Upcoming', 'Past', or 'Canceled').
+    - `capacity_status`: Returns a string indicating available spots or if the event is full.
+
+    **Relationships**
+    - Related to `Location` via a `ForeignKey` with `related_name='events'`.
+    - Related to `User` (organiser) via a `ForeignKey` with `related_name='events'`.
+    """
     CATEGORY_CHOICES = [
         ('workshop', 'Workshop'),
         ('conference', 'Conference'),
@@ -91,6 +140,23 @@ class Event(models.Model):
 
 # Registering for events 
 class Registration(models.Model):
+    """
+    Represents a user's registration for an event.
+
+    **Fields**
+    - `user` (ForeignKey): The user who registered.
+    - `event` (ForeignKey): The event for which the user registered.
+    - `registered_at` (DateTimeField): Timestamp when the user registered.
+
+    **Methods**
+    - `clean`: Ensures the user cannot register for past events or full events.
+
+    **Relationships**
+    - Related to `User` and `Event` via `ForeignKey`.
+
+    **String Representation**
+    - Returns a string indicating the user and event registered for.
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='registrations')
     registered_at = models.DateTimeField(auto_now_add=True)

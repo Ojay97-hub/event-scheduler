@@ -31,45 +31,47 @@
 
             <div class="manage-btns d-flex justify-content-between align-items-center">
                 {% if user == event.organiser %}
-                <div>
-                    <a href="{% url 'edit_event' event.id %}" class="btn btn-warning" aria-label="Edit event {{ event.title }}">Edit Event</a>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelEventModal" aria-label="Cancel event {{ event.title }}">
-                        Cancel Event
-                    </button>
-                </div>
-                <div>
-                    <a href="{% url 'attendee_list' event.id %}" class="btn btn-attendee" aria-label="View the attendee list for event {{ event.title }}">View Attendee List</a>
-                </div>
+                    <div>
+                        <a href="{% url 'edit_event' event.id %}" class="btn btn-warning" aria-label="Edit event {{ event.title }}">Edit Event</a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelEventModal" aria-label="Cancel event {{ event.title }}">
+                            Cancel Event
+                        </button>
+                    </div>
+                    <div>
+                        <a href="{% url 'attendee_list' event.id %}" class="btn btn-attendee" aria-label="View the attendee list for event {{ event.title }}">View Attendee List</a>
+                    </div>
                 {% else %}
-                {% if user.is_authenticated %}
-                    {% if event_has_taken_place %}
-                    <p class="text-muted">This event has already taken place. We hope to see you at our upcoming events!</p>
-                    {% else %}
-                        {% if is_event_organiser %}
-                            {% if is_registered %}
-                                <p class="text-success">You are already registered for this event!</p>
-                            {% else %}
-                                <p>Login as an event user to register for this event!</p>
-                            {% endif %}
+                    {% if user.is_authenticated %}
+                        {% if event_has_taken_place %}
+                            <p class="text-muted">This event has already taken place. We hope to see you at our upcoming events!</p>
                         {% else %}
-                            {% if is_registered %}
-                                <p class="text-success">You are already registered for this event!</p>
+                            {% if is_event_organiser %}
+                                {% if is_registered %}
+                                    <p class="text-success">You are already registered for this event!</p>
+                                {% else %}
+                                    <p>Login as an event user to register for this event!</p>
+                                {% endif %}
                             {% else %}
-                                <p>In order to successfully register for this event, please enter your email below:</p>
-                                <form method="POST" action="{% url 'event_register' event.id %}">
-                                    {% csrf_token %}
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Email:</label>
-                                        <input type="email" id="email" name="email" class="form-control" required aria-label="Enter your email to register for event {{ event.title }}">
+                                {% if is_registered %}
+                                    <p class="text-success">You are already registered for this event!</p>
+                                {% else %}
+                                    <div class="d-block">
+                                        <p>In order to successfully register for this event, please enter your email below:</p>
+                                        <form method="POST" action="{% url 'event_register' event.id %}">
+                                            {% csrf_token %}
+                                            <div class="mb-3">
+                                                <label for="email" class="form-label">Email:</label>
+                                                <input type="email" id="email" name="email" class="form-control" required aria-label="Enter your email to register for event {{ event.title }}">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary" aria-label="Register for event {{ event.title }}">Register</button>
+                                        </form>
                                     </div>
-                                    <button type="submit" class="btn btn-primary" aria-label="Register for event {{ event.title }}">Register</button>
-                                </form>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
+                    {% else %}
+                        <p class="text-danger">Please log in to register for this event.</p>
                     {% endif %}
-                {% else %}
-                    <p class="text-danger">Please log in to register for this event.</p>
-                {% endif %}
                 {% endif %}
             </div>
         </div>

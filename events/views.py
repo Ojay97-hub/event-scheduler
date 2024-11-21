@@ -289,7 +289,7 @@ def edit_event(request, event_id):
 
     # Only allow the organiser to edit the event
     if request.user != event.organiser:
-        messages.error(request, "You are not authorized to edit this event.")
+        messages.error(request, "You are not authorised to edit this event.")
         return redirect('event_detail', pk=event.id)
 
     if request.method == 'POST':
@@ -388,7 +388,7 @@ def register(request):
 
             login(request, user)  # Log in the user
             messages.success(request, 'Registration successful!'
-                                      'You are now logged in.')
+                                      ' You are now logged in.')
             return redirect('home')
     else:
         form = CustomUserCreationForm()
@@ -415,7 +415,7 @@ def register_for_event(request, event_id):
     # Prevent organisers from registering for events
     if request.user == event.organiser:
         messages.warning(request, "Organisers cannot register"
-                         "for their own events.")
+                         " for their own events.")
         return redirect('event_list')
 
     if request.method == 'POST':
@@ -460,15 +460,15 @@ def register_for_event(request, event_id):
                 )
 
                 messages.success(request, 'You have successfully registered'
-                                 'for the event! A confirmation'
-                                 'email has been sent.')
+                                 ' for the event! A confirmation'
+                                 ' email has been sent.')
                 return redirect('event_list')
 
             except ValidationError as e:
                 messages.error(request, str(e))  # Show validation error
             except Exception as e:
                 messages.error(request, 'Registration successful,'
-                               'but failed to send confirmation email.')
+                               ' but failed to send confirmation email.')
 
     else:
         form = EventRegistrationForm()
@@ -505,7 +505,7 @@ def unregister_from_event(request, event_id):
     # Delete the registration
     registration.delete()
     messages.success(request, 'You have successfully'
-                     'unregistered from the event.')
+                     ' unregistered from the event.')
 
     return redirect('registered_events')
 

@@ -412,11 +412,34 @@ In summary, there are clear user roles and different authentication based on wha
 ------
 ### TESTING
 ------
-#### Accessibility
+#### LIGHT HOUSE
+
+Importantly the accessibility, best practices, and SEO have all scored 100/100. 
+
+Performance has been fairly impacted due to:
+
+- Use video formats for animated content Potential savings of 594 KiB
+
+- Largest Contentful Paint element 7,420 ms
+
+- Eliminate render-blocking resources Potential savings of 1,380 ms
+
+- Remove duplicate modules in JavaScript bundles Potential savings of 13 KiB
+
+- Reduce unused CSS Potential savings of 35 KiB
 
 
+HOME PAGE
 
+![ACCESSIBILITY 100](static/images/testing/accessibility_100.png)
 
+EVENT LIST
+
+![EVENT LIST LIGHTHOUSE](static/images/testing/eventlist_lighthouse.png)
+
+EVENT DETAIL
+
+![EVENT DETAIL LIGHTHOUSE](eventdetail_lighthouse.png)
 ------
 #### RESPONSIVENESS
 ------
@@ -631,11 +654,24 @@ There are two key forms in this website - the signup, registering for an event a
 
 ![EVENT REGISTER SUCCESS](static/images/testing/registration_success.png)
 
-
 ![EVENT DETAIL CONFIRM](static/images/testing/eventdetail_confirmreg.png)
 
 ![EVENT REGISTERED EVENTS](static/images/testing/registered_events.png)
 
+**EVENT LIST FILTER**
+
+Online filter showing online events.
+
+![FILTER ONLINE PASS](static/images/testing/filter_online.png)
+
+In-person events filter working.
+![FILTER INPERSON PASS](static/images/testing/filter_inperson.png)
+
+Free events filter working.
+![FILTER FREE EVENTS PASS](static/images/testing/filter_freeevents.png)
+
+Filtering by organiser also working.
+![FILTER BY ORGANISER](static/images/testing/filter_byorganiser.png)
 ------
 #### Button Test Table
 ------
@@ -753,10 +789,10 @@ Comment section for under the event detail card:
 ### DEPLOYMENT
 ------
 
-#### Github pages
+#### Github pages (local)
 
 
-#### Heroku
+#### Heroku (production)
 
 ------
 ### FUTURE FEATURES

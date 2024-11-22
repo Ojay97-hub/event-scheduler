@@ -506,11 +506,115 @@ There are two key forms in this website - the signup, registering for an event a
 
 ![EVENT REGISTERED EVENTS](static/images/testing/registered_events.png)
 
-
+------
 #### Button Test Table
 ------
-### DEPLOYMENT
 
+**BASE TEMPLATE**
+
+| **Button**                  | **Location in File**      | **URL/Function**                                    | **Functional** |
+|-----------------------------|---------------------------|----------------------------------------------------|----------------|
+| **Home**                    | Navbar                   | `{% url 'home' %}`                                 | Pass           |
+| **Events**                  | Navbar                   | `{% url 'event_list' %}`                           | Pass           |
+| **Create Event**            | Navbar (for organisers)  | `{% url 'create_event' %}`                         | Pass           |
+| **My Events** (Organiser)   | Navbar (for organisers)  | `{% url 'created_events' %}`                       | Pass           |
+| **My Events** (User)        | Navbar (for users)       | `{% url 'registered_events' %}`                    | Pass           |
+| **Logout**                  | Navbar                   | `{% url 'account_logout' %}`                       | Pass           |
+| **Register**                | Navbar (if not logged in)| `{% url 'account_signup' %}`                       | Pass           |
+| **Login**                   | Navbar (if not logged in)| `{% url 'account_login' %}`                        | Pass           |
+| **Facebook Icon**           | Footer                  | `<a href="https://www.facebook.com" target="_blank">` | Pass           |
+| **Twitter Icon**            | Footer                  | `<a href="https://www.twitter.com" target="_blank">` | Pass           |
+| **Instagram Icon**          | Footer                  | `<a href="https://www.instagram.com" target="_blank">` | Pass           |
+| **YouTube Icon**            | Footer                  | `<a href="https://www.youtube.com" target="_blank">` | Pass           |
+
+
+**HOME PAGE**
+
+| **Button**                        | **Location in File**         | **URL/Function**                                    | **Functional** |
+|-----------------------------------|------------------------------|----------------------------------------------------|----------------|
+| **Create Event**                  | Hero Section (if organiser)  | `{% url 'create_event' %}`                         | Pass           |
+| **Browse Events**                 | Hero Section (if user)       | `{% url 'event_list' %}`                           | Pass           |
+| **Sign Up**                       | Hero Section (if not logged in) | `{% url 'account_signup' %}`                    | Pass           |
+| **Log In**                        | Hero Section (if not logged in) | `{% url 'account_login' %}`                     | Pass           |
+| **Previous Slide**                | Hero Image Carousel          | Carousel button to move to the previous slide     | Pass           |
+| **Next Slide**                    | Hero Image Carousel          | Carousel button to move to the next slide         | Pass           |
+| **View Events**                   | Call to Action Section       | `{% url 'event_list' %}`                           | Pass           |
+
+
+**ATTENDEE LIST**
+
+| **Button**                  | **Location in File**      | **URL/Function**                                    | **Functional** |
+|-----------------------------|---------------------------|----------------------------------------------------|----------------|
+| **Contact**                 | Table (Attendee list)    | `mailto:{{ registration.user.email }}`             | Pass           |
+| **Back to Event Details**   | Below Attendee List      | `{% url 'event_detail' event.id %}`                | Pass           |
+
+
+**CREATE EVENT PAGE**
+
+| **Button**               | **Location in File**       | **URL/Function**                                   | **Functional** |
+|--------------------------|----------------------------|---------------------------------------------------|----------------|
+| **Create Event**         | Bottom of the form         | Submits the form to create a new event            | Pass           |
+
+**UPDATE EVENT PAGE**
+
+| **Button**               | **Location in File**       | **URL/Function**                                   | **Functional** |
+|--------------------------|----------------------------|---------------------------------------------------|----------------|
+| **Update Event**         | Bottom of the form         | Submits the form to update the event details      | Pass           |
+
+
+**CREATED EVENTS PAGE**
+
+| **Button**               | **Location in File**         | **URL/Function**                                   | **Functional** |
+|--------------------------|------------------------------|---------------------------------------------------|----------------|
+| **Create New Event**      | Above the events list        | `{% url 'create_event' %}`                         | Pass           |
+| **Manage**                | In each event card footer    | `{% url 'event_detail' event.id %}`               | Pass           |
+| **Create One Now**        | If no events exist           | `{% url 'create_event' %}`                         | Pass           |
+
+
+**EVENT DETAIL PAGE**
+
+| **Button**                        | **Location in File**                 | **URL/Function**                                    | **Functional** |
+|-----------------------------------|--------------------------------------|----------------------------------------------------|----------------|
+| **Edit Event**                    | Inside "Manage Buttons" section      | `{% url 'edit_event' event.id %}`                  | Pass           |
+| **Cancel Event**                  | Inside "Manage Buttons" section      | Opens the modal to cancel the event               | Pass           |
+| **View Attendee List**            | Inside "Manage Buttons" section      | `{% url 'attendee_list' event.id %}`               | Pass           |
+| **Register**                      | Registration form for event users    | Submits the form to `{% url 'event_register' event.id %}` | Pass           |
+| **Back to Events List**           | Navigation buttons below the card    | `{% url 'event_list' %}`                           | Pass           |
+| **Back to My Events** (Organiser) | Navigation buttons below the card    | `{% url 'created_events' %}`                       | Pass           |
+| **Back to My Events** (User)      | Navigation buttons below the card    | `{% url 'registered_events' %}`                    | Pass           |
+| **Close**                         | Cancel Event Modal                   | Closes the modal                                   | Pass           |
+| **Yes, Cancel Event**             | Cancel Event Modal                   | Submits the form to `{% url 'delete_event' event.id %}` | Pass           |
+
+
+
+**EVENT LIST PAGE**
+
+| **Button**                        | **Location in File**           | **URL/Function**                                    | **Functional** |
+|-----------------------------------|--------------------------------|----------------------------------------------------|----------------|
+| **Toggle Filters**                | Filter Section                 | Toggles visibility of the filter panel             | Pass           |
+| **Filter**                        | Inside Filter Panel            | Submits the filter form                            | Pass           |
+| **More Info**                     | Event Cards (for organisers)   | `{% url 'event_detail' event.id %}`                | Pass           |
+| **View Event**                    | Event Cards (for users)        | `{% url 'event_detail' event.id %}`                | Pass           |
+| **Register**                      | Event Cards (for users)        | `{% url 'event_register' event.id %}`              | Pass           |
+| **Registered**                    | Event Cards (for registered users) | Disabled button indicating the user is registered | Pass           |
+| **Previous Page**                 | Pagination Section             | Navigates to the previous page in pagination       | Pass           |
+| **Page Numbers**                  | Pagination Section             | Navigates to a specific page in pagination         | Pass           |
+| **Next Page**                     | Pagination Section             | Navigates to the next page in pagination           | Pass           |
+
+**REGISTERED EVENTS PAGE**
+
+| **Button**               | **Location in File**            | **URL/Function**                                    | **Functional** |
+|--------------------------|---------------------------------|----------------------------------------------------|----------------|
+| **View Event**           | Upcoming Events section         | `{% url 'event_detail' registration.event.id %}`    | Pass           |
+| **Cancel Registration**  | Upcoming Events section         | Submits form to `{% url 'unregister_from_event' registration.event.id %}` | Pass |
+| **View Event**           | Today's Events section          | `{% url 'event_detail' registration.event.id %}`    | Pass           |
+| **Cancel Registration**  | Today's Events section          | Submits form to `{% url 'unregister_from_event' registration.event.id %}` | Pass |
+| **View Event**           | Past Events section             | `{% url 'event_detail' registration.event.id %}`    | Pass           |
+
+
+------
+### DEPLOYMENT
+------
 
 
 ------
@@ -522,6 +626,7 @@ There are two key forms in this website - the signup, registering for an event a
 
 ------
 ### CREDITS
+------
 - Bootstrap layouts
 - Font Awesome for icons
 - Google Fonts for custom fonts

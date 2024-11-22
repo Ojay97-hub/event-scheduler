@@ -688,6 +688,9 @@ Free events filter working.
 Filtering by organiser also working.
 ![FILTER BY ORGANISER](static/images/testing/filter_byorganiser.png)
 
+Filtering by price also working.
+![FILTER BY PRICE](static/images/testing/filter_byprice.png)
+
 ------
 #### Button Test Table
 ------
@@ -843,9 +846,9 @@ This project was deployed on heroku - the steps to do so are number below.
     - remove DISABLE_COLLECTSTATIC config var > then run in terminal "python manage.py collectstatic"
 - You should be able to then deploy your heroku app with your database connected and begin production. 
 
-**My heroku app link** 
+**My heroku app link:** 
 
-    [My Heroku App](https://eventory-5d4c90f0ec37.herokuapp.com/)
+    https://eventory-5d4c90f0ec37.herokuapp.com
 
 ------
 ### FUTURE FEATURES

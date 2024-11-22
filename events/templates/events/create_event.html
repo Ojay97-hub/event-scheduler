@@ -66,7 +66,7 @@
                 <!-- IMAGE URL -->
                 <div class="mb-3">
                     {{ event_form.image_url.label_tag }}
-                    <p>Includes: .jpg, .jpeg, .png, .gif</p>
+                    <p class="small">Includes: .jpg, .jpeg, .png, .gif (helps to copy image address)</p>
                     {{ event_form.image_url|add_class:"form-control" }}
                     {% for error in event_form.image_url.errors %}
                         <div class="invalid-feedback d-block">{{ error }}</div>

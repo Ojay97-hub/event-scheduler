@@ -88,3 +88,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const userTypeSwitch = document.getElementById('userTypeSwitch');
     if (userTypeSwitch) userTypeSwitch.addEventListener('change', toggleUserType);
 });
+
+
+document.querySelector('form').addEventListener('submit', function(event) {
+    const minPrice = parseFloat(document.getElementById('price-min').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('price-max').value) || Infinity;
+
+    if (minPrice > maxPrice) {
+        alert('Minimum price cannot exceed maximum price.');
+        event.preventDefault();  // Stop form submission
+    }
+});
+
+

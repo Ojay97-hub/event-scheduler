@@ -41,9 +41,14 @@
                     <!-- Price Range -->
                     <div class="mb-3">
                         <label for="price-min">Price Range:</label>
+                        <p class="small text-muted">Enter whole numbers. Max price must be greater than 0.</p>
                         <div class="d-flex">
-                            <input type="number" id="price-min" name="price_min" class="form-control me-2" placeholder="Min" value="{{ request.GET.price_min }}" aria-label="Minimum price">
-                            <input type="number" id="price-max" name="price_max" class="form-control" placeholder="Max" value="{{ request.GET.price_max }}" aria-label="Maximum price">
+                            <input type="number" id="price-min" name="price_min" class="form-control me-2"
+                                   placeholder="Minimum Price" min="0" step="1" value="{{ request.GET.price_min }}" 
+                                   aria-label="Minimum price">
+                            <input type="number" id="price-max" name="price_max" class="form-control"
+                                   placeholder="Maximum Price" min="1" step="1" value="{{ request.GET.price_max }}" 
+                                   aria-label="Maximum price">
                         </div>
                     </div>
 

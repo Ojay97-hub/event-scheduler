@@ -99,15 +99,46 @@ class EventsList(generic.ListView):
         # Apply price filters
         if price_min:
             try:
-                queryset = queryset.filter(price__gte=float(price_min))
+                price_min = float(price_min)
+                if price_min < 0:
+                    messages.error(self.request, "Minimum price cannot be less than 0.")
+                    return queryset.none()  # Stop execution if invalid
             except ValueError:
                 messages.error(self.request, "Invalid minimum price value.")
+                return queryset.none()
 
         if price_max:
             try:
-                queryset = queryset.filter(price__lte=float(price_max))
+                price_max = float(price_max)
+                if price_max <= 0:  # Ensure max price is greater than 0
+                    messages.error(self.request, "Maximum price must be greater than 0.")
+                    return queryset.none()
             except ValueError:
                 messages.error(self.request, "Invalid maximum price value.")
+                return queryset.none()
+
+        if price_min or price_max:
+            try:
+                price_min = float(price_min) if price_min else 0
+                price_max = float(price_max) if price_max else None
+
+                # Combined validation for both fields
+                if price_min < 0 or (price_max is not None and price_max <= 0) or (price_max is not None and price_min > price_max):
+                    messages.error(
+                        self.request, 
+                        "Please enter valid prices: minimum price ≥ 0, maximum price > 0, and minimum price ≤ maximum price."
+                    )
+                    return queryset.none()
+            except ValueError:
+                messages.error(self.request, "Invalid price values entered.")
+                return queryset.none()
+
+        # Apply filters after validation
+        if price_min:
+            queryset = queryset.filter(price__gte=price_min)
+        if price_max:
+            queryset = queryset.filter(price__lte=price_max)
+
 
         # Apply free event filter
         if free_only:

@@ -213,17 +213,33 @@ The features will be presented and explained in relation to the epic stories as 
 
 ##### #1: View a list of upcoming events:
 
+- Displays a concise list of all upcoming events with key information such as the event name, date, and category.
+
+- Serves as the first touchpoint for users to explore and discover events, making it easy to browse and decide which events to attend.
+
 ![EVENT LIST](static/images/features/event_list.png)
 
 ##### #2: View the details of a specific event:
+
+- Provides detailed information about a selected event, including the description, date, time, location, capacity, and registration.
+
+- Gives users the context and specifics they need to determine if they want to attend.
 
 ![EVENT DETAIL](static/images/features/event_detail.png)
 
 ##### #5: Filter specific events by category:
 
+- Allows users to find an event based on categories such as music, tech, or fitness to ensure efficient event browsing.
+
+- Helps users quickly find events relevant to their interests, enhancing usability and user satisfaction.
+
 ![CATEGORY FILTER](static/images/features/filter_by_category.png)
 
 ##### #7: See the event capacity:
+
+- Displays the total capacity of an event and the number of remaining spots available. Shows how popular/unpopular the event is.
+
+- Creates a sense of urgency and ensures users are aware of how many spots are left, encouraging timely registration. This aids event organisers events to reach maximum capacity in a timely manner.
 
 ![EVENT CAPACITY](static/images/features/event_capacity.png)
 
@@ -231,6 +247,10 @@ The features will be presented and explained in relation to the epic stories as 
 #### Epic 2: Event Registration and Management for Attendees
 ------
 ##### #3: Register for an event.
+
+- Enables users to sign up for events they wish to attend.
+
+- Fulfills the core purpose of the platform by connecting users with events and simplifying the registration process. Essential feature. 
 
 ![REGISTER TO EVENT](static/images/features/register_event.png)
 
@@ -242,23 +262,44 @@ The features will be presented and explained in relation to the epic stories as 
 
 ##### #4: View a list of events I have registered for.
 
+- Lists all events the user has successfully registered for.
+
+- Provides users with an easy way to track their commitments and plan their schedule.
+
 ![REGISTERED EVENTS](static/images/features/my_registered_events.png)
 
 ##### #6: Cancel my registration if I can no longer attend.
 
+-  Allows users to withdraw their registration from events.
+
+- Empowers users to manage their attendance while freeing up spots for others, ensuring efficient event capacity management.
+
 ![CANCEL REGISTRATION](static/images/features/cancel_registration.png)
+
 ------
 #### Epic 3: Event Creation and Management for Organisers
 ------
 ##### #8: Create a new event.
 
+- Enables organisers to add events to the platform by specifying details like title, description, date, location, capacity, category, and price/free.
+
+- Facilitates event creation, ensuring a steady flow of events for attendees to explore. Serves as a core feature of the project.
+
 ![CREATE EVENT](static/images/features/create_event.png)
 
 ##### #9: View a list of all events I’ve created.
 
+- Displays all events an organiser has added to the platform.
+
+- Centralises organisers events into one place so that they can manage their events effectively.
+
 ![CREATED EVENT](static/images/features/created_events.png)
 
 ##### #10: Update the event details.
+
+-  Allows organisers to modify event information post-creation if any unseen changes or updates take place in the event preparations.
+
+- Ensures event details remain accurate and up-to-date, improving reliability and trust for attendees.
 
 ![EDIT EVENT](static/images/features/edit_event.png)
 
@@ -270,6 +311,10 @@ The features will be presented and explained in relation to the epic stories as 
 
 ##### #11: Delete an event that is no longer happening.
 
+- Lets organisers remove events that are cancelled for unforeseen reasons or that they are no longer relevant.
+
+- Helps maintain a clutter-free platform and avoids misleading attendees. Ensuring quality events are available for event browsers.
+
 ![DELETE EVENT](static/images/features/delete_event.png)
 
 ![DELETE SUCCESS](static/images/features/delete_success.png)
@@ -278,11 +323,20 @@ The features will be presented and explained in relation to the epic stories as 
 
 ##### #12: View a list of people who have registered for an event to contact.
 
+- Provides organisers with the contact details of registered attendees.
+
+- Facilitates communication, enabling organisers to send updates or reminders about the event. This allows for transparent communication where necessary.
+
 ![ATTENDEE LIST](static/images/features/attendee_list.png)
 ------
 #### Epic 4: Event Search and Analysis for Organisers
 ------
 ##### #14: filter events based on status, date, or category and organiser.
+
+- Allows organisers to sort and filter their events by criteria such as other organisers, date range, or category etc.
+
+- Helps organisers easily analyse and manage their events for better oversight and decision-making. Also allowing for organisers to see what competitors are doing on the platform for better competition and thus higher quality events for event users. 
+
 
 ![FILTER EVENTS](static/images/features/filter_events.png)
 
@@ -291,9 +345,17 @@ The features will be presented and explained in relation to the epic stories as 
 ------
 #####  #15: View a list of all events on the platform.
 
+- Displays a complete list of events for administrative oversight. Editing and deleting functions are easy to implement. 
+
+- Enables platform admins to monitor the content and ensure compliance with guidelines.
+
 ![ADMIN EVENT VIEW](static/images/features/admin_view.png)
 
 #####  #16: Filter through all events on the platform.
+
+- Lets admins sort and filter events based on various criteria such as category, date, or price/free.
+
+- Simplifies moderation tasks, allowing admins to manage platform events efficiently and maintain quality, by pinpointing the appropriate events with ease.
 
 ![ADMIN FILTER](static/images/features/admin_filter.png)
 
@@ -350,8 +412,14 @@ In summary, there are clear user roles and different authentication based on wha
 ------
 ### TESTING
 ------
+#### Accessibility
 
+
+
+
+------
 #### RESPONSIVENESS
+------
 
 Using bootstrap comes with a lot of predetermined website responsiveness on all devices. I also implemented some custom responsiveness using media queries - this has resulted in all templates being responsive.  
 
@@ -368,8 +436,9 @@ Using bootstrap comes with a lot of predetermined website responsiveness on all 
 | `Attendee list`     | PASS                 |
 
 
-
+------
 #### Validation
+------
 This validation was processed by using Heroku's URL into the URI validator with W3C. Other key validators included:
 - W3C CSS
 - JSHint 
@@ -673,6 +742,12 @@ There are two key forms in this website - the signup, registering for an event a
 | **View Event**           | Past Events section             | `{% url 'event_detail' registration.event.id %}`    | Pass           |
 
 
+------
+#### Bugs 
+------
+##### Unresolved bug
+Comment section for under the event detail card: 
+- Being a django based project the javascript for the comment section didn't respond well with the html and caused syntax errors. I then focussed on separation of concerns, adding the javascript into its own dedicated file, but without the onclick inline attributes within the html document it didn't go as expected. I then decided to leave the comment section out of the project given it is a 'could have' feature, in regards to the MOSCOWm, and would strongly consider it as a future feauture. 
 
 ------
 ### DEPLOYMENT
@@ -691,6 +766,8 @@ There are two key forms in this website - the signup, registering for an event a
 ------
 ### CREDITS
 ------
+
+- Balsamiq for the wireframes
 - Bootstrap layouts
 - Favicon.io for custom favicon
 - Font Awesome for icons

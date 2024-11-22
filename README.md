@@ -439,7 +439,7 @@ EVENT LIST
 
 EVENT DETAIL
 
-![EVENT DETAIL LIGHTHOUSE](eventdetail_lighthouse.png)
+![EVENT DETAIL LIGHTHOUSE](static/images/testing/eventdetail_lighthouse.png)
 ------
 #### RESPONSIVENESS
 ------

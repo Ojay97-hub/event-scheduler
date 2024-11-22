@@ -122,16 +122,16 @@ class EventsList(generic.ListView):
         # Apply date filters
         if date_start:
             try:
-                date_start = timezone.datetime.strptime
-                (date_start, "%Y-%m-%d").date()
+                date_start = timezone.datetime.strptime(
+                    date_start, "%Y-%m-%d").date()
                 queryset = queryset.filter(start_date__gte=date_start)
             except ValueError:
                 messages.error(self.request, "Invalid start date format.")
 
         if date_end:
             try:
-                date_end = timezone.datetime.strptime
-                (date_end, "%Y-%m-%d").date()
+                date_end = timezone.datetime.strptime(
+                    date_end, "%Y-%m-%d").date()
                 queryset = queryset.filter(end_date__lte=date_end)
             except ValueError:
                 messages.error(self.request, "Invalid end date format.")

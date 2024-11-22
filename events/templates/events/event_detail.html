@@ -72,11 +72,11 @@
 
 <!-- Navigation Buttons -->
 <div class="d-flex justify-content-start gap-2 mt-3">
-    <a href="{% url 'event_list' %}" class="btn btn-secondary" aria-label="Go back to the events list">Back to Events List</a>
+    <a href="{% url 'event_list' %}" class="btn btn-secondary mb-3" aria-label="Go back to the events list">Back to Events List</a>
     {% if is_event_organiser %}
-    <a href="{% url 'created_events' %}" class="btn btn-secondary" aria-label="Go back to your created events">Back to My Events</a>
+    <a href="{% url 'created_events' %}" class="btn btn-secondary mb-3" aria-label="Go back to your created events">Back to My Events</a>
     {% elif user.is_authenticated %}
-    <a href="{% url 'registered_events' %}" class="btn btn-secondary" aria-label="Go back to your registered events">Back to My Events</a>
+    <a href="{% url 'registered_events' %}" class="btn btn-secondary mb-3" aria-label="Go back to your registered events">Back to My Events</a>
     {% endif %}
 </div>
 

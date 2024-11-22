@@ -14,7 +14,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ValidationError, PermissionDenied
-from django.db.models import Value, DateTimeField, Exists, OuterRef, Prefetch
+from django.db.models import (
+    Value, DateTimeField, Exists, OuterRef,
+    Prefetch, Count, F, Case, When, BooleanField)
 from django.db.models.functions import Concat
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -136,6 +138,12 @@ class EventsList(generic.ListView):
 
         # Annotate and order events by their start datetime
         queryset = queryset.annotate(
+            registrations_count=Count('registrations'),
+            is_full=Case(
+                When(registrations_count__gte=F('capacity'), then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+            ),
             start_datetime=Concat('start_date', Value(' '), 'start_time',
                                   output_field=DateTimeField())
         ).order_by('start_datetime').distinct()
@@ -160,6 +168,8 @@ class EventsList(generic.ListView):
                 event_end_date < today or
                 (event_end_date == today and event.end_time <= current_time)
             )
+            # Show event is full
+            event.is_full = event.registrations_count >= event.capacity
 
         # Add additional context for category choices, today, and current time
         context['category_choices'] = Event.CATEGORY_CHOICES
@@ -231,6 +241,10 @@ class EventDetailView(DetailView):
 
         # Check if the event has already taken place
         context['event_has_taken_place'] = event_start_datetime <= today
+
+        # Add is_full property to the context
+        registrations_count = self.object.registrations.count()
+        context['event_is_full'] = registrations_count >= self.object.capacity
 
         # Add data to context
         context['form'] = EventRegistrationForm()
@@ -535,14 +549,14 @@ def registered_events(request):
 
     # Categorize events
     past_events = registered_events.filter(
-        event__end_date__lt=today_date 
+        event__end_date__lt=today_date
     )
     today_events = registered_events.filter(
-        event__start_date__lte=today_date,  
-        event__end_date__gte=today_date  
+        event__start_date__lte=today_date,
+        event__end_date__gte=today_date
     )
     upcoming_events = registered_events.filter(
-        event__start_date__gt=today_date 
+        event__start_date__gt=today_date
     )
 
     context = {

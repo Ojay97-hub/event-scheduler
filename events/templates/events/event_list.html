@@ -123,7 +123,10 @@
                                     <!-- Past Event -->
                                     <p class="text-danger">Past Event! Sign-up to the next one!</p>
                                 {% else %}
-                                    {% if event.id in registered_events %}
+                                    {% if event.is_full %}
+                                        <!-- Event is full -->
+                                        <button class="btn btn-secondary" disabled aria-label="This event is full">Event Full</button>
+                                    {% elif event.id in registered_events %}
                                         <!-- User is already registered -->
                                         <button class="btn btn-success" disabled aria-label="You are already registered for this event">Registered</button>
                                     {% else %}

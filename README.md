@@ -15,15 +15,24 @@
 ### INTRODUCTION
 **WHAT THE PROJECT IS** 
 
-DESCRIPTION
+EVENTORY is a dynamic web application designed to make event organisation and participation easy and efficient. Built with a user-centric approach, it serves as a comprehensive platform where event organisers can effortlessly create and manage events, while attendees can seamlessly browse, register, and participate in events that interest them. By fostering connections and creating lasting memories, EVENTORY aims to bridge the gap between organisers and attendees, enhancing the overall event management experience. 
+
 
 **WHY IT EXISTS** 
 
-PURPOSE 
+In today’s fast-paced world, the event industry will benefit from a digitalised and accessible approach to organising and discovering events. EVENTORY addresses this need by providing a feature-rich platform that saves time, improves accessibility, and encourages meaningful engagement between organisers and attendees. Whether it’s a workshop, conference, or community gathering, EVENTORY is designed to make planning, managing, and attending events straightforward and enjoyable. This website was designed with care and due diligence to the user experience ensuring a smooth ride everytime. 
+
 
 **WHO IS IT FOR** 
 
-TARGET AUDIENCE 
+EVENTORY is great for the following three key user groups:
+
+- Event Attendees: Individuals seeking to explore and participate in events that match their interests. The platform simplifies the process of discovering, registering for, and managing their attendance.
+- Event Organisers: Professionals or enthusiasts who wish to create, manage, and oversee events effectively. EVENTORY provides organisers with tools to monitor registrations, communicate with attendees, and make updates in real-time.
+- Platform Administrators: Moderators tasked with ensuring the quality and integrity of events listed on the platform. Admins have access to tools for managing all platform events, enforcing standards, and enhancing the overall user experience.
+
+Whether you are hosting an event, attending one, or moderating the platform, EVENTORY is your go-to solution for connecting people and creating memories.
+
 ------
 ### Technologies
 ------
@@ -89,9 +98,6 @@ Below is the overview of all custom models used in this project including field 
 | **Registration** | user                | The user who registered                                            | `ForeignKey`            | ForeignKey to **User** (A user can register for many events) |
 | **Registration** | event               | The event the user registered for                                  | `ForeignKey`            | ForeignKey to **Event** (An event can have many registrations) |
 | **Registration** | registered_at       | Timestamp when the user registered                                 | `DateTimeField`         |                                                            |
-| **User**         | username            | The username of the user                                           | `CharField`             |                                                            |
-| **User**         | email               | The email of the user                                              | `EmailField`            |                                                            |
-| **User**         | password            | The password of the user                                           | `CharField`             |                                                            |
 
 #### Relationships Summary:
 
@@ -292,8 +298,58 @@ The features will be presented and explained in relation to the epic stories as 
 ![ADMIN FILTER](static/images/features/admin_filter.png)
 
 ------
+#### User authentication 
+------
 
+EVENTORY implements a robust authentication system to ensure secure access and personalised user experiences:
+
+**User Roles and Access**
+
+Event Attendees: Can browse events, register, and manage their registrations.
+Event Organisers: Additional permissions to create, edit, and manage events but cannot register for events.
+Admins: Elevated access to moderate all events and manage platform content
+
+**Sign-Up**
+
+- New users can create an account by providing:
+- Username
+- Email address
+- Password (confirmed with a repeat entry for validation).
+- Choose user type; event user or event organiser using django groups.
+
+**Role-Based Features**
+
+Navigation and dashboard options dynamically adjust based on the user’s role:
+
+- Organisers see "My Events", "Create Event", and "Events" 
+ 
+- Attendees see only "My Events" and "Events" 
+
+**Authenticated and Unauthenticated users**
+
+Logged in users - attendee vs organiser (authenticated).
+
+Not logged in users (unauthenticated).
+
+**Authenticated**
+
+- Event users will see register for event.
+- Event users will see status reports i.e.: 
+    - you are already registered for this event
+    - This event has already taken place sign up to the next one.
+
+- Event organisers will see edit, cancel and view attendee list (if they are the organiser).
+- Event organisers will see, "login as an event user to register for this event!" if not owners of the event. 
+
+**Unauthenticated**
+
+- These users will see, "Please log in to register for this event". 
+
+In summary, there are clear user roles and different authentication based on what user type.  
+
+------
 ### TESTING
+------
 
 #### RESPONSIVENESS
 
@@ -493,6 +549,11 @@ There are two key forms in this website - the signup, registering for an event a
 
 ![EDIT EVENT](static/images/testing/editevent_success.png)
 
+**EVENT CAPACITY FULL**
+
+![EVENTLIST CARD FULL](static/images/testing/full_eventcard.png)
+
+![EVENTDETAIL CARD FULL](static/images/testing/eventdetail_full.png)
 
 **REGISTER FOR AN EVENT**
 
@@ -612,6 +673,7 @@ There are two key forms in this website - the signup, registering for an event a
 | **View Event**           | Past Events section             | `{% url 'event_detail' registration.event.id %}`    | Pass           |
 
 
+
 ------
 ### DEPLOYMENT
 ------
@@ -622,16 +684,20 @@ There are two key forms in this website - the signup, registering for an event a
 ------
 #17 As an **event attendee** I would like to **write comments under the event detail** to **discuss with other attendees and leave positive reviews**
 
+------
+
 #18 As an **event organiser** I want to **write a bio on my page** so that **suitable organisers can connect with me**
 
 ------
 ### CREDITS
 ------
 - Bootstrap layouts
+- Favicon.io for custom favicon
 - Font Awesome for icons
 - Google Fonts for custom fonts
 - Django for the backend framework
 - Code Institute Python Linter
+- unsplash for stock images
 
 
 

@@ -24,7 +24,8 @@ class Location(models.Model):
     - `is_online` (BooleanField): Indicates if the event is online.
 
     **Methods**
-    - `current_event_title`: Returns the title of the next upcoming event at this location or "No Upcoming Event".
+    - `current_event_title`: Returns the title of the next upcoming event 
+       at this location or "No Upcoming Event".
     - `get_events`: Retrieves all events related to this location.
 
     **Relationships**
@@ -49,7 +50,7 @@ class Location(models.Model):
         return f"{self.venue_name}, {self.town_city}, {self.postcode}"
 
     
-# Event model 
+# Event model
 class Event(models.Model):
     """
     Represents an event organised by a user.
@@ -70,13 +71,17 @@ class Event(models.Model):
     - `canceled` (BooleanField): Indicates if the event is canceled.
 
     **Methods**
-    - `save`: Overrides save to automatically set `free` based on `price` and default `end_date`/`end_time` values.
-    - `get_status`: Returns the status of the event ('Upcoming', 'Past', or 'Canceled').
-    - `capacity_status`: Returns a string indicating available spots or if the event is full.
+    - `save`: Overrides save to automatically set `free` based on `price`
+        and default `end_date`/`end_time` values.
+    - `get_status`: Returns the status of the event
+        ('Upcoming', 'Past', or 'Canceled').
+    - `capacity_status`: Returns a string indicating available
+       spots or if the event is full.
 
     **Relationships**
     - Related to `Location` via a `ForeignKey` with `related_name='events'`.
-    - Related to `User` (organiser) via a `ForeignKey` with `related_name='events'`.
+    - Related to `User` (organiser) via a `ForeignKey`
+      with `related_name='events'`.
     """
     CATEGORY_CHOICES = [
         ('workshop', 'Workshop'),
@@ -96,41 +101,54 @@ class Event(models.Model):
 
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
-    image_url = models.URLField(max_length=500, blank=False, null=False, default="https://example.com/default-image.jpg")
+    image_url = models.URLField(
+        max_length=500, blank=False, null=False,
+        default="https://example.com/default-image.jpg")
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField()
     start_time = models.TimeField(default="09:00")
     end_time = models.TimeField(default="17:00")
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='events', null=True)
-    organiser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events', null=True)
+    location = models.ForeignKey(
+        Location, on_delete=models.CASCADE, related_name='events', null=True)
+    organiser = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='events', null=True)
     description = models.TextField()
     capacity = models.PositiveIntegerField()
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='workshop')
-    price = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    category = models.CharField(
+        max_length=100, choices=CATEGORY_CHOICES, default='workshop')
+    price = models.DecimalField(
+        max_digits=6, decimal_places=2, null=True, blank=True)
     free = models.BooleanField(default=False)
     canceled = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         # Automatically set `free` to True if price is None or 0
         self.free = self.price is None or self.price == 0
-        # Set default for end date and time if not provided
-        if not self.end_date:
-            self.end_date = self.start_date  # Default end date to start date if not set
+        # Ensure start_date and end_date are timezone-aware
+        if self.start_date and timezone.is_naive(self.start_date):
+            self.start_date = timezone.make_aware(self.start_date)
+        if self.end_date and timezone.is_naive(self.end_date):
+            self.end_date = timezone.make_aware(self.end_date)
+
+        # Set default for end time if not provided
         if not self.end_time:
-            # Set default end time to one hour after start time if not set
-            self.end_time = (datetime.combine(self.start_date, self.start_time) + timezone.timedelta(hours=1)).time()
+            self.end_time = (datetime.combine(
+                self.start_date, self.start_time) + timezone.timedelta(
+                    hours=1)).time()
+
         super().save(*args, **kwargs)
 
     def get_status(self):
         if self.canceled:
             return 'Canceled'
-        start_datetime = timezone.make_aware(datetime.combine(self.start_date, self.start_time))
+        start_datetime = timezone.make_aware(datetime.combine(
+            self.start_date, self.start_time))
         if start_datetime < timezone.now():
             return 'Past'
         return 'Upcoming'
 
     def capacity_status(self):
-        remaining_spots = self.capacity - self.registrations.count() 
+        remaining_spots = self.capacity - self.registrations.count()
         if remaining_spots <= 0:
             return "Event Full"
         return f"{remaining_spots} spots remaining"
@@ -158,7 +176,8 @@ class Registration(models.Model):
     - Returns a string indicating the user and event registered for.
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='registrations')
+    event = models.ForeignKey(
+        Event, on_delete=models.CASCADE, related_name='registrations')
     registered_at = models.DateTimeField(auto_now_add=True)
 
     def clean(self):

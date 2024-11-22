@@ -1,5 +1,20 @@
 ## EVENTORY
 
+## Table of Contents
+- [Brand Image](#brand-image)
+- [Introduction](#introduction)
+- [Technologies](#technologies)
+- [Wireframes](#wireframes)
+- [Custom Models](#custom-models)
+- [Agile Methodology](#agile-methodology)
+- [Features](#features)
+- [Testing](#testing)
+- [Bugs](#bugs)
+- [Deployment](#deployment)
+- [Future Features](#future-features)
+- [Credits](#credits)
+------ 
+
 **BRAND IMAGE**
 
 ![brand image](/static/images/validation/brand_image.png)
@@ -784,7 +799,7 @@ Filtering by organiser also working.
 ------
 ##### Unresolved bug
 Comment section for under the event detail card: 
-- Being a django based project the javascript for the comment section didn't respond well with the html and caused syntax errors. I then focussed on separation of concerns, adding the javascript into its own dedicated file, but without the onclick inline attributes within the html document it didn't go as expected. I then decided to leave the comment section out of the project given it is a 'could have' feature, in regards to the MOSCOWm, and would strongly consider it as a future feauture. 
+- Being a django based project the javascript for the comment section didn't respond well with the html and caused syntax errors. I then focussed on separation of concerns, adding the javascript into its own dedicated file, but without the onclick inline attributes within the html document it didn't go as expected. I then decided to leave the comment section out of the project given it is a 'could have' feature, in regards to the MOSCOW, but would strongly consider it as a future feature. 
 
 ------
 ### DEPLOYMENT
@@ -830,16 +845,32 @@ This project was deployed on heroku - the steps to do so are number below.
 
 **My heroku app link** 
 
-    - https://eventory-5d4c90f0ec37.herokuapp.com/ 
+    [My Heroku App](https://eventory-5d4c90f0ec37.herokuapp.com/)
 
 ------
 ### FUTURE FEATURES
 ------
-#17 As an **event attendee** I would like to **write comments under the event detail** to **discuss with other attendees and leave positive reviews**
+The user stories below are features that were left out in this edition of the project: 
 
-------
+- #17 As an **event attendee** I would like to **write comments under the event detail** to **discuss with other attendees and leave positive reviews**
 
-#18 As an **event organiser** I want to **write a bio on my page** so that **suitable organisers can connect with me**
+- #18 As an **event organiser** I want to **write a bio on my page** so that **suitable organisers can connect with me**
+
+These are the main features that would be added when further development continues.
+- Leaving comments would really improve the event user community and connect the organisers in really well with their event attendees.
+- The event organiser bio would also be really beneficial for the organisers:
+    - collaboration can take place
+    - organisers can customise their profiles to act as a promotional tool with their portfolio of events included.
+
+#### Other features to be considered
+- An actual payment and ticketing process to allow organisers to collect payments.
+- Integrate actual push email notifications about updates and cancellations etc
+- A waiting list system if ticketing events are congested.
+- Admin:
+    - Flagging system so that admins know when users have been inappropriate/fraudalent. 
+    - Approval system so that events can be properly reviewed before they are submitted.
+- Integration with user calendars.
+- Third party linking with similar websites like eventbrite so organisers can cross-post. 
 
 ------
 ### CREDITS

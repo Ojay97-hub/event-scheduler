@@ -672,13 +672,14 @@ Free events filter working.
 
 Filtering by organiser also working.
 ![FILTER BY ORGANISER](static/images/testing/filter_byorganiser.png)
+
 ------
 #### Button Test Table
 ------
 
 **BASE TEMPLATE**
 
-| **Button**                  | **Location in File**      | **URL/Function**                                    | **Functional** |
+| **Button**                  | **Location in File**      | **'URL' and Function**                                    | **Functional** |
 |-----------------------------|---------------------------|----------------------------------------------------|----------------|
 | **Home**                    | Navbar                   | `'home'`                                 | Pass           |
 | **Events**                  | Navbar                   | `event_list`                           | Pass           |
@@ -696,7 +697,7 @@ Filtering by organiser also working.
 
 **HOME PAGE**
 
-| **Button**                        | **Location in File**         | **URL/Function**                                    | **Functional** |
+| **Button**                        | **Location in File**         | **'URL' and Function**                                    | **Functional** |
 |-----------------------------------|------------------------------|----------------------------------------------------|----------------|
 | **Create Event**                  | Hero Section (if organiser)  | `create_event`                         | Pass           |
 | **Browse Events**                 | Hero Section (if user)       | `event_list`                           | Pass           |
@@ -709,7 +710,7 @@ Filtering by organiser also working.
 
 **ATTENDEE LIST**
 
-| **Button**                  | **Location in File**      | **URL/Function**                                    | **Functional** |
+| **Button**                  | **Location in File**      | **'URL' and Function**                                    | **Functional** |
 |-----------------------------|---------------------------|----------------------------------------------------|----------------|
 | **Contact**                 | Table (Attendee list)    | `mailto: registration.user.email`             | Pass           |
 | **Back to Event Details**   | Below Attendee List      | `event_detail event.id`                | Pass           |
@@ -717,20 +718,20 @@ Filtering by organiser also working.
 
 **CREATE EVENT PAGE**
 
-| **Button**               | **Location in File**       | **URL/Function**                                   | **Functional** |
+| **Button**               | **Location in File**       | **'URL' and Function**                                    | **Functional** |
 |--------------------------|----------------------------|---------------------------------------------------|----------------|
 | **Create Event**         | Bottom of the form         | Submits the form to create a new event            | Pass           |
 
 **UPDATE EVENT PAGE**
 
-| **Button**               | **Location in File**       | **URL/Function**                                   | **Functional** |
+| **Button**               | **Location in File**       | **'URL' and Function**                                    | **Functional** |
 |--------------------------|----------------------------|---------------------------------------------------|----------------|
 | **Update Event**         | Bottom of the form         | Submits the form to update the event details      | Pass           |
 
 
 **CREATED EVENTS PAGE**
 
-| **Button**               | **Location in File**         | **URL/Function**                                   | **Functional** |
+| **Button**               | **Location in File**         | **'URL' and Function**                                   | **Functional** |
 |--------------------------|------------------------------|---------------------------------------------------|----------------|
 | **Create New Event**      | Above the events list        | `create_event`                         | Pass           |
 | **Manage**                | In each event card footer    | `event_detail event.id`               | Pass           |
@@ -739,7 +740,7 @@ Filtering by organiser also working.
 
 **EVENT DETAIL PAGE**
 
-| **Button**                        | **Location in File**                 | **URL/Function**                                    | **Functional** |
+| **Button**                        | **Location in File**                 | **'URL' and Function**                                     | **Functional** |
 |-----------------------------------|--------------------------------------|----------------------------------------------------|----------------|
 | **Edit Event**                    | Inside "Manage Buttons" section      | `{% url 'edit_event' event.id %}`                  | Pass           |
 | **Cancel Event**                  | Inside "Manage Buttons" section      | Opens the modal to cancel the event               | Pass           |
@@ -755,7 +756,7 @@ Filtering by organiser also working.
 
 **EVENT LIST PAGE**
 
-| **Button**                        | **Location in File**           | **URL/Function**                                    | **Functional** |
+| **Button**                        | **Location in File**           | **'URL' and Function**                                    | **Functional** |
 |-----------------------------------|--------------------------------|----------------------------------------------------|----------------|
 | **Toggle Filters**                | Filter Section                 | Toggles visibility of the filter panel             | Pass           |
 | **Filter**                        | Inside Filter Panel            | Submits the filter form                            | Pass           |
@@ -769,7 +770,7 @@ Filtering by organiser also working.
 
 **REGISTERED EVENTS PAGE**
 
-| **Button**               | **Location in File**            | **URL/Function**                                    | **Functional** |
+| **Button**               | **Location in File**            | **'URL' and Function**                                    | **Functional** |
 |--------------------------|---------------------------------|----------------------------------------------------|----------------|
 | **View Event**           | Upcoming Events section         | `'event_detail' registration.event.id `    | Pass           |
 | **Cancel Registration**  | Upcoming Events section         | Submits form to `'unregister_from_event' registration.event.id` | Pass |
@@ -788,11 +789,48 @@ Comment section for under the event detail card:
 ------
 ### DEPLOYMENT
 ------
+This project was deployed on heroku - the steps to do so are number below. 
 
-#### Github pages (local)
+#### Heroku
 
+**Step 1: Create heroku app**
 
-#### Heroku (production)
+- Go to your Heroku app dashboard > Settings > Config Vars. Add = Key: DISABLE_COLLECTSTATIC and Value: 1. Static files are handled later.
+
+**Step 2: Update your code for deployment**
+
+- install deployment dependencies: "pip install gunicorn django-heroku whitenoise psycopg2-binary" "pip freeze > requirements.txt"
+    - the requirements.txt tells heroku what version to run the app at. 
+    - This ensures heroku has the correct packages during deployment.
+- Create Procfile and add "web: gunicorn event_scheduler.wsgi" to tell heroku how to run the app.
+- Update your settings debug == **false**
+- Add .herokuapp.com to ALLOWED_HOSTS: ALLOWED_HOSTS = ['your-app-name.herokuapp.com', '.herokuapp.com']
+- Add whitenoise to static files - middleware: 'django.middleware.security.SecurityMiddleware', 'whitenoise.middleware.WhiteNoiseMiddleware',
+    - Static file configs: STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') + STATIC_URL = '/static/' + STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+- Push changes to github via commit.
+
+**Step 3: Deploy to heroku**
+
+- Connect heroku to github:
+    - Heroku dashboard > deploy tab > deployment method > github > github repository. 
+- In manual deploy section > select main branch and click deploy branch > wait for deployment and check activity logs if needed.
+
+**Step 4: Post-deployment**
+
+- connect your postgres database > create env.py file and make sure it has the DATABASE_URL (should be linked to you from Postgres email) and your secret key > 
+    - import os - os.environ["DATABASE_URL"] = "your-database-url" - os.environ["SECRET_KEY"] = "your-secret-key"
+    - be sure to add env.py to gitignore
+    - in settings add: import dj_database_url + DATABASES = {'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))}
+    - In heroku go to settings and add your DATABASE_URL and your SECRET_KEY into the configs vars. 
+- Run your database migrations "python manage.py makemigrations" "python manage.py migrate" 
+- create superuser for admin access "python manage.py createsuperuser"
+- You need to then collectstatic:
+    - remove DISABLE_COLLECTSTATIC config var > then run in terminal "python manage.py collectstatic"
+- You should be able to then deploy your heroku app with your database connected and begin production. 
+
+**My heroku app link** 
+
+    - https://eventory-5d4c90f0ec37.herokuapp.com/ 
 
 ------
 ### FUTURE FEATURES

@@ -434,9 +434,80 @@ Context Processors
 
 
 
-#### MANUAL TESTING 
+### MANUAL TESTING
 
-#### AUTOMATED TESTING?
+In this section I showcase the key feature tests from a user perspective through manual testing ensuring a smooth experience throughout.
+
+#### FORMS
+
+There are two key forms in this website - the signup, registering for an event and the create/edit events forms. 
+
+**SIGN UP FORM VALIDATION**
+
+
+![SIGN UP USERNAME](static/images/testing/username_valid.png)
+
+![SIGN UP EMAIL](static/images/testing/email_valid.png)
+
+![SIGN UP EMAIL 2](static/images/testing/email_valid2.png)
+
+![SIGN UP PASSWORD](static/images/testing/signup_password.png)
+
+![SIGN UP PASSWORD 2](static/images/testing/signup_password2.png)
+
+![SIGN UP NO MATCH PASSWORD](static/images/testing/nomatch_password.png)
+
+![SIGN UP SUCCESS](static/images/testing/signup_success.png)
+
+**CREATE EVENT FORM** 
+
+![CREATE TITLE](static/images/testing/enter_title.png)
+
+![CREATE ENDDATE](static/images/testing/enter_enddate.png)
+
+![CREATE STARTTIME](static/images/testing/enter_starttime.png)
+
+![CREATE ENDTIME](static/images/testing/enter_endtime.png)
+
+![CREATE IMAGE](static/images/testing/enter_image.png)
+
+![CREATE IMAGE URL](static/images/testing/enter_imageurl.png)
+
+![CREATE DESCRIPTION](static/images/testing/enter_description.png)
+
+![CREATE CAPACITY](static/images/testing/enter_capacity.png)
+
+![CREATE PRICE](static/images/testing/enter_priceifpay.png)
+
+![CREATE VENUE](static/images/testing/enter_venue.png)
+
+![CREATE ADDRESS1](static/images/testing/enter_address1.png)
+
+![CREATE TOWN](static/images/testing/enter_town.png)
+
+![CREATE POSTCODE](static/images/testing/enter_postcode.png)
+
+![CREATE REDIRECT](static/images/testing/createdevent_redirect.png)
+
+**EDIT EVENT FORM**
+
+![EDIT EVENT](static/images/testing/editevent_success.png)
+
+
+**REGISTER FOR AN EVENT**
+
+![EVENT REGISTER ENTER EMAIL](static/images/testing/register_addemail.png)
+
+
+![EVENT REGISTER SUCCESS](static/images/testing/registration_success.png)
+
+
+![EVENT DETAIL CONFIRM](static/images/testing/eventdetail_confirmreg.png)
+
+![EVENT REGISTERED EVENTS](static/images/testing/registered_events.png)
+
+
+#### Button Test Table
 ------
 ### DEPLOYMENT
 

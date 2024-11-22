@@ -5,6 +5,7 @@
 <div class="container mt-4">
     <h1 class="mb-4 text-center"><em>My Registered Events</em></h1>
 
+    <!-- UPCOMING EVENTS -->
     <h2 id="upcoming-events-section">Upcoming Events</h2>
     {% if upcoming_events %}
     <div class="row" aria-labelledby="upcoming-events-section">
@@ -17,6 +18,7 @@
                 <div class="card-body">
                     <h3 class="card-title h5">{{ registration.event.title }}</h3>
                     <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>
+                    <p class="card-text"><strong>Time:</strong> {{ registration.event.start_time|time:"g:i A" }}</p>
                     <p class="card-text"><strong>Location:</strong> 
                         {% if registration.event.location.is_online %}
                             <span class="text-success">Online Event</span>
@@ -40,6 +42,50 @@
     <p aria-labelledby="upcoming-events-section">You have no upcoming events.</p>
     {% endif %}
 
+    <!-- TODAY EVENTS -->
+    <h2 id="today-events-section">Today's Events</h2>
+    {% if today_events %}
+    <div class="row" aria-labelledby="today-events-section">
+        {% for registration in today_events %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                {% if registration.event.image_url %}
+                <img src="{{ registration.event.image_url }}" class="card-img-top" alt="Image for {{ registration.event.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h3 class="card-title h5">{{ registration.event.title }}</h3>
+                    <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>
+                    <p class="card-text"><strong>Time:</strong>
+                        {% if registration.event.start_time and registration.event.end_time %}
+                            {{ registration.event.start_time|time:"g:i A" }} - {{ registration.event.end_time|time:"g:i A" }}
+                        {% else %}
+                            <em>Time not specified</em>
+                        {% endif %}
+                    </p>
+                    <p class="card-text"><strong>Location:</strong> 
+                        {% if registration.event.location.is_online %}
+                            <span class="text-success">Online Event</span>
+                        {% else %}
+                            {{ registration.event.location.town_city }}, {{ registration.event.location.postcode }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{% url 'event_detail' registration.event.id %}" class="btn btn-info" aria-label="View details for {{ registration.event.title }}">View Event</a>
+                    <form method="POST" action="{% url 'unregister_from_event' registration.event.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" aria-label="Cancel registration for {{ registration.event.title }}">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p aria-labelledby="today-events-section">You have no events today.</p>
+    {% endif %}
+
+    <!-- PAST EVENTS -->
     <h2 id="past-events-section" class="mt-5">Past Events</h2>
     {% if past_events %}
     <div class="row" aria-labelledby="past-events-section">
@@ -52,6 +98,13 @@
                 <div class="card-body">
                     <h3 class="card-title h5">{{ registration.event.title }}</h3>
                     <p class="card-text"><strong>Date:</strong> {{ registration.event.start_date|date:"F j, Y" }}</p>
+                    <p class="card-text"><strong>Time:</strong>
+                        {% if registration.event.start_time and registration.event.end_time %}
+                            {{ registration.event.start_time|time:"g:i A" }} - {{ registration.event.end_time|time:"g:i A" }}
+                        {% else %}
+                            <em>Time not specified</em>
+                        {% endif %}
+                    </p>
                     <p class="card-text"><strong>Location:</strong> 
                         {% if registration.event.location.is_online %}
                             <span class="text-success">Online Event</span>

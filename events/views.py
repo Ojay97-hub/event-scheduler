@@ -529,22 +529,26 @@ def registered_events(request):
     # Get all events the user is registered for
     registered_events = Registration.objects.filter(user=request.user)
 
-    # Get the current date and time
-    now = timezone.now()
+    # Get the current datetime and today's date
+    current_datetime = timezone.now()
+    today_date = current_datetime.date()
 
-    # Separate into upcoming and past events
-    upcoming_events = [
-        registration for registration in registered_events
-        if registration.event.start_date >= now
-    ]
-    past_events = [
-        registration for registration in registered_events
-        if registration.event.start_date < now
-    ]
+    # Categorize events
+    past_events = registered_events.filter(
+        event__end_date__lt=today_date 
+    )
+    today_events = registered_events.filter(
+        event__start_date__lte=today_date,  
+        event__end_date__gte=today_date  
+    )
+    upcoming_events = registered_events.filter(
+        event__start_date__gt=today_date 
+    )
 
     context = {
-        'upcoming_events': upcoming_events,
         'past_events': past_events,
+        'today_events': today_events,
+        'upcoming_events': upcoming_events,
     }
 
     return render(request, 'events/registered_events.html', context)

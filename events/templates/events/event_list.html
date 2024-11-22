@@ -107,6 +107,7 @@
                     </p>
                     <p class="card-text"><strong>An event by: </strong> {{ event.organiser.username }}</p>
                     <p class="card-text hide"><strong>Date:</strong> {{ event.start_date|date:"F j, Y" }}</p>
+                    <p class="card-text"><strong>Time:</strong> {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</p>
                     <p class="card-text"><strong>Description:</strong> {{ event.description|truncatewords:10  }}</p>
                     <p class="card-text hide"><strong>Capacity:</strong> {{ event.capacity_status }}</p>
                     <p class="card-text hide"><strong>Price:</strong> {% if event.free %} Free {% else %} £{{ event.price }} {% endif %}</p>

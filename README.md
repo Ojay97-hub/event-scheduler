@@ -757,7 +757,7 @@ Filtering by organiser also working.
 
 | **Button**                        | **Location in File**                 | **'URL' and Function**                                     | **Functional** |
 |-----------------------------------|--------------------------------------|----------------------------------------------------|----------------|
-| **Edit Event**                    | Inside "Manage Buttons" section      | `{% url 'edit_event' event.id %}`                  | Pass           |
+| **Edit Event**                    | Inside "Manage Buttons" section      | `edit_event' event.id`                  | Pass           |
 | **Cancel Event**                  | Inside "Manage Buttons" section      | Opens the modal to cancel the event               | Pass           |
 | **View Attendee List**            | Inside "Manage Buttons" section      | `attendee_list' event.id`               | Pass           |
 | **Register**                      | Registration form for event users    | Submits the form to `event_register' event.id` | Pass           |

@@ -125,6 +125,25 @@ Event has a many-to-one relationship with Location (Each event happens at one lo
 Registration has a many-to-one relationship with both User and Event (Each registration is for one user and one event).
 
 ------
+### Views Classes and Functions Table
+------
+
+| **View/Function Name**         | **Type**            | **Purpose**                                                                                       | **Template**                     |
+|--------------------------------|---------------------|---------------------------------------------------------------------------------------------------|----------------------------------|
+| `HomeView`                     | Class-Based View    | Displays the home page of the website.                                                           | `home.html`                      |
+| `EventsList`                   | Class-Based View    | Displays a paginated list of upcoming events with filtering options.                             | `events/event_list.html`         |
+| `EventDetailView`              | Class-Based View    | Shows details for a specific event.                                                              | `events/event_detail.html`       |
+| `create_event`                 | Function-Based View | Allows organisers to create new events and associated locations.                                 | `events/create_event.html`       |
+| `edit_event`                   | Function-Based View | Allows organisers to edit existing events.                                                       | `events/edit_event.html`         |
+| `delete_event`                 | Function-Based View | Allows organisers to delete their events.                                                        | None (Redirects)                 |
+| `created_events_view`          | Function-Based View | Displays events created by the logged-in organiser.                                               | `events/created_events.html`     |
+| `register`                     | Function-Based View | Handles user registration and assigns users to the appropriate group.                            | `account/signup.html`            |
+| `register_for_event`           | Function-Based View | Allows users to register for an event.                                                           | `events/event_detail.html`       |
+| `unregister_from_event`        | Function-Based View | Allows users to unregister from an event.                                                        | None (Redirects)                 |
+| `registered_events`            | Function-Based View | Displays a list of events the user is registered for (upcoming and past events).                 | `events/registered_events.html`  |
+| `attendee_list`                | Function-Based View | Displays a list of attendees for an event (accessible only to the event organiser).              | `events/attendee_list.html`      |
+
+------
 ### AGILE METHODOLOGY 
 ------
 This kanban based on the agile methodology approach is a visual representation of all the tasks, that comprised of main epic stories each with their own set of user stories. These were to be completed in order to finish the project successfully:
@@ -805,45 +824,123 @@ Comment section for under the event detail card:
 - Being a django based project the javascript for the comment section didn't respond well with the html and caused syntax errors. I then focussed on separation of concerns, adding the javascript into its own dedicated file, but without the onclick inline attributes within the html document it didn't go as expected. I then decided to leave the comment section out of the project given it is a 'could have' feature, in regards to the MOSCOW, but would strongly consider it as a future feature. 
 
 ------
-### DEPLOYMENT
-------
-This project was deployed on heroku - the steps to do so are number below. 
+## DEPLOYMENT
 
-#### Heroku
+This project was deployed on heroku - the steps to do so are number below:
 
-**Step 1: Create heroku app**
+### Heroku
 
-- Go to your Heroku app dashboard > Settings > Config Vars. Add = Key: DISABLE_COLLECTSTATIC and Value: 1. Static files are handled later.
+#### Step 1: Create a Heroku app
 
-**Step 2: Update your code for deployment**
+1. Go to your Heroku app dashboard > Settings > Config Vars. Add:
+   - Key: `DISABLE_COLLECTSTATIC`
+   - Value: `1`  
+   _(Static files will be handled later.)_
 
-- install deployment dependencies: "pip install gunicorn django-heroku whitenoise psycopg2-binary" "pip freeze > requirements.txt"
+   ```bash
+   # Create a Heroku app and set DISABLE_COLLECTSTATIC
+   heroku create your-app-name
+   heroku config:set DISABLE_COLLECTSTATIC=1
+
+#### Step 2: Update your code for deployment 
+1.	Install the required dependencies and update requirements.txt:
+
+        pip install gunicorn django-heroku whitenoise psycopg2-binary
+        pip freeze > requirements.txt
+
     - the requirements.txt tells heroku what version to run the app at. 
     - This ensures heroku has the correct packages during deployment.
-- Create Procfile and add "web: gunicorn event_scheduler.wsgi" to tell heroku how to run the app.
+    
+```bash
+echo "web: gunicorn event_scheduler.wsgi" > Procfile
+```
+
 - Update your settings debug == **false**
-- Add .herokuapp.com to ALLOWED_HOSTS: ALLOWED_HOSTS = ['your-app-name.herokuapp.com', '.herokuapp.com']
-- Add whitenoise to static files - middleware: 'django.middleware.security.SecurityMiddleware', 'whitenoise.middleware.WhiteNoiseMiddleware',
-    - Static file configs: STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') + STATIC_URL = '/static/' + STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+- Add .herokuapp.com to ALLOWED_HOSTS: 
+
+```bash
+ALLOWED_HOSTS = ['your-app-name.herokuapp.com', '.herokuapp.com']
+```
+
+- Add whitenoise to static files  
+
+```bash
+django.middleware.security.SecurityMiddleware 
+whitenoise.middleware.WhiteNoiseMiddleware
+```
+
+- Static file configs: 
+```bash
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+STATIC_URL = '/static/' 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+  ```
+
 - Push changes to github via commit.
+```bash
+git add .
+git commit -m "Prepare app for Heroku deployment"
+git push origin main
+```
 
-**Step 3: Deploy to heroku**
+#### Step 3: Deploy to heroku
 
-- Connect heroku to github:
-    - Heroku dashboard > deploy tab > deployment method > github > github repository. 
-- In manual deploy section > select main branch and click deploy branch > wait for deployment and check activity logs if needed.
+1.	Connect Heroku to your GitHub repository:
 
-**Step 4: Post-deployment**
+    Go to the Heroku dashboard > Deploy tab.
+    Select “GitHub” as the deployment method and connect your repository.
 
-- connect your postgres database > create env.py file and make sure it has the DATABASE_URL (should be linked to you from Postgres email) and your secret key > 
-    - import os - os.environ["DATABASE_URL"] = "your-database-url" - os.environ["SECRET_KEY"] = "your-secret-key"
-    - be sure to add env.py to gitignore
-    - in settings add: import dj_database_url + DATABASES = {'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))}
-    - In heroku go to settings and add your DATABASE_URL and your SECRET_KEY into the configs vars. 
+2.	Deploy the main branch:
+
+    Scroll to the “Manual deploy” section.
+    Select the main branch and click “Deploy Branch.”
+
+3.	Monitor activity logs to ensure a successful deployment.
+
+#### Step 4: Post-deployment
+
+1.	Connect to your PostgreSQL database:
+	•	Add the DATABASE_URL and SECRET_KEY to env.py:
+
+```bash
+import os
+os.environ["DATABASE_URL"] = "your-database-url"
+os.environ["SECRET_KEY"] = "your-secret-key"
+```
+
+be sure to add env.py to gitignore
+
+2.	Update settings.py to use dj_database_url:
+
+```bash
+import dj_database_url
+
+DATABASES = {
+    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
+}
+```
+
+3.	Add DATABASE_URL and SECRET_KEY to Heroku Config Vars via the dashboard.
+4.	Run database migrations and create a superuser:
+
 - Run your database migrations "python manage.py makemigrations" "python manage.py migrate" 
+
 - create superuser for admin access "python manage.py createsuperuser"
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+```
+
 - You need to then collectstatic:
-    - remove DISABLE_COLLECTSTATIC config var > then run in terminal "python manage.py collectstatic"
+    - remove DISABLE_COLLECTSTATIC config var > then run in terminal 
+    
+```bash
+    "python manage.py collectstatic"
+```
+
 - You should be able to then deploy your heroku app with your database connected and begin production. 
 
 **My heroku app link:** 
@@ -879,15 +976,19 @@ These are the main features that would be added when further development continu
 ### CREDITS
 ------
 
+- Code institutes learning content with the django walkthrough
 - Balsamiq for the wireframes
-- Bootstrap layouts
+- Bootstrap layouts for the event cards 
 - Favicon.io for custom favicon
 - Font Awesome for icons
 - Google Fonts for custom fonts
 - Django for the backend framework
 - Code Institute Python Linter
 - unsplash for stock images
+- Corey Schafer's youtube: Django tutorials for some guidance on getting started with django (https://www.youtube.com/watch?v=UmljXZIypDc)
+- Used stackoverflow for some tips and tricks for grouping users into groups on django during sign-up 
+- Made use of chatGPT for debugging and code explanation
 
 
-
-
+#### Acknowledge 
+- I would like to thank my student mentor Rory Patrick for pushing me in the right direction to get this project to where it needed to be! 

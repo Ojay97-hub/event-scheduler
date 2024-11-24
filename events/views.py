@@ -123,7 +123,9 @@ class EventsList(generic.ListView):
                 price_max = float(price_max) if price_max else None
 
                 # Combined validation for both fields
-                if price_min < 0 or (price_max is not None and price_max <= 0) or (price_max is not None and price_min > price_max):
+                if price_min < 0 or (
+                    price_max is not None and price_max <= 0) or (
+                        price_max is not None and price_min > price_max):
                     messages.error(
                         self.request, 
                         "Please enter valid prices: minimum price ≥ 0, maximum price > 0, and minimum price ≤ maximum price."

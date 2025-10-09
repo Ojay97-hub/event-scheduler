@@ -116,6 +116,12 @@ DATABASES = {
     'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
+# Add SSL configuration for Neon PostgreSQL
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': 'require',
+    }
+
 CSRF_TRUSTED_ORIGINS = [
     "https://*.codeinstitute-ide.net/",
     "https://*.herokuapp.com"

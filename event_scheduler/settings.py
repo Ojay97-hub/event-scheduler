@@ -112,15 +112,14 @@ WSGI_APPLICATION = 'event_scheduler.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
-}
+# Database configuration with SSL for Neon PostgreSQL
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL and 'sslmode=' not in DATABASE_URL:
+    DATABASE_URL += '?sslmode=require'
 
-# Add SSL configuration for Neon PostgreSQL
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default']['OPTIONS'] = {
-        'sslmode': 'require',
-    }
+DATABASES = {
+    'default': dj_database_url.parse(DATABASE_URL)
+}
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.codeinstitute-ide.net/",

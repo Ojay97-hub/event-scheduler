@@ -21,6 +21,10 @@
 
 **"Connect People, Create Memories!"**
 
+**LIVE SITE:** [event-scheduler-9rl6.onrender.com](https://event-scheduler-9rl6.onrender.com/)
+
+> **Note:** EVENTORY was migrated from Heroku to [Render](https://render.com) in October 2026 (see [Deployment](#deployment)). It runs on Render's free tier, which sleeps when idle, so the first load can take 30-60 seconds while the server wakes up.
+
 **REPSONSIVE SCREENSHOTS** 
 
 ![RESPONSIVE SCREENSHOTS](static/images/responsive_screenshots.png)
@@ -57,7 +61,7 @@ Whether you are hosting an event, attending one, or moderating the platform, EVE
 
 **Database**: PostgreSQL
 
-**Deployment**: Heroku
+**Deployment**: Render (originally Heroku), with a Neon PostgreSQL database
 
 ------
 ### WIREFRAMES 
@@ -826,9 +830,40 @@ Comment section for under the event detail card:
 ------
 ## DEPLOYMENT
 
-This project was deployed on heroku - the steps to do so are number below:
+This project was originally deployed on Heroku and was migrated to Render in October 2026. The current Render setup is below, followed by the original Heroku steps for reference.
 
-### Heroku
+### Render (current)
+
+**Live site:** https://event-scheduler-9rl6.onrender.com
+
+#### Web service settings
+
+In the Render dashboard click **New > Web Service**, connect this repository and use:
+
+| Setting | Value |
+|---|---|
+| Runtime | Python 3 |
+| Build command | `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate` |
+| Start command | `gunicorn event_scheduler.wsgi` |
+| Instance type | Free |
+
+#### Environment variables
+
+| Key | Value |
+|---|---|
+| `SECRET_KEY` | Django secret key |
+| `DATABASE_URL` | Neon PostgreSQL connection string (`?sslmode=require` is added automatically if missing) |
+| `PYTHON_VERSION` | `3.12.6` |
+
+#### Changes made for the migration
+
+- **Allowed hosts:** `settings.py` reads Render's `RENDER_EXTERNAL_HOSTNAME` and adds it to `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS`, so no hostname needs hard-coding.
+- **Gunicorn upgraded to 23.0.0:** gunicorn 20.1.0 imports `pkg_resources`, which newer `setuptools` releases no longer ship, so the app crashed on start-up.
+- **Demo events:** data migration `events/migrations/0007_seed_demo_events.py` adds 12 upcoming events (November 2026 to December 2029) organised by an `eventory_team` user, so the live demo always has events to browse. It runs once during `migrate` and can be reversed with `python manage.py migrate events 0006`.
+
+Migrations run as part of the build command because Render's free tier doesn't offer shell access.
+
+### Heroku (original deployment)
 
 #### Step 1: Create a Heroku app
 
@@ -841,6 +876,7 @@ This project was deployed on heroku - the steps to do so are number below:
    # Create a Heroku app and set DISABLE_COLLECTSTATIC
    heroku create your-app-name
    heroku config:set DISABLE_COLLECTSTATIC=1
+   ```
 
 #### Step 2: Update your code for deployment 
 1.	Install the required dependencies and update requirements.txt:
@@ -943,7 +979,7 @@ python manage.py createsuperuser
 
 - You should be able to then deploy your heroku app with your database connected and begin production. 
 
-**My heroku app link:** 
+**My original heroku app link (no longer active):** 
 
     https://eventory-5d4c90f0ec37.herokuapp.com
 
